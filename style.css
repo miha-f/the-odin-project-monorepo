@@ -1,0 +1,28 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.flex-container {
+    padding: 20px 10%;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.navbar {
+    font-family: "Roboto", "Courier New";
+    color: #f9faf8;
+    background-color: #1f2937;
+}
+
+.navbar strong {
+    font-size: 24px;
+}
+
+.navbar a {
+    font-size: 18px;
+    color: #e5e7eb;
+    text-decoration: none;
+    margin-right: 30px;
+}
