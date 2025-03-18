@@ -140,3 +140,12 @@
     width: 150px;
     height: 60px;
 }
+
+.footer {
+    box-sizing: border-box;
+    margin: 0 auto;
+    justify-content: center;
+    padding: 20px;
+    background-color: #1f2937;
+    color: #e5e7eb;
+}
