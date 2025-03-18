@@ -116,3 +116,27 @@
     display: flex;
     justify-content: end;
 }
+
+.register {
+    margin: 50px 200px;
+    background-color: #3882f6;
+    border-radius: 12px;
+    color: #f9faf8;
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.register h1 {
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.register button {
+    background-color: #3882f6;
+    color: #f9faf8;
+    border: 2px solid white;
+    border-radius: 4px;
+    width: 150px;
+    height: 60px;
+}
