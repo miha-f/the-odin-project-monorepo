@@ -99,3 +99,20 @@
     text-align: center;
     color: #6d747d;
 }
+
+.quote {
+    padding: 20px 20%;
+    background-color: #e5e7eb;
+    flex-direction: column;
+}
+
+.quote it {
+    font-size: 36px;
+    color: #1f2937;
+    font-style: italic;
+}
+
+.quote p {
+    display: flex;
+    justify-content: end;
+}
