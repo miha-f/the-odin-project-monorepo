@@ -4,3 +4,7 @@ const getComputerChoice = () => {
     const choice = Math.floor(Math.random() * 3);
     return signs[choice];
 };
+
+const getHumanChoice = () => {
+    return prompt("Enter your sign, valid options: rock, paper, scissor");
+};
