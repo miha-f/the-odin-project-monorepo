@@ -1,6 +1,7 @@
 * {
     padding: 0;
     margin: 0;
+    font-family: "Roboto", "Courier New";
 }
 
 .flex-container {
@@ -9,9 +10,7 @@
     justify-content: space-between;
 }
 
-
 .navbar {
-    font-family: "Roboto", "Courier New";
     color: #f9faf8;
     background-color: #1f2937;
 }
@@ -25,4 +24,44 @@
     color: #e5e7eb;
     text-decoration: none;
     margin-right: 30px;
+}
+
+.top {
+    color: #f9faf8;
+    background-color: #1f2937;
+    padding: 100px 10%;
+}
+
+.top h1 {
+    font-size: 48px;
+    font-weight: 900;
+}
+
+.top p {
+    font-size: 18px;
+    color: #e5e7eb;
+    margin-bottom: 10px;
+}
+
+.top button {
+    background-color: #3882f6;
+    border-color: #3882f6;
+    color: #f9faf8;
+    width: 125px;
+    height: 30px;
+    border-radius: 8px;
+}
+
+.top div {
+    flex: 1;
+    margin-right: 50px;
+}
+
+#placeholder-image {
+    flex: 1;
+    background-color: #6d747d;
+    margin-right: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
