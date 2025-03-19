@@ -32,7 +32,10 @@ const colors = [
 ];
 
 const SIZE = 800;
+const RAINBOW_INDEX = colors.length;
+const SHADOW_INDEX = RAINBOW_INDEX + 1;
 let gridSize = 10;
+let colorIndex = 0;
 
 // NOTE(miha): Populate "colors" div with our colors as buttons. Adds random
 // color and shadow color buttons.
@@ -57,20 +60,41 @@ const createColorButtons = () => {
         return button
     };
 
+    const addEventListener = (button) => {
+        button.addEventListener("click", (e) => {
+            // NOTE(miha): Check if we can get index from id, otherwise rainbow
+            // or shadow button was pressed.
+            const getIndex = () => {
+                let index = parseInt(e.target.id.replace("colorButton", ""));
+                const isRainbow = e.target.className.includes("rainbow");
+                const isShadow = e.target.className.includes("moon");
+                if (isRainbow) index = RAINBOW_INDEX;
+                if (isShadow) index = SHADOW_INDEX;
+                return index;
+            };
+
+            const index = getIndex();
+            colorIndex = index;
+        });
+    };
+
     for (let [index, color] of colors.entries()) {
         const button = createButton(index, color);
+        addEventListener(button);
         colorsDiv.appendChild(button);
     }
 
-    const rainbowButton = createButtonWithIcon(10, "fa-rainbow");
+    const rainbowButton = createButtonWithIcon(RAINBOW_INDEX, "fa-rainbow");
+    addEventListener(rainbowButton);
     colorsDiv.appendChild(rainbowButton);
 
-    const shadowButton = createButtonWithIcon(11, "fa-moon");
+    const shadowButton = createButtonWithIcon(SHADOW_INDEX, "fa-moon");
+    addEventListener(shadowButton);
     colorsDiv.appendChild(shadowButton);
 };
 
 const createGridElement = (row, column, size) => {
-    const index = row * 10 + column;
+    const index = row * gridSize + column;
     const div = document.createElement("div");
     div.id = `gridElement${index}`;
     div.classList.add("grid-element");
