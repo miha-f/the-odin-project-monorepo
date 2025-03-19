@@ -11,27 +11,29 @@
 
 <body>
 
-    <div class="flex-container">
-        <button id="rock">
-            <i class="fa-solid fa-hand-back-fist"></i>
-        </button>
-        <button id="paper">
-            <i class="fa-solid fa-hand"></i>
-        </button>
-        <button id="scissors">
-            <i class="fa-solid fa-hand-scissors"></i>
-        </button>
+    <div class="main">
+        <div class="flex-container">
+            <button id="rock">
+                <i class="fa-solid fa-hand-back-fist"></i>
+            </button>
+            <button id="paper">
+                <i class="fa-solid fa-hand"></i>
+            </button>
+            <button id="scissors">
+                <i class="fa-solid fa-hand-scissors"></i>
+            </button>
+        </div>
+
+        <p>Human score: <span id="humanScore">0</span></p>
+        <p>Computer score: <span id="computerScore">0</span></p>
+
+        <br />
+
+        <h1 class="invisible" id="humanWins">Human wins!</h1>
+        <h1 class="invisible" id="computerWins">Computer wins!</h1>
+        <h1 class="invisible" id="draw">Draw!</h1>
+        <button class="invisible" id="playAgain">Play again</button>
     </div>
-
-    <p>Human score: <span id="humanScore">0</span></p>
-    <p>Computer score: <span id="computerScore">0</span></p>
-
-    <br />
-
-    <p class="invisible" id="humanWins">Human wins!</p>
-    <p class="invisible" id="computerWins">Computer wins!</p>
-    <p class="invisible" id="draw">Draw!</p>
-    <button class="invisible" id="playAgain">Play again</button>
 
     <script src="script.js"></script>
 </body>
