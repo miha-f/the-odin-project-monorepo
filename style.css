@@ -28,3 +28,7 @@ button {
     display: flex;
     justify-content: space-evenly;
 }
+
+.invisible {
+    display: none;
+}
