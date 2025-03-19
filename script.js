@@ -1,14 +1,3 @@
-
-// TODO(miha):
-//          - create function that craetes div
-//          - ask user input for grid size
-//          - add on hover event listener
-//          - add colors
-//          - add rainbow effect (random color)
-//          - add shadowing effect (we shadow current color by 10%)
-//          - 
-//          - 
-
 const gridSizeInput = document.querySelector("#gridSizeInput");
 
 gridSizeInput.addEventListener("change", (e) => {
@@ -104,7 +93,7 @@ const createGridElement = (row, column, size) => {
     return div;
 };
 
-const gridElementEvent = (e) => {
+const gridElementOnMouseEnter = (e) => {
     console.log(e.target.id);
     const element = document.querySelector(`#${e.target.id}`);
     // NOTE(miha): Reset opacity
@@ -133,7 +122,7 @@ const createGrid = (gridSize) => {
     for (let r = 0; r < gridSize; r++) {
         for (let c = 0; c < gridSize; c++) {
             const element = createGridElement(r, c, size);
-            element.addEventListener("mouseenter", gridElementEvent);
+            element.addEventListener("mouseenter", gridElementOnMouseEnter);
             container.appendChild(element);
         }
     }
