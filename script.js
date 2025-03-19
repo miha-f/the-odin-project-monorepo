@@ -10,13 +10,11 @@ const signs = ["rock", "paper", "scissors"];
 
 let humanScore = 0;
 let computerScore = 0;
-let round = 0;
 
 const reset = () => {
     // NOTE(miha): Reset counts.
     humanScore = 0;
     computerScore = 0;
-    round = 0;
     updateScore();
 
     // NOTE(miha): Hide winning text and play again button.
@@ -74,13 +72,15 @@ paperButton.addEventListener("click", () => { playGame("paper"); });
 scissorsButton.addEventListener("click", () => { playGame("scissors"); });
 
 const playGame = (humanSelection) => {
-    // NOTE(miha): We play 5 rounds
-    if (round < 5) {
+    // NOTE(miha): We play until human or computer reaches score of 5.
+    if (humanScore < 5 && computerScore < 5) {
         const computerSelection = getComputerChoice();
         playRound(humanSelection, computerSelection);
-        round++;
         updateScore();
-    } else {
+    }
+
+    const gameOver = humanScore == 5 || computerScore == 5;
+    if (gameOver) {
         if (humanScore > computerScore) {
             humanWins.classList.toggle("invisible");
         }
