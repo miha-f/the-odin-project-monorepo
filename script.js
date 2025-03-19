@@ -26,16 +26,25 @@ let gridSize = 10;
 
 // NOTE(miha): Populate "colors" div with our colors as buttons. Adds random
 // color and shadow color buttons.
-const createColors = () => {
+const createColorButtons = () => {
     const colorsDiv = document.querySelector(".colors");
 
     const createButton = (index, color) => {
         const button = document.createElement("button");
         button.id = `colorButton${index}`;
-        button.style["width"] = "100px";
-        button.style["height"] = "100px";
+        button.style["width"] = "50px";
+        button.style["height"] = "50px";
         button.style["background-color"] = color;
         return button;
+    };
+
+    const createButtonWithIcon = (index, iconString) => {
+        button = createButton(index, "transparent");
+        iconElement = document.createElement("i");
+        iconElement.classList.add("fa-solid", iconString);
+        button.style["font-size"] = "35px";
+        button.appendChild(iconElement);
+        return button
     };
 
     for (let [index, color] of colors.entries()) {
@@ -43,15 +52,11 @@ const createColors = () => {
         colorsDiv.appendChild(button);
     }
 
-    // TODO(miha): Need better way to deal with ids
+    const rainbowButton = createButtonWithIcon(10, "fa-rainbow");
+    colorsDiv.appendChild(rainbowButton);
 
-    const randomColorButton = document.createElement("button");
-    randomColorButton.id = `colorButton${10}`;
-    colorsDiv.appendChild(randomColorButton);
-
-    const shadowColorButton = document.createElement("button");
-    shadowColorButton.id = `colorButton${11}`;
-    colorsDiv.appendChild(shadowColorButton);
+    const shadowButton = createButtonWithIcon(11, "fa-moon");
+    colorsDiv.appendChild(shadowButton);
 };
 
 const createGridElement = (r, c) => {
@@ -74,7 +79,7 @@ const createGrid = () => {
 };
 
 const createEtchSketch = () => {
-    createColors();
+    createColorButtons();
     createGrid();
     // get user width
     // set container widht
