@@ -13,7 +13,7 @@ const gridSizeInput = document.querySelector("#gridSizeInput");
 
 gridSizeInput.addEventListener("change", (e) => {
     removeGrid();
-    const gridSize = Math.max(1, Math.min(e.target.valueAsNumber, 100));
+    gridSize = Math.max(1, Math.min(e.target.valueAsNumber, 100));
     createGrid(gridSize);
 });
 
@@ -36,6 +36,7 @@ const RAINBOW_INDEX = colors.length;
 const SHADOW_INDEX = RAINBOW_INDEX + 1;
 let gridSize = 10;
 let colorIndex = 0;
+let shadowLevel = 1;
 
 // NOTE(miha): Populate "colors" div with our colors as buttons. Adds random
 // color and shadow color buttons.
@@ -103,6 +104,27 @@ const createGridElement = (row, column, size) => {
     return div;
 };
 
+const gridElementEvent = (e) => {
+    console.log(e.target.id);
+    const element = document.querySelector(`#${e.target.id}`);
+    // NOTE(miha): Reset opacity
+    element.style["opacity"] = "1.0";
+
+    if (colorIndex < colors.length) {
+        element.style["background-color"] = colors[colorIndex];
+    }
+    else if (colorIndex === RAINBOW_INDEX) {
+        const choice = Math.floor(Math.random() * colors.length);
+        element.style["background-color"] = colors[choice];
+    }
+    else if (colorIndex === SHADOW_INDEX) {
+        if (shadowLevel < 0)
+            shadowLevel = 1;
+        shadowLevel -= 0.1;
+        element.style["opacity"] = `${shadowLevel}`;
+    }
+};
+
 const createGrid = (gridSize) => {
     const container = document.querySelector(".container");
     container.style["width"] = `${SIZE}px`;
@@ -111,8 +133,8 @@ const createGrid = (gridSize) => {
     for (let r = 0; r < gridSize; r++) {
         for (let c = 0; c < gridSize; c++) {
             const element = createGridElement(r, c, size);
+            element.addEventListener("mouseenter", gridElementEvent);
             container.appendChild(element);
-            // TODO(miha): Add eventlistener
         }
     }
 };
@@ -124,7 +146,9 @@ const removeGrid = () => {
     }
 };
 
-const createEtchSketch = (gridSize) => {
+const createEtchSketch = (size) => {
+    gridSize = size;
+    console.log(gridSize);
     createColorButtons();
     createGrid(gridSize);
 };
