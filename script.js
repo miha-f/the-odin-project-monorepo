@@ -22,6 +22,7 @@ const colors = [
     "#FFD700"  // Gold
 ];
 
+const SIZE = 800;
 let gridSize = 10;
 
 // NOTE(miha): Populate "colors" div with our colors as buttons. Adds random
@@ -59,20 +60,24 @@ const createColorButtons = () => {
     colorsDiv.appendChild(shadowButton);
 };
 
-const createGridElement = (r, c) => {
-    const index = r * 10 + c;
+const createGridElement = (row, column, size) => {
+    const index = row * 10 + column;
     const div = document.createElement("div");
     div.id = `gridElement${index}`;
     div.classList.add("grid-element");
+    div.style["width"] = `${size}px`;
+    div.style["height"] = `${size}px`;
     return div;
 };
 
 const createGrid = () => {
     const container = document.querySelector(".container");
+    container.style["width"] = `${SIZE}px`;
+    const size = SIZE / gridSize;
 
     for (let r = 0; r < gridSize; r++) {
         for (let c = 0; c < gridSize; c++) {
-            const element = createGridElement(r, c);
+            const element = createGridElement(r, c, size);
             container.appendChild(element);
         }
     }
