@@ -40,6 +40,13 @@ const playRound = (humanChoice, computerChoice) => {
     }
 };
 
+const updateScore = () => {
+    const humanScoreText = document.querySelector("#humanScore");
+    const computerScoreText = document.querySelector("#computerScore");
+    humanScoreText.textContent = humanScore;
+    computerScoreText.textContent = computerScore;
+};
+
 rockButton.addEventListener("click", () => { playGame("rock"); });
 paperButton.addEventListener("click", () => { playGame("paper"); });
 scissorsButton.addEventListener("click", () => { playGame("scissors"); });
@@ -50,6 +57,7 @@ const playGame = (humanSelection) => {
         const computerSelection = getComputerChoice();
         playRound(humanSelection, computerSelection);
         round++;
+        updateScore();
     } else {
         if (humanScore > computerScore)
             console.log("human wins");
