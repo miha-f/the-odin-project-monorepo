@@ -9,6 +9,15 @@
 //          - 
 //          - 
 
+const gridSizeInput = document.querySelector("#gridSizeInput");
+
+gridSizeInput.addEventListener("change", (e) => {
+    removeGrid();
+    const gridSize = Math.max(1, Math.min(e.target.valueAsNumber, 100));
+    createGrid(gridSize);
+});
+
+// NOTE(miha): ChatGPT generated.
 const colors = [
     "#FF6B6B", // Soft Red
     "#6BFFB3", // Mint Green
@@ -70,7 +79,7 @@ const createGridElement = (row, column, size) => {
     return div;
 };
 
-const createGrid = () => {
+const createGrid = (gridSize) => {
     const container = document.querySelector(".container");
     container.style["width"] = `${SIZE}px`;
     const size = SIZE / gridSize;
@@ -79,17 +88,21 @@ const createGrid = () => {
         for (let c = 0; c < gridSize; c++) {
             const element = createGridElement(r, c, size);
             container.appendChild(element);
+            // TODO(miha): Add eventlistener
         }
     }
 };
 
-const createEtchSketch = () => {
-    createColorButtons();
-    createGrid();
-    // get user width
-    // set container widht
-    // calc gridElement w and h
-    // creade grid with gridElement w and h
+const removeGrid = () => {
+    const container = document.querySelector(".container");
+    while (container.firstChild) {
+        container.removeChild(container.lastChild);
+    }
 };
 
-createEtchSketch();
+const createEtchSketch = (gridSize) => {
+    createColorButtons();
+    createGrid(gridSize);
+};
+
+createEtchSketch(parseInt(gridSizeInput.value));
