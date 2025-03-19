@@ -13,12 +13,22 @@ let computerScore = 0;
 let round = 0;
 
 const reset = () => {
+    // NOTE(miha): Reset counts.
     humanScore = 0;
     computerScore = 0;
     round = 0;
+    updateScore();
+
+    // NOTE(miha): Hide winning text and play again button.
     humanWins.classList.add("invisible");
     computerWins.classList.add("invisible");
     draw.classList.add("invisible");
+    playAgainButton.classList.add("invisible");
+
+    // NOTE(miha): Enable rock,paper,scissors buttons again.
+    rockButton.disabled = false;
+    paperButton.disabled = false;
+    scissorsButton.disabled = false;
 };
 
 const getComputerChoice = () => {
@@ -82,6 +92,9 @@ const playGame = (humanSelection) => {
         }
 
         playAgainButton.classList.toggle("invisible");
+        rockButton.disabled = true;
+        paperButton.disabled = true;
+        scissorsButton.disabled = true;
     }
 }
 
