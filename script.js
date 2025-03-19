@@ -2,12 +2,24 @@ const rockButton = document.querySelector("#rock");
 const paperButton = document.querySelector("#paper");
 const scissorsButton = document.querySelector("#scissors");
 const playAgainButton = document.querySelector("#playAgain");
+const humanWins = document.querySelector("#humanWins");
+const computerWins = document.querySelector("#computerWins");
+const draw = document.querySelector("#draw");
 
 const signs = ["rock", "paper", "scissors"];
 
 let humanScore = 0;
 let computerScore = 0;
 let round = 0;
+
+const reset = () => {
+    humanScore = 0;
+    computerScore = 0;
+    round = 0;
+    humanWins.classList.add("invisible");
+    computerWins.classList.add("invisible");
+    draw.classList.add("invisible");
+};
 
 const getComputerChoice = () => {
     const choice = Math.floor(Math.random() * 3);
@@ -59,11 +71,20 @@ const playGame = (humanSelection) => {
         round++;
         updateScore();
     } else {
-        if (humanScore > computerScore)
-            console.log("human wins");
-        else if (computerScore > humanScore)
-            console.log("computer wins");
-        else
-            console.log("its a draw");
+        if (humanScore > computerScore) {
+            humanWins.classList.toggle("invisible");
+        }
+        else if (computerScore > humanScore) {
+            computerWins.classList.toggle("invisible");
+        }
+        else {
+            draw.classList.toggle("invisible");
+        }
+
+        playAgainButton.classList.toggle("invisible");
     }
 }
+
+playAgainButton.addEventListener("click", () => {
+    reset();
+});
