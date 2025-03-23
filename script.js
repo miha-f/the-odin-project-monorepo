@@ -48,28 +48,33 @@ const removeSelectedOperationClass = () => {
     divisionButton.classList.remove("selected-operation");
 };
 
-const addNumberToScreen = (number) => {
+const addScreenNumber = (digit) => {
     if (screenOutput.value.length >= 8)
-        return;
-    if (`${number}`.length >= 8)
         return;
 
     removeSelectedOperationClass();
 
-    screenOutput.value += `${number}`;
+    screenOutput.value += `${digit}`;
     calculator.screen = parseInt(screenOutput.value);
 };
 
-const zero = () => { addNumberToScreen(0); };
-const one = () => { addNumberToScreen(1); };
-const two = () => { addNumberToScreen(2); };
-const three = () => { addNumberToScreen(3); };
-const four = () => { addNumberToScreen(4); };
-const five = () => { addNumberToScreen(5); };
-const six = () => { addNumberToScreen(6); };
-const seven = () => { addNumberToScreen(7); };
-const eight = () => { addNumberToScreen(8); };
-const nine = () => { addNumberToScreen(9); };
+const setScreenNumber = (number) => {
+    if (`${number}`.length >= 8)
+        return;
+    screenOutput.value = `${number}`;
+    calculator.screen = parseInt(screenOutput.value);
+};
+
+const zero = () => { addScreenNumber(0); };
+const one = () => { addScreenNumber(1); };
+const two = () => { addScreenNumber(2); };
+const three = () => { addScreenNumber(3); };
+const four = () => { addScreenNumber(4); };
+const five = () => { addScreenNumber(5); };
+const six = () => { addScreenNumber(6); };
+const seven = () => { addScreenNumber(7); };
+const eight = () => { addScreenNumber(8); };
+const nine = () => { addScreenNumber(9); };
 
 const op_plus = () => {
     calculator.numbers.push(calculator.screen);
@@ -93,8 +98,10 @@ const op_clear = () => {
     calculator.numbers = [];
     screenOutput.value = "";
 };
+
 const op_delete = () => {
     screenOutput.value = screenOutput.value.slice(0, -1);
+    setScreenNumber(screenOutput.value);
 };
 
 const op_equal = () => {
@@ -106,7 +113,7 @@ const op_equal = () => {
         case "+":
             let num0 = calculator.numbers.pop();
             let num1 = calculator.numbers.pop();
-            addNumberToScreen(num0 + num1);
+            setScreenNumber(num0 + num1);
             break;
     }
 
