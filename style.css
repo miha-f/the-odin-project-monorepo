@@ -28,3 +28,7 @@ button {
     height: 100px;
     font-size: 40px;
 }
+
+.selected-operation {
+    background-color: gray;
+}

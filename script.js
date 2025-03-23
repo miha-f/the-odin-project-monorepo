@@ -31,15 +31,25 @@ const deleteButton = document.querySelector("#delete");
 const equalButton = document.querySelector("#equal");
 const signButton = document.querySelector("#sign");
 
-const calculator = { screen: undefined, operator: undefined, numberA: undefined, numberB: undefined };
+const calculator = { screen: undefined, operator: undefined, numbers: [] };
 
 // we need number so op can work on it
 // repeted ops -> do it on the number on screen
 // 
 
+const removeSelectedOperationClass = () => {
+    plusButton.classList.remove("selected-operation");
+    minusButton.classList.remove("selected-operation");
+    multiplicationButton.classList.remove("selected-operation");
+    divisionButton.classList.remove("selected-operation");
+};
+
 const addNumberToScreen = (digit) => {
     if (screenOutput.value.length >= 8)
         return;
+
+
+    removeSelectedOperationClass();
 
     screenOutput.value += `${digit}`;
     calculator.screen = parseInt(screenOutput.value);
@@ -56,15 +66,43 @@ const seven = () => { addNumberToScreen(7); };
 const eight = () => { addNumberToScreen(8); };
 const nine = () => { addNumberToScreen(9); };
 
-const op_plus = () => { };
-const op_minus = () => { };
-const op_multiplication = () => { };
-const op_division = () => { };
+const op_plus = () => {
+    calculator.numbers.push(calculator.screen);
+    if (calculator.numbers.length >= 2) {
+        const len = calculator.numbers.length;
+        console.log(calculator.numbers);
+        const result = calculator.numbers[len - 1] + calculator.numbers[len - 2];
+        //screenOutput.value = `${result}`;
+    } else {
+        screenOutput.value = "";
+    }
+
+    plusButton.classList.add("selected-operation");
+};
+const op_minus = () => {
+    minusButton.classList.add("selected-operation");
+};
+const op_multiplication = () => {
+    multiplicationButton.classList.add("selected-operation");
+};
+const op_division = () => {
+    divisionButton.classList.add("selected-operation");
+};
 const op_comma = () => { };
-const op_clear = () => { screenOutput.value = ""; };
-const op_backspace = () => { };
+const op_clear = () => {
+    calculator.screen = undefined;
+    calculator.operator = undefined;
+    calculator.numbers = [];
+    screenOutput.value = "";
+};
+const op_delete = () => { screenOutput.value = screenOutput.value.slice(0, -1); };
 const op_equal = () => { };
-const op_sign = () => { };
+const op_sign = () => {
+    if (screenOutput.value[0] == "-")
+        screenOutput.value = screenOutput.value.slice(1);
+    else
+        screenOutput.value = "-" + screenOutput.value
+};
 
 zeroButton.addEventListener("click", () => zero());
 oneButton.addEventListener("click", () => one());
@@ -107,7 +145,7 @@ document.addEventListener("keydown", (event) => {
         case ',': op_comma(); break;
         case 'C':
         case 'c': op_clear(); break;
-        case 'Backspace': op_backspace(); break;
+        case 'Backspace': op_delete(); break;
         case '=': op_equal(); break;
         case 'S':
         case 's':
