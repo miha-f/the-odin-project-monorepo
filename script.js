@@ -31,7 +31,11 @@ const deleteButton = document.querySelector("#delete");
 const equalButton = document.querySelector("#equal");
 const signButton = document.querySelector("#sign");
 
-const calculator = { screen: undefined, operator: undefined, numbers: [] };
+const calculator = {
+    screen: undefined,
+    numbers: [],
+    lastOperation: undefined,
+};
 
 // we need number so op can work on it
 // repeted ops -> do it on the number on screen
@@ -44,14 +48,15 @@ const removeSelectedOperationClass = () => {
     divisionButton.classList.remove("selected-operation");
 };
 
-const addNumberToScreen = (digit) => {
+const addNumberToScreen = (number) => {
     if (screenOutput.value.length >= 8)
         return;
-
+    if (`${number}`.length >= 8)
+        return;
 
     removeSelectedOperationClass();
 
-    screenOutput.value += `${digit}`;
+    screenOutput.value += `${number}`;
     calculator.screen = parseInt(screenOutput.value);
 };
 
@@ -68,16 +73,9 @@ const nine = () => { addNumberToScreen(9); };
 
 const op_plus = () => {
     calculator.numbers.push(calculator.screen);
-    if (calculator.numbers.length >= 2) {
-        const len = calculator.numbers.length;
-        console.log(calculator.numbers);
-        const result = calculator.numbers[len - 1] + calculator.numbers[len - 2];
-        //screenOutput.value = `${result}`;
-    } else {
-        screenOutput.value = "";
-    }
-
+    calculator.lastOperation = "+";
     plusButton.classList.add("selected-operation");
+    screenOutput.value = "";
 };
 const op_minus = () => {
     minusButton.classList.add("selected-operation");
@@ -91,12 +89,28 @@ const op_division = () => {
 const op_comma = () => { };
 const op_clear = () => {
     calculator.screen = undefined;
-    calculator.operator = undefined;
+    calculator.lastOperation = undefined;
     calculator.numbers = [];
     screenOutput.value = "";
 };
-const op_delete = () => { screenOutput.value = screenOutput.value.slice(0, -1); };
-const op_equal = () => { };
+const op_delete = () => {
+    screenOutput.value = screenOutput.value.slice(0, -1);
+};
+
+const op_equal = () => {
+    let operation = calculator.lastOperation;
+    calculator.numbers.push(calculator.screen);
+    calculator.lastOperation = "=";
+    screenOutput.value = "";
+    switch (operation) {
+        case "+":
+            let num0 = calculator.numbers.pop();
+            let num1 = calculator.numbers.pop();
+            addNumberToScreen(num0 + num1);
+            break;
+    }
+
+};
 const op_sign = () => {
     if (screenOutput.value[0] == "-")
         screenOutput.value = screenOutput.value.slice(1);
