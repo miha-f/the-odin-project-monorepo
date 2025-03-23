@@ -1,12 +1,7 @@
-
-/*
-
-    + - * /
-    0 1 2 3
-    4 5 6 7
-    8 9 . <
-
-*/
+// TODO(miha): Repeating operations is not supported
+// TODO(miha): Floating points not supported
+// TODO(miha): Maybe some memory button for saving numbers
+// TODO(miha): Operation and number history
 
 const screenOutput = document.querySelector("#screen");
 
@@ -36,10 +31,6 @@ const calculator = {
     numbers: [],
     lastOperation: undefined,
 };
-
-// we need number so op can work on it
-// repeted ops -> do it on the number on screen
-// 
 
 const removeSelectedOperationClass = () => {
     plusButton.classList.remove("selected-operation");
