@@ -82,16 +82,30 @@ const op_plus = () => {
     plusButton.classList.add("selected-operation");
     screenOutput.value = "";
 };
+
 const op_minus = () => {
+    calculator.numbers.push(calculator.screen);
+    calculator.lastOperation = "-";
     minusButton.classList.add("selected-operation");
+    screenOutput.value = "";
 };
+
 const op_multiplication = () => {
+    calculator.numbers.push(calculator.screen);
+    calculator.lastOperation = "*";
     multiplicationButton.classList.add("selected-operation");
+    screenOutput.value = "";
 };
+
 const op_division = () => {
+    calculator.numbers.push(calculator.screen);
+    calculator.lastOperation = "/";
     divisionButton.classList.add("selected-operation");
+    screenOutput.value = "";
 };
+
 const op_comma = () => { };
+
 const op_clear = () => {
     calculator.screen = undefined;
     calculator.lastOperation = undefined;
@@ -111,18 +125,45 @@ const op_equal = () => {
     screenOutput.value = "";
     switch (operation) {
         case "+":
-            let num0 = calculator.numbers.pop();
-            let num1 = calculator.numbers.pop();
-            setScreenNumber(num0 + num1);
+            {
+                let num0 = calculator.numbers.pop();
+                let num1 = calculator.numbers.pop();
+                setScreenNumber(num0 + num1);
+            }
+            break;
+        case "-":
+            {
+                let num0 = calculator.numbers.pop();
+                let num1 = calculator.numbers.pop();
+                setScreenNumber(num0 - num1);
+            }
+            break;
+        case "*":
+            {
+                let num0 = calculator.numbers.pop();
+                let num1 = calculator.numbers.pop();
+                setScreenNumber(num0 * num1);
+            }
+            break;
+        case "/":
+            {
+                let num0 = calculator.numbers.pop();
+                let num1 = calculator.numbers.pop();
+                setScreenNumber(num0 / num1);
+            }
             break;
     }
 
 };
 const op_sign = () => {
-    if (screenOutput.value[0] == "-")
+    if (screenOutput.value[0] == "-") {
         screenOutput.value = screenOutput.value.slice(1);
-    else
+        setScreenNumber(screenOutput.value);
+    }
+    else {
         screenOutput.value = "-" + screenOutput.value
+        setScreenNumber(screenOutput.value);
+    }
 };
 
 zeroButton.addEventListener("click", () => zero());
