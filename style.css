@@ -2,3 +2,21 @@
     margin: 0;
     padding: 0;
 }
+
+.container {
+    display: flex;
+}
+
+#left {
+    width: 33vw;
+    height: 100vh;
+    background-image: url("peter-robbins-unsplash-min.jpg");
+    background-size: auto 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#right {
+    width: 66vw;
+    height: 100vh;
+}
