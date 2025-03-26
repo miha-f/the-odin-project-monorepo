@@ -33,47 +33,50 @@
             </div>
             <div class="white-bg">
                 <p>Let's do this!</p>
-                <form action="" method="POST">
+                <form action="" method="POST" id="my-form">
                     <div class="form-row">
                         <div class="form-col">
                             <label for="first-name">FIRST NAME</label>
-                            <input type="text" id="first-name" name="first-name">
+                            <input placeholder="Jane" type="text" id="first-name" name="first-name" minlength=1
+                                required>
                         </div>
 
                         <div class="form-col">
                             <label for="last-name">LAST NAME</label>
-                            <input type="text" id="last-name" name="last-name">
+                            <input placeholder="Doe" type="text" id="last-name" name="last-name" minlength=1 required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-col">
                             <label for="email">EMAIL</label>
-                            <input type="email" id="email" name="last-name">
+                            <input placeholder="my.email@mail.com" type="email" id="email" name="last-name" required>
                         </div>
 
                         <div class="form-col">
                             <label for="phone-number">PHONE NUMBER</label>
-                            <input type="tel" id="phone-number" name="phone-number"
-                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}">
+                            <input placeholder="123-123-123" type="tel" id="phone-number" name="phone-number"
+                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-col">
                             <label for="password">PASSWORD</label>
-                            <input type="password" id="password" name="password">
+                            <input placeholder="********" type="password" id="password" name="password" minlength=8
+                                required>
                         </div>
 
                         <div class="form-col">
                             <label for="confirm-password">CONFIRM PASSWORD</label>
-                            <input type="password" id="confirm-password" name="confirm-password">
+                            <input placeholder="********" type="password" id="confirm-password" name="confirm-password"
+                                minlength=8 required>
                         </div>
                     </div>
                 </form>
             </div>
             <div>
-                <button>Create Account</button>
+                <button type="submit" form="my-form">Create Account</button>
                 <p>Already have an account? <a>Log in</a></p>
             </div>
         </div>

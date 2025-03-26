@@ -96,3 +96,18 @@ a {
     flex-direction: column;
     text-align: left;
 }
+
+input {
+    height: 2rem;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+input:focus {
+    border: 2px solid lightblue;
+}
+
+input:invalid {
+    border: 2px solid red;
+}
