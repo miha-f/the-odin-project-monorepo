@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 :root {
@@ -48,6 +49,50 @@ a {
 }
 
 #right {
-    width: 66vw;
+    min-width: 66vw;
+    max-width: 68vw;
     height: 100vh;
+    position: relative;
+    font-size: 2rem;
+    background-color: rgba(51, 51, 51, 0.2);
+}
+
+#right p {
+    margin-bottom: 20px;
+}
+
+#right>div {
+    min-height: 33%;
+    text-align: center;
+    align-content: center;
+}
+
+.white-bg {
+    background-color: white;
+    box-shadow: 10px 5px 5px gray;
+    padding: 20px;
+}
+
+.white-bg>p {
+    text-align: left;
+}
+
+#right form {
+    font-size: 1rem;
+    box-shadow: 1;
+    height: 100%;
+}
+
+.form-row {
+    display: flex;
+    justify-items: space-between;
+    gap: 40px;
+    margin-bottom: 10px;
+}
+
+.form-col {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
 }
