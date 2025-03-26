@@ -2,3 +2,32 @@
     margin: 0;
     padding: 0;
 }
+
+/*
+    s = sidebar
+    h = header
+    c = content
+
+    s h
+    s c
+*/
+
+.main {
+    display: grid;
+    grid-template: 2fr 7fr / 1.2fr 5fr;
+}
+
+.sidebar {
+    background-color: blue;
+    height: 100vh;
+    grid-row: 1 / 3;
+}
+
+.header {
+    background-color: green;
+}
+
+.content {
+    background-color: gray;
+    grid-column: 2 / 2;
+}
