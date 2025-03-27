@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <div class="main">
+
+    </div>
+
+    <button type="button" id="new-book">Add book</button>
+    <dialog id="dialog">
+        <form>
+            <h2>Add book</h2>
+            <p>All fields are required</p>
+            <p>
+                <label>Title:
+                    <input type="text" name="title" id="title" required />
+                </label>
+            </p>
+            <p>
+                <label>Author:
+                    <input type="text" name="author" id="author" required />
+                </label>
+            </p>
+            <p>
+                <label>Number of pages:
+                    <input type="number" name="numberOfPages" id="numberOfPages" required />
+                </label>
+            </p>
+            <p>
+                <label>Book read:
+                    <input type="checkbox" name="read" id="read" required />
+                </label>
+            </p>
+            <p>
+                <button type="submit" formmethod="post" id="submit-button">Submit</button>
+            </p>
+            <hr />
+            <p>Additional buttons</p>
+            <button type="submit" aria-label="close" formmethod="dialog" formnovalidate>Close</button>
+            <button id="reset" type="reset">Reset</button>
+            </p>
+        </form>
+    </dialog>
+
+</body>
+
+</html>
