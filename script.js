@@ -52,6 +52,12 @@ const removeBookFromLibrary = (id) => {
     library.splice(index, 1);
 };
 
+
+const toggleBookReadFromLibrary = (id) => {
+    const index = library.findIndex((obj) => obj.id === id);
+    library[index].isRead = !library[index].isRead;
+};
+
 const displayBooksInLibrary = () => {
     const div = document.querySelector(".main");
 
@@ -83,7 +89,15 @@ const displayBooksInLibrary = () => {
         const tdPages = document.createElement("td");
         tdPages.textContent = book.numberOfPages;
         const tdRead = document.createElement("td");
-        tdRead.textContent = book.isRead;
+        const readCheckbox = document.createElement("input");
+        readCheckbox.setAttribute("type", "checkbox");
+        readCheckbox.checked = book.isRead;
+        readCheckbox.addEventListener('click', (e) => {
+            const row = e.target.parentNode.parentNode;
+            const bookId = row.getAttribute("data-id");
+            toggleBookReadFromLibrary(bookId);
+        });
+        tdRead.appendChild(readCheckbox);
         const tdRemove = document.createElement("td");
         const removeButton = document.createElement("button");
         removeButton.textContent = "X";
