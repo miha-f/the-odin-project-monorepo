@@ -17,6 +17,7 @@ submitButton.addEventListener('click', (e) => {
     dialog.close();
 });
 
+
 const library = [];
 
 function Book(title, author, numberOfPages, isRead) {
@@ -44,6 +45,11 @@ const refreshDisplayLibrary = () => {
 
 const addBookToLibrary = (title, author, numberOfPages, isRead) => {
     library.push(new Book(title, author, numberOfPages, isRead));
+};
+
+const removeBookFromLibrary = (id) => {
+    const index = library.findIndex((obj) => obj.id === id);
+    library.splice(index, 1);
 };
 
 const displayBooksInLibrary = () => {
@@ -81,12 +87,20 @@ const displayBooksInLibrary = () => {
         const tdRemove = document.createElement("td");
         const removeButton = document.createElement("button");
         removeButton.textContent = "X";
+        removeButton.classList.add("remove-button");
+        removeButton.addEventListener('click', (e) => {
+            const row = e.target.parentNode.parentNode;
+            const bookId = row.getAttribute("data-id");
+            removeBookFromLibrary(bookId);
+            refreshDisplayLibrary();
+        });
         tdRemove.appendChild(removeButton);
         row.appendChild(tdTitle);
         row.appendChild(tdAuthor);
         row.appendChild(tdPages);
         row.appendChild(tdRead);
         row.appendChild(tdRemove);
+        row.setAttribute("data-id", book.id);
         table.appendChild(row);
     });
     div.appendChild(table);
