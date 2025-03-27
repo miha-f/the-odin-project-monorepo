@@ -155,11 +155,104 @@
     }
 }
 
-.border {
-    border: solid 2px red;
-}
-
 .content {
     background-color: #e2e8f0;
     grid-column: 2 / 2;
+    display: grid;
+    grid-template: 1fr 1fr / 2fr 1fr;
+    grid-template-areas: "area-main area-announcements"
+        "area-main area-trending";
+
+    .content-header {
+        margin-top: 20px;
+        padding-left: 20px;
+        height: max(auto, 180px);
+    }
+
+
+    .content-main {
+        grid-area: area-main;
+
+        .content-cards {
+            display: grid;
+            width: 100%;
+            grid-template-columns: repeat(auto-fit, max(50%, 300px));
+            margin-top: 20px;
+            padding: 20px;
+
+
+            .content-card {
+                background-color: white;
+                border-left: 4px solid #f0b429;
+                border-radius: 4px;
+                margin-right: 20px;
+                margin-bottom: 20px;
+                padding: 10px;
+
+                h1 {
+                    font-size: 1.5rem;
+                }
+
+                svg {
+                    height: 2rem;
+                }
+
+                span {
+                    display: flex;
+                    justify-content: right;
+                    gap: 5px;
+                }
+            }
+        }
+
+    }
+
+    .content-announcements {
+        grid-area: area-announcements;
+
+        div {
+            margin-top: 10px;
+            width: 90%;
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            hr {
+                margin-bottom: 10px;
+            }
+
+            padding: 20px;
+            background-color: white;
+            border-radius: 4px;
+        }
+    }
+
+    .content-trending {
+        grid-area: area-trending;
+
+        img {
+            border-radius: 50%;
+            height: 3rem;
+            margin-right: 10px;
+        }
+
+        >div {
+            margin-top: 10px;
+            width: 90%;
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            padding: 20px;
+            background-color: white;
+            border-radius: 4px;
+
+            >div {
+                display: flex;
+                margin-bottom: 10px;
+            }
+        }
+    }
 }
