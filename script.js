@@ -48,11 +48,48 @@ const addBookToLibrary = (title, author, numberOfPages, isRead) => {
 
 const displayBooksInLibrary = () => {
     const div = document.querySelector(".main");
+
+    const table = document.createElement("table");
+    const trHeading = document.createElement("tr");
+    const thTitle = document.createElement("th");
+    thTitle.textContent = "Title";
+    const thAuthor = document.createElement("th");
+    thAuthor.textContent = "Author";
+    const thPages = document.createElement("th");
+    thPages.textContent = "Pages";
+    const thRead = document.createElement("th");
+    thRead.textContent = "Read";
+    const thRemove = document.createElement("th");
+    thRemove.textContent = "Remove";
+    trHeading.appendChild(thTitle);
+    trHeading.appendChild(thAuthor);
+    trHeading.appendChild(thPages);
+    trHeading.appendChild(thRead);
+    trHeading.appendChild(thRemove);
+    table.appendChild(trHeading);
+
     library.forEach((book) => {
-        const info = document.createElement("p");
-        info.textContent = book.info();
-        div.appendChild(info);
+        const row = document.createElement("tr");
+        const tdTitle = document.createElement("td");
+        tdTitle.textContent = book.title;
+        const tdAuthor = document.createElement("td");
+        tdAuthor.textContent = book.author;
+        const tdPages = document.createElement("td");
+        tdPages.textContent = book.numberOfPages;
+        const tdRead = document.createElement("td");
+        tdRead.textContent = book.isRead;
+        const tdRemove = document.createElement("td");
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "X";
+        tdRemove.appendChild(removeButton);
+        row.appendChild(tdTitle);
+        row.appendChild(tdAuthor);
+        row.appendChild(tdPages);
+        row.appendChild(tdRead);
+        row.appendChild(tdRemove);
+        table.appendChild(row);
     });
+    div.appendChild(table);
 };
 
 addBookToLibrary("To Kill a Mockingbird", "Harper Lee", 281, true);
