@@ -7,8 +7,78 @@
 .main {
     display: flex;
     flex-direction: column;
+    margin-top: 20px;
 }
 
 td {
     text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#new-book {
+    display: flex;
+    flex-direction: column;
+    margin: 10px auto;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+dialog {
+    margin: 10px auto;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    .dialog-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        input {
+            width: 60%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    }
+
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-subtext {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
 }
