@@ -1,10 +1,8 @@
 import "./style.css";
 
 import drawHome from "./pages/home.js";
-
-const homeButton = document.querySelector("#home");
-const menuButton = document.querySelector("#menu");
-const aboutButton = document.querySelector("#about");
+import drawMenu from "./pages/menu.js";
+import drawAbout from "./pages/about.js";
 
 const tabs = (function() {
     const init = (...tabMappings) => {
@@ -34,4 +32,12 @@ const createTabMap = (button, func) => {
     return { button, func };
 }
 
-tabs.init(createTabMap(homeButton, drawHome));
+const homeButton = document.querySelector("#home");
+const menuButton = document.querySelector("#menu");
+const aboutButton = document.querySelector("#about");
+
+tabs.init(
+    createTabMap(homeButton, drawHome),
+    createTabMap(menuButton, drawMenu),
+    createTabMap(aboutButton, drawAbout),
+);
