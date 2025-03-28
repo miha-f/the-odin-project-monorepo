@@ -5,8 +5,13 @@
 }
 
 :root {
+    --pink: #FFA3AF;
+    --primary: #5D4037;
+    --secondary: #FCE38A;
+    --ascent: #D72638;
     font-size: 12px;
     font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: var(--primary);
 }
 
 #flex-container {
@@ -19,15 +24,18 @@
 #content {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 600px;
 }
 
 header {
-    background-color: lightpink;
+    background-color: var(--pink);
     height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 10px;
 
     nav {
         display: flex;
@@ -38,17 +46,37 @@ header {
             display: flex;
             align-items: center;
             font-size: 2rem;
-            height: 50px;
-            padding: 20px;
-            border: none;
-            border-radius: 4px;
-            background-color: white;
+            background-color: var(--secondary);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: var(--ascent);
+            color: #FFF;
         }
     }
+}
 
-    button:hover {
-        opacity: 0.8;
-    }
+h1 {
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+p {
+    font-size: 1.5rem;
+}
+
+li {
+    font-size: 1.5rem;
+    list-style-type: none;
 }
 
 footer {
@@ -59,4 +87,9 @@ footer {
     background-color: lightpink;
     height: 150px;
     margin-top: auto;
+}
+
+.menu-item {
+    border-bottom: 1px solid #5D4037;
+    padding: 10px;
 }
