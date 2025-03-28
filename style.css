@@ -22,3 +22,19 @@ h3 {
     height: var(--size);
     width: var(--size);
 }
+
+button {
+    font-size: 36px;
+}
+
+#victory-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    visibility: hidden;
+
+    button {
+        width: 300px;
+    }
+}
