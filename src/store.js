@@ -3,12 +3,14 @@ const localStore = (function() {
 })();
 
 const memoryStore = (function() {
-    const todos = [];
+    // NOTE(miha): key: project name, value: array of todos
     const projects = new Map();
 
     const addTodo = (todo) => {
-        todos.push(todo);
-        projects.set(todo.project, todo.id);
+        const projectName = todo.project;
+        if (!projects.has(projectName))
+            projects.set(projectName, []);
+        projects.get(projectName).push(todo);
     };
 
     const getTodos = () => todos;
