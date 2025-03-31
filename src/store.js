@@ -14,8 +14,10 @@ const memoryStore = (function() {
     };
 
     const getProjects = () => projects;
+    const getProjectsNames = () => projects.keys();
+    const getTodos = (projectName) => projects.get(projectName);
 
-    return { addTodo, getProjects };
+    return { addTodo, getProjects, getProjectsNames, getTodos };
 })();
 
 

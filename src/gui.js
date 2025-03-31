@@ -5,13 +5,7 @@ const clearChildrens = (element) => {
         element.removeChild(element.lastChild);
 };
 
-const todoGui = (function() {
-    const createTodo = () => {
-
-    };
-
-    return { createTodo };
-})();
+// TODO(miha): Add insert todo form
 
 const sidebarGui = (function() {
 
@@ -43,4 +37,29 @@ const sidebarGui = (function() {
     return { draw };
 })();
 
-export { todoGui, sidebarGui };
+const contentGui = (function() {
+    const drawTodo = () => { };
+
+    const draw = () => {
+        const content = document.querySelector(".content");
+        clearChildrens(content);
+
+        // TODO(miha): Need something to manage state and get current clicked project.
+        const todos = memoryStore.getTodos("default");
+
+        todos.forEach((todo) => {
+            (function() {
+                const h1 = document.createElement("h1");
+                h1.textContent = `${todo.getTitle()}`;
+                content.appendChild(h1);
+            })();
+        });
+
+
+    };
+
+
+    return { draw };
+})();
+
+export { sidebarGui, contentGui };
