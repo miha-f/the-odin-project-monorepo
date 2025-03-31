@@ -20,6 +20,14 @@ const createTodo = (title, description, project = "default", dueDate = new Date(
         _description = description;
     };
 
+    let _project = project;
+    const getProject = () => _project;
+    const setProject = (project) => {
+        if (project === "") throw Error("project empty error");
+        _project = project;
+    };
+
+
     let _dueDate = dueDate;
     const getDate = () => _dueDate;
     const setDate = (dueDate) => _dueDate = dueDate;
@@ -38,7 +46,7 @@ const createTodo = (title, description, project = "default", dueDate = new Date(
     const _id = crypto.randomUUID();
     const getId = () => _id;
 
-    return { getTitle, setTitle, getDescription, setDescription, getDate, setDate, getPriority, setPriority, getDone, setDone, getId };
+    return { getTitle, setTitle, getDescription, setDescription, getProject, setProject, getDate, setDate, getPriority, setPriority, getDone, setDone, getId };
 };
 
 

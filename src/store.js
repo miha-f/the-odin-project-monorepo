@@ -7,16 +7,15 @@ const memoryStore = (function() {
     const projects = new Map();
 
     const addTodo = (todo) => {
-        const projectName = todo.project;
+        const projectName = todo.getProject();
         if (!projects.has(projectName))
             projects.set(projectName, []);
         projects.get(projectName).push(todo);
     };
 
-    const getTodos = () => todos;
     const getProjects = () => projects;
 
-    return { addTodo, getTodos, getProjects };
+    return { addTodo, getProjects };
 })();
 
 
