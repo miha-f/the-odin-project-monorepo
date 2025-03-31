@@ -27,7 +27,6 @@ const createTodo = (title, description, project = "default", priority = TODO_PRI
         _project = project;
     };
 
-    console.log(dueDate);
     let _dueDate = dueDate;
     const getDate = () => _dueDate;
     const getFormattedDate = () => {

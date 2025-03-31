@@ -79,7 +79,8 @@ const contentGui = (function() {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.addEventListener("change", () => {
-            todoDiv.classList.toggle("completed", checkbox.checked);
+            // TODO(miha): Change todo state
+            todoDiv.classList.toggle("todo-completed", checkbox.checked);
         });
 
         // Append elements to the todo div
@@ -110,6 +111,13 @@ const contentGui = (function() {
                 content.appendChild(todoDiv);
             })();
         });
+
+        (function() {
+            const button = document.createElement("button");
+            button.textContent = "New todo";
+            // TODO(miha): Add eventlistener
+            content.appendChild(button);
+        })();
 
 
     };
