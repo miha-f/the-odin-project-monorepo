@@ -1,4 +1,4 @@
-import { memoryStore } from "./store.js";
+import { projects } from "./projects.js";
 
 const clearChildrens = (element) => {
     while (element.firstChild)
@@ -20,7 +20,7 @@ const sidebarGui = (function() {
             sidebar.appendChild(h1);
         })();
 
-        for (let [projectName, _] of memoryStore.getProjects()) {
+        for (let [projectName, _] of projects.getProjects()) {
             // NOTE(miha): Add project names to the sidebar.
             (function() {
                 const link = document.createElement("a");
@@ -45,7 +45,7 @@ const contentGui = (function() {
         clearChildrens(content);
 
         // TODO(miha): Need something to manage state and get current clicked project.
-        const todos = memoryStore.getTodos("default");
+        const todos = projects.getTodos("default");
 
         todos.forEach((todo) => {
             (function() {
