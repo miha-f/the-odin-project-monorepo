@@ -10,11 +10,11 @@ const projects = (function() {
         projects.get(projectName).push(todo);
     };
 
-    const getProjects = () => projects;
-    const getProjectsNames = () => projects.keys();
+    const get = () => projects;
+    const getNames = () => projects.keys();
     const getTodos = (projectName) => projects.get(projectName);
 
-    return { addTodo, getProjects, getProjectsNames, getTodos };
+    return { addTodo, get, getNames, getTodos };
 })();
 
 export { projects };
