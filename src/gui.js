@@ -27,9 +27,11 @@ const sidebarGui = (function() {
                 const link = document.createElement("a");
                 link.textContent = `${projectName}`;
                 link.setAttribute("href", "#");
-
-                // TODO(miha): Add eventListener so we can switch between projects.
-
+                link.addEventListener("click", (e) => {
+                    const projectClicked = e.target.textContent;
+                    projects.setCurrentProject(projectClicked);
+                    contentGui.draw();
+                });
                 sidebar.appendChild(link);
             })();
         }
@@ -102,8 +104,7 @@ const contentGui = (function() {
         const content = document.querySelector(".content");
         clearChildrens(content);
 
-        // TODO(miha): Need something to manage state and get current clicked project.
-        const todos = projects.getTodos("default");
+        const todos = projects.getTodos(projects.getCurrentProject() || "default");
 
         todos.forEach((todo) => {
             (function() {
@@ -118,6 +119,9 @@ const contentGui = (function() {
             // TODO(miha): Add eventlistener
             content.appendChild(button);
         })();
+
+        // TODO: need to have: Today todos, in the week todos, in the future todos
+        // todos in the past.
 
 
     };
