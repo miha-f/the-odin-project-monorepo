@@ -41,15 +41,6 @@ const sidebarGui = (function() {
 })();
 
 const contentGui = (function() {
-    const getTodoPriorityClass = (priority) => {
-        switch (priority) {
-            case TODO_PRIORITY_LOW: return "priority-low";
-            case TODO_PRIORITY_MID: return "priority-mid";
-            case TODO_PRIORITY_HIGH: return "priority-high";
-            default: return "priority-low";
-        }
-    }
-
     const drawTodo = (todo) => {
         // Create main todo div
         const todoDiv = document.createElement("div");
@@ -75,7 +66,7 @@ const contentGui = (function() {
         dueDateEl.textContent = `Due: ${todo.getFormattedDate()}`;
 
         const priorityEl = document.createElement("span");
-        priorityEl.classList.add("todo-priority", getTodoPriorityClass(todo.getPriority()));
+        priorityEl.classList.add("todo-priority", `priority-${todo.getPriorityString()}`);
         priorityEl.textContent = `Priority: ${todo.getPriorityString()}`;
 
         const checkbox = document.createElement("input");
