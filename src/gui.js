@@ -76,12 +76,21 @@ const contentGui = (function() {
             todoDiv.classList.toggle("todo-completed", checkbox.checked);
         });
 
+        const button = document.createElement("button");
+        button.classList.add("remove-button");
+        button.type = "button";
+        button.textContent = "X";
+        button.addEventListener("change", () => {
+            // TODO(miha): Remove todo
+        });
+
         // Append elements to the todo div
         infoDiv.appendChild(checkbox);
         infoDiv.appendChild(titleEl);
         infoDiv.appendChild(projectEl);
         infoDiv.appendChild(dueDateEl);
         infoDiv.appendChild(priorityEl);
+        infoDiv.appendChild(button);
 
         descriptionDiv.appendChild(descEl);
 
