@@ -71,7 +71,8 @@ const contentGui = (function() {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.addEventListener("click", (e) => {
-            // TODO(miha): Change todo state
+            const id = e.target.parentNode.parentNode.getAttribute("data-id");
+            projects.toggleTodoDone(id);
             todoDiv.classList.toggle("todo-completed", checkbox.checked);
         });
 

@@ -22,12 +22,22 @@ const projects = (function() {
         if (!projects.has(projectName))
             return;
 
-        const index = projects.get(projectName).findIndex((obj) => obj.id === id);
+        const index = projects.get(projectName).findIndex((obj) => obj.getId() === id);
         projects.get(projectName).splice(index, 1);
 
         todos.delete(id);
         // TODO(miha): Update store
     };
+
+    const toggleTodoDone = (id) => {
+        const projectName = todos.get(id);
+        if (!projects.has(projectName))
+            return;
+
+        const index = projects.get(projectName).findIndex((obj) => obj.getId() === id);
+        const currDone = projects.get(projectName)[index].getDone();
+        projects.get(projectName)[index].setDone(!currDone);
+    }
 
     const get = () => projects;
     const getNames = () => projects.keys();
@@ -38,7 +48,7 @@ const projects = (function() {
 
     return {
         addTodo, removeTodo, get, getNames, getTodos, getCurrentProject,
-        setCurrentProject
+        setCurrentProject, toggleTodoDone
     };
 })();
 
