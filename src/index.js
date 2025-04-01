@@ -6,6 +6,12 @@ import "./style.css";
 //   local storage
 //   gui
 
+// TODO(miha): 
+//      - drop down for priority
+//      - sorting at top (priority, date, title, ...)
+//      - new todo form
+//      - local storage
+
 import { sidebarGui, contentGui } from "./gui.js";
 import { projects } from "./projects.js";
 import { createTodo } from "./todo.js";

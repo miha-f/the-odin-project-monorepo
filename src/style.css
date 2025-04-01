@@ -91,7 +91,7 @@ body {
         border-left: 5px solid var(--todo-border);
         transition: background 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
-        input[checkbox] {
+        input[type=checkbox] {
             width: 1.2rem;
             height: 1.2rem;
         }
@@ -114,11 +114,33 @@ body {
                 max-width: 200px;
             }
 
+            input[type=input] {
+                width: 200px;
+                padding: 3px;
+            }
+
+            select {
+                border: none;
+                opacity: 0.7;
+                padding: 4px 6px;
+                width: 130px;
+                text-align: center;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 10px;
         }
+
+        textarea {
+            width: auto;
+            height: 100px;
+            resize: vertical;
+        }
+
 
     }
 

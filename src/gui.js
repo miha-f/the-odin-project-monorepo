@@ -71,7 +71,7 @@ const contentGui = (function() {
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.addEventListener("change", () => {
+        checkbox.addEventListener("click", () => {
             // TODO(miha): Change todo state
             todoDiv.classList.toggle("todo-completed", checkbox.checked);
         });
@@ -80,7 +80,7 @@ const contentGui = (function() {
         button.classList.add("remove-button");
         button.type = "button";
         button.textContent = "X";
-        button.addEventListener("change", () => {
+        button.addEventListener("click", () => {
             // TODO(miha): Remove todo
         });
 
@@ -100,6 +100,98 @@ const contentGui = (function() {
         return todoDiv;
     };
 
+    const drawTodoForm = () => {
+        const content = document.querySelector(".content");
+
+        const todoDiv = document.createElement("div");
+        todoDiv.classList.add("todo-item");
+
+        const infoDiv = document.createElement("div");
+        infoDiv.classList.add("item-info");
+
+        const descriptionDiv = document.createElement("div");
+
+
+        // Create elements
+        const titleEl = document.createElement("input");
+        titleEl.style["width"] = "200px";
+        titleEl.type = "input";
+        titleEl.placeholder = "Title";
+        titleEl.setAttribute("required", "");
+
+        const descEl = document.createElement("textarea");
+        descEl.placeholder = "desc";
+
+        const projectEl = document.createElement("input");
+        projectEl.type = "input";
+        projectEl.placeholder = `Project:`;
+
+        const dueDateEl = document.createElement("input");
+        dueDateEl.type = "date";
+
+        const priorityEl = document.createElement("select");
+        priorityEl.classList.add("priority-low");
+        const optionLow = document.createElement("option");
+        optionLow.textContent = "Low priority";
+        optionLow.value = "low";
+        const optionMid = document.createElement("option");
+        optionMid.textContent = "Mid priority";
+        optionMid.value = "mid";
+        const optionHigh = document.createElement("option");
+        optionHigh.textContent = "High priority";
+        optionHigh.value = "high";
+        priorityEl.appendChild(optionLow);
+        priorityEl.appendChild(optionMid);
+        priorityEl.appendChild(optionHigh);
+        // NOTE(miha): Change background color based on option selected.
+        priorityEl.addEventListener("click", (e) => {
+            const priorityEl = document.querySelector(".item-info select");
+            const priority = e.target.value;
+            priorityEl.className = "";
+            priorityEl.classList.add(`priority-${priority}`);
+        });
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.addEventListener("click", () => {
+            todoDiv.classList.toggle("todo-completed", checkbox.checked);
+        });
+
+        const removeButton = document.createElement("button");
+        removeButton.classList.add("remove-button");
+        removeButton.type = "button";
+        removeButton.textContent = "X";
+        removeButton.addEventListener("click", () => {
+            // TODO(miha): Remove todo
+        });
+
+        const createButton = document.createElement("button");
+        createButton.type = "button";
+        createButton.textContent = "Create TODO";
+        createButton.addEventListener("click", () => {
+            // TODO(miha): Add new todo
+            // validate form, check all input validity
+            console.log(titleEl.checkValidity());
+        });
+
+        // Append elements to the todo div
+        infoDiv.appendChild(checkbox);
+        infoDiv.appendChild(titleEl);
+        infoDiv.appendChild(projectEl);
+        infoDiv.appendChild(dueDateEl);
+        infoDiv.appendChild(priorityEl);
+        infoDiv.appendChild(removeButton);
+
+        // descriptionDiv.appendChild(descEl);
+
+        todoDiv.appendChild(infoDiv);
+        todoDiv.appendChild(descEl);
+        todoDiv.appendChild(createButton);
+
+        content.insertBefore(todoDiv, content.lastChild);
+
+    };
+
     const draw = () => {
         const content = document.querySelector(".content");
         clearChildrens(content);
@@ -116,9 +208,13 @@ const contentGui = (function() {
         (function() {
             const button = document.createElement("button");
             button.textContent = "New todo";
-            // TODO(miha): Add eventlistener
+            button.addEventListener("click", () => {
+                drawTodoForm();
+            });
             content.appendChild(button);
         })();
+
+        drawTodoForm();
 
         // TODO: need to have: Today todos, in the week todos, in the future todos
         // todos in the past.
