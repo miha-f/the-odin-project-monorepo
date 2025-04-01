@@ -1,12 +1,10 @@
 import { projects } from "./projects.js";
-import { TODO_PRIORITY_LOW, TODO_PRIORITY_MID, TODO_PRIORITY_HIGH } from "./todo.js";
+import { createTodo, getPriorityFromString } from "./todo.js";
 
 const clearChildrens = (element) => {
     while (element.firstChild)
         element.removeChild(element.lastChild);
 };
-
-// TODO(miha): Add insert todo form
 
 const sidebarGui = (function() {
 
@@ -111,7 +109,6 @@ const contentGui = (function() {
 
         const descriptionDiv = document.createElement("div");
 
-
         // Create elements
         const titleEl = document.createElement("input");
         titleEl.style["width"] = "200px";
@@ -121,13 +118,16 @@ const contentGui = (function() {
 
         const descEl = document.createElement("textarea");
         descEl.placeholder = "desc";
+        descEl.setAttribute("required", "");
 
         const projectEl = document.createElement("input");
         projectEl.type = "input";
         projectEl.placeholder = `Project:`;
+        projectEl.setAttribute("required", "");
 
         const dueDateEl = document.createElement("input");
         dueDateEl.type = "date";
+        dueDateEl.setAttribute("required", "");
 
         const priorityEl = document.createElement("select");
         priorityEl.classList.add("priority-low");
@@ -169,10 +169,35 @@ const contentGui = (function() {
         const createButton = document.createElement("button");
         createButton.type = "button";
         createButton.textContent = "Create TODO";
-        createButton.addEventListener("click", () => {
-            // TODO(miha): Add new todo
-            // validate form, check all input validity
-            console.log(titleEl.checkValidity());
+        createButton.addEventListener("click", (e) => {
+            const titleValid = titleEl.checkValidity();
+            const projectValid = projectEl.checkValidity();
+            const dateValid = dueDateEl.checkValidity();
+            const descriptionValid = descEl.checkValidity();
+            const isValid = titleValid && projectValid && dateValid && descriptionValid;
+
+            if (isValid) {
+                const done = checkbox.checked;
+                const title = titleEl.value;
+                const project = projectEl.value;
+                const date = dueDateEl.valueAsDate;
+                const priority = priorityEl.value;
+                const description = descEl.value;
+
+                projects.addTodo(createTodo(
+                    title,
+                    description,
+                    project,
+                    getPriorityFromString(priority),
+                    date,
+                    done
+                ));
+
+                e.target.parentNode.remove();
+                console.log(projects.getTodos());
+                sidebarGui.draw();
+                draw();
+            }
         });
 
         // Append elements to the todo div
@@ -214,8 +239,6 @@ const contentGui = (function() {
             });
             content.appendChild(button);
         })();
-
-        drawTodoForm();
 
         // TODO: need to have: Today todos, in the week todos, in the future todos
         // todos in the past.

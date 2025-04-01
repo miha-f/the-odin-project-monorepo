@@ -119,6 +119,10 @@ body {
                 padding: 3px;
             }
 
+            input:invalid {
+                border: red 2px solid;
+            }
+
             select {
                 border: none;
                 opacity: 0.7;
@@ -139,6 +143,10 @@ body {
             width: auto;
             height: 100px;
             resize: vertical;
+        }
+
+        textarea:invalid {
+            border: red 2px solid;
         }
 
 

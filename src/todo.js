@@ -62,9 +62,22 @@ const createTodo = (title, description, project = "default", priority = TODO_PRI
     return { getTitle, setTitle, getDescription, setDescription, getProject, setProject, getDate, getFormattedDate, setDate, getPriority, getPriorityString, setPriority, getDone, setDone, getId };
 };
 
+const getPriorityFromString = (priorityString) => {
+    switch (priorityString) {
+        case "low":
+        case "LOW": return TODO_PRIORITY_LOW;
+        case "mid":
+        case "MID": return TODO_PRIORITY_MID;
+        case "high":
+        case "HIGH": return TODO_PRIORITY_HIGH;
+        default: return TODO_PRIORITY_LOW;
+    }
+};
+
 
 export {
     createTodo,
+    getPriorityFromString,
     TODO_PRIORITY_LOW,
     TODO_PRIORITY_MID,
     TODO_PRIORITY_HIGH,
