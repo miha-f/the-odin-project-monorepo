@@ -11,6 +11,16 @@ const projects = (function() {
             projects.set(projectName, []);
         projects.get(projectName).push(todo);
         currentProject = projectName;
+        // TODO(miha): Update store
+    };
+    const removeTodo = (projectName, id) => {
+        if (!projects.has(projectName))
+            return;
+
+        const todos = projects.get(projectName);
+        const index = todos.findIndex((obj) => obj.id === id);
+        todos.splice(index, 1);
+        // TODO(miha): Update store
     };
 
     const get = () => projects;
@@ -20,7 +30,10 @@ const projects = (function() {
     const getCurrentProject = () => currentProject;
     const setCurrentProject = (project) => currentProject = project;
 
-    return { addTodo, get, getNames, getTodos, getCurrentProject, setCurrentProject };
+    return {
+        addTodo, removeTodo, get, getNames, getTodos, getCurrentProject,
+        setCurrentProject
+    };
 })();
 
 export { projects };

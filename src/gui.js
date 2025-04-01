@@ -43,6 +43,7 @@ const contentGui = (function() {
         // Create main todo div
         const todoDiv = document.createElement("div");
         todoDiv.classList.add("todo-item");
+        todoDiv.setAttribute("data-id", todo.getId());
 
         const infoDiv = document.createElement("div");
         infoDiv.classList.add("item-info");
@@ -78,8 +79,11 @@ const contentGui = (function() {
         button.classList.add("remove-button");
         button.type = "button";
         button.textContent = "X";
-        button.addEventListener("click", () => {
-            // TODO(miha): Remove todo
+        button.addEventListener("click", (e) => {
+            const projectName = e.target.parentNode.querySelector("span").textContent.split(": ")[1];
+            const id = e.target.parentNode.parentNode.getAttribute("data-id");
+            projects.removeTodo(projectName, id);
+            e.target.parentNode.parentNode.remove();
         });
 
         // Append elements to the todo div

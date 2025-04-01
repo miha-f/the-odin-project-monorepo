@@ -59,7 +59,11 @@ const createTodo = (title, description, project = "default", priority = TODO_PRI
     const _id = crypto.randomUUID();
     const getId = () => _id;
 
-    return { getTitle, setTitle, getDescription, setDescription, getProject, setProject, getDate, getFormattedDate, setDate, getPriority, getPriorityString, setPriority, getDone, setDone, getId };
+    return {
+        getTitle, setTitle, getDescription, setDescription,
+        getProject, setProject, getDate, getFormattedDate, setDate,
+        getPriority, getPriorityString, setPriority, getDone, setDone, getId
+    };
 };
 
 const getPriorityFromString = (priorityString) => {
