@@ -5,7 +5,10 @@ const TODO_PRIORITY_MID = 1;
 const TODO_PRIORITY_HIGH = 2;
 
 
-const createTodo = (title, description, project = "default", priority = TODO_PRIORITY_LOW, dueDate = new Date(), done = false) => {
+const createTodo = (title, description, project = "default",
+    priority = TODO_PRIORITY_LOW, dueDate = new Date(), done = false,
+    id = undefined
+) => {
     let _title = title;
     const getTitle = () => _title;
     const setTitle = (title) => {
@@ -56,13 +59,26 @@ const createTodo = (title, description, project = "default", priority = TODO_PRI
     const getDone = () => _done;
     const setDone = (done) => _done = done;
 
-    const _id = crypto.randomUUID();
+    const _id = id === undefined ? crypto.randomUUID() : id;
     const getId = () => _id;
+
+    const toJSON = function() {
+        return {
+            title: this.getTitle(),
+            description: this.getDescription(),
+            project: this.getProject(),
+            dueDate: this.getDate(),
+            priority: this.getPriority(),
+            done: this.getDone(),
+            id: this.getId(),
+        };
+    }
 
     return {
         getTitle, setTitle, getDescription, setDescription,
         getProject, setProject, getDate, getFormattedDate, setDate,
-        getPriority, getPriorityString, setPriority, getDone, setDone, getId
+        getPriority, getPriorityString, setPriority, getDone, setDone, getId,
+        toJSON
     };
 };
 

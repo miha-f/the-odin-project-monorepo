@@ -198,7 +198,6 @@ const contentGui = (function() {
                 ));
 
                 e.target.parentNode.remove();
-                console.log(projects.getTodos());
                 sidebarGui.draw();
                 draw();
             }

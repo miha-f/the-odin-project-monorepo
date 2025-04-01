@@ -1,10 +1,14 @@
+import { localStore } from "./store";
 
 const projects = (function() {
     // NOTE(miha): key: project name, value: array of todos
-    const projects = new Map();
+    let projects = new Map();
 
     // NOTE(miha): key: todo id, value: project name
-    const todos = new Map();
+    let todos = new Map();
+
+    globalThis.projects = projects;
+    globalThis.todos = todos;
 
     let currentProject = undefined;
 
@@ -15,7 +19,8 @@ const projects = (function() {
         projects.get(projectName).push(todo);
         currentProject = projectName;
         todos.set(todo.getId(), projectName);
-        // TODO(miha): Update store
+
+        localStore.update(projects, todos);
     };
     const removeTodo = (id) => {
         const projectName = todos.get(id);
@@ -26,7 +31,8 @@ const projects = (function() {
         projects.get(projectName).splice(index, 1);
 
         todos.delete(id);
-        // TODO(miha): Update store
+
+        localStore.update(projects, todos);
     };
 
     const toggleTodoDone = (id) => {
@@ -39,6 +45,10 @@ const projects = (function() {
         projects.get(projectName)[index].setDone(!currDone);
     }
 
+    const set = (p, t) => {
+        projects = p;
+        todos = t;
+    };
     const get = () => projects;
     const getNames = () => projects.keys();
     const getTodos = (projectName) => projects.get(projectName);
@@ -47,7 +57,7 @@ const projects = (function() {
     const setCurrentProject = (project) => currentProject = project;
 
     return {
-        addTodo, removeTodo, get, getNames, getTodos, getCurrentProject,
+        addTodo, removeTodo, set, get, getNames, getTodos, getCurrentProject,
         setCurrentProject, toggleTodoDone
     };
 })();
