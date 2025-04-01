@@ -161,8 +161,9 @@ const contentGui = (function() {
         removeButton.classList.add("remove-button");
         removeButton.type = "button";
         removeButton.textContent = "X";
-        removeButton.addEventListener("click", () => {
-            // TODO(miha): Remove todo
+        // NOTE(miha): Remove todo form
+        removeButton.addEventListener("click", (e) => {
+            e.target.parentNode.parentNode.remove();
         });
 
         const createButton = document.createElement("button");
