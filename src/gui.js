@@ -70,7 +70,7 @@ const contentGui = (function() {
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.addEventListener("click", () => {
+        checkbox.addEventListener("click", (e) => {
             // TODO(miha): Change todo state
             todoDiv.classList.toggle("todo-completed", checkbox.checked);
         });
@@ -80,9 +80,8 @@ const contentGui = (function() {
         button.type = "button";
         button.textContent = "X";
         button.addEventListener("click", (e) => {
-            const projectName = e.target.parentNode.querySelector("span").textContent.split(": ")[1];
             const id = e.target.parentNode.parentNode.getAttribute("data-id");
-            projects.removeTodo(projectName, id);
+            projects.removeTodo(id);
             e.target.parentNode.parentNode.remove();
         });
 

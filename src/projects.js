@@ -3,6 +3,9 @@ const projects = (function() {
     // NOTE(miha): key: project name, value: array of todos
     const projects = new Map();
 
+    // NOTE(miha): key: todo id, value: project name
+    const todos = new Map();
+
     let currentProject = undefined;
 
     const addTodo = (todo) => {
@@ -11,15 +14,18 @@ const projects = (function() {
             projects.set(projectName, []);
         projects.get(projectName).push(todo);
         currentProject = projectName;
+        todos.set(todo.getId(), projectName);
         // TODO(miha): Update store
     };
-    const removeTodo = (projectName, id) => {
+    const removeTodo = (id) => {
+        const projectName = todos.get(id);
         if (!projects.has(projectName))
             return;
 
-        const todos = projects.get(projectName);
-        const index = todos.findIndex((obj) => obj.id === id);
-        todos.splice(index, 1);
+        const index = projects.get(projectName).findIndex((obj) => obj.id === id);
+        projects.get(projectName).splice(index, 1);
+
+        todos.delete(id);
         // TODO(miha): Update store
     };
 
