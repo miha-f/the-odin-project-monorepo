@@ -33,6 +33,41 @@ const sidebarGui = (function() {
                 sidebar.appendChild(link);
             })();
         }
+
+        (function() {
+            const button = document.createElement("button");
+            button.textContent = "New project";
+            button.addEventListener("click", (e) => {
+                const newProjectDiv = document.createElement("div");
+                newProjectDiv.classList.add("new-project");
+
+                const input = document.createElement("input");
+                input.placeholder = "Project";
+
+                const add = document.createElement("button");
+                add.textContent = "Add project";
+                add.addEventListener("click", (e) => {
+                    if (!input.value.length)
+                        return;
+
+                    projects.add(input.value);
+                    draw();
+                });
+
+                const cancel = document.createElement("button");
+                cancel.textContent = "Cancel";
+                cancel.addEventListener("click", (e) => {
+                    e.target.parentNode.remove();
+                });
+
+                newProjectDiv.appendChild(input);
+                newProjectDiv.appendChild(add);
+                newProjectDiv.appendChild(cancel);
+
+                sidebar.insertBefore(newProjectDiv, sidebar.lastChild);
+            });
+            sidebar.appendChild(button);
+        })();
     };
 
     return { draw };

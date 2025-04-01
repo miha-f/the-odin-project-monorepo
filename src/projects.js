@@ -45,6 +45,12 @@ const projects = (function() {
         projects.get(projectName)[index].setDone(!currDone);
     }
 
+    const add = (projectName) => {
+        if (!projects.has(projectName))
+            projects.set(projectName, []);
+        localStore.update(projects, todos);
+    }
+
     const set = (p, t) => {
         projects = p;
         todos = t;
@@ -58,7 +64,7 @@ const projects = (function() {
 
     return {
         addTodo, removeTodo, set, get, getNames, getTodos, getCurrentProject,
-        setCurrentProject, toggleTodoDone
+        setCurrentProject, toggleTodoDone, add
     };
 })();
 

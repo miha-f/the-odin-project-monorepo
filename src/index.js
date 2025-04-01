@@ -7,10 +7,7 @@ import "./style.css";
 //   gui
 
 // TODO(miha): 
-//      - drop down for priority
 //      - sorting at top (priority, date, title, ...)
-//      - new todo form
-//      - local storage
 //      - maybe don't add option to choose project from new todo form (for form
 //        it would make sense to add new project from sidebar)
 

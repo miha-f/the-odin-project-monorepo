@@ -10,6 +10,12 @@
     --content-bg: #ECF0F1;
     --text-color: #FFFFFF;
     --accent-color: #E74C3C;
+    --todo-bg: #FFFFFF;
+    --todo-border: #BDC3C7;
+    --priority-low: #2ECC71;
+    --priority-medium: #F1C40F;
+    --priority-high: #E74C3C;
+
     font-size: 12px;
     color: var(--text-color);
     font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -30,6 +36,55 @@ body {
     flex-direction: column;
     gap: 15px;
 
+    .new-project {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: var(--todo-bg);
+
+        input {
+            padding: 3px;
+            width: 110px;
+            height: 30px;
+        }
+
+        button {
+            color: white;
+            background-color: var(--sidebar-bg);
+            padding: 3px;
+            width: 110px;
+            height: 30px;
+        }
+
+        button:hover {
+            background: var(--sidebar-bg);
+            border-color: var(--header-bg);
+            opacity: 0.8;
+        }
+    }
+
+    button {
+        width: 120px;
+        margin: 0 auto;
+        gap: 10px;
+        background: var(--todo-bg);
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid var(--todo-border);
+        transition: background 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        border: none;
+    }
+
+    button:hover {
+        opacity: 0.8;
+        background: var(--content-bg);
+        border-color: var(--header-bg);
+    }
+
     a {
         color: var(--text-color);
         text-decoration: none;
@@ -49,12 +104,6 @@ body {
 }
 
 .content {
-    --todo-bg: #FFFFFF;
-    --todo-border: #BDC3C7;
-    --priority-low: #2ECC71;
-    --priority-medium: #F1C40F;
-    --priority-high: #E74C3C;
-
     color: var(--sidebar-bg);
     background: var(--content-bg);
     padding: 20px;
