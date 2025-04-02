@@ -54,9 +54,27 @@ const LinkedList = () => {
         prev.next = null;
     };
 
-    const contains = (value) => { };
+    const contains = (value) => {
+        let curr = _head;
+        while (curr.next) {
+            if (curr.value === value)
+                return true;
+            curr = curr.next;
+        }
+        return curr.value === value;
+    };
 
-    const find = (value) => { };
+    const find = (value) => {
+        let i = 0;
+        let curr = _head;
+        while (curr.next) {
+            if (curr.value === value)
+                return i;
+            curr = curr.next;
+            i++;
+        }
+        return curr.value === value ? i : null;
+    };
 
     const toString = () => {
         let curr = _head;
