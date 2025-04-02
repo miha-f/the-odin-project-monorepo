@@ -44,8 +44,18 @@ const LinkedList = () => {
         return i !== index ? null : curr;
     };
 
-    const pop = () => { };
+    const pop = () => {
+        let curr = _head;
+        let prev = null;
+        while (curr.next) {
+            prev = curr;
+            curr = curr.next;
+        }
+        prev.next = null;
+    };
+
     const contains = (value) => { };
+
     const find = (value) => { };
 
     const toString = () => {

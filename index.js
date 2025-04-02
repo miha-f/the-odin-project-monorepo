@@ -14,5 +14,6 @@ console.log(list.tail());
 console.log(list.at(0));
 console.log(list.at(1));
 console.log(list.at(4));
+list.pop();
 
 console.log(list.toString());
