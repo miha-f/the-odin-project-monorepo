@@ -1,13 +1,23 @@
 
 const HashMap = (capacity = 16, loadFactor = 0.75) => {
-    const _buckets = new Array(capacity).fill(undefined);
-    const _size = 0;
+    let _buckets = new Array(capacity).fill(undefined);
+    let _size = 0;
 
     const _at = (index) => {
         if (index < 0 || index >= _buckets.length) {
             throw new Error("Trying to access index out of bounds");
         }
         return _buckets[index];
+    }
+
+    const _grow = () => {
+        capacity *= 2;
+        const vals = entries();
+        _buckets = new Array(capacity).fill(undefined);
+        for (let el of vals) {
+            const [key, value] = el;
+            set(key, value);
+        }
     }
 
     const hash = (key) => {
@@ -23,7 +33,10 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
     };
 
     const set = (key, value) => {
-        // TODO(miha): Need to grow if hash map exceed loadFactor
+        if (_size > capacity * loadFactor) {
+            _grow();
+        }
+
         const hashed = hash(key);
 
         if (_at(hashed) === undefined)
@@ -81,14 +94,35 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
     const length = () => _size;
 
     const clear = () => {
-        const _buckets = new Array(capacity).fill(undefined);
+        _buckets = new Array(capacity).fill(undefined);
     };
 
-    const keys = () => { };
+    const keys = () => {
+        const result = [];
+        for (let i = 0; i < _buckets.length; i++)
+            for (let el of (_buckets[i] || []))
+                result.push(el.key);
 
-    const values = () => { };
+        return result;
+    };
 
-    const entries = () => { };
+    const values = () => {
+        const result = [];
+        for (let i = 0; i < _buckets.length; i++)
+            for (let el of (_buckets[i] || []))
+                result.push(el.value);
+
+        return result;
+    };
+
+    const entries = () => {
+        const result = [];
+        for (let i = 0; i < _buckets.length; i++)
+            for (let el of (_buckets[i] || []))
+                result.push([el.key, el.value]);
+
+        return result;
+    };
 
     return {
         hash, set, get, has, remove, length, clear, keys, values, entries,
