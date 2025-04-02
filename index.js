@@ -7,6 +7,8 @@ list.append("cat");
 list.append("parrot");
 list.append("hamster");
 list.append("snake");
+list.prepend("corgi");
 list.append("turtle");
+list.prepend("corgi");
 
 console.log(list.toString());

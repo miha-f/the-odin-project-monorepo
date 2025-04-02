@@ -15,7 +15,11 @@ const LinkedList = () => {
         }
     };
 
-    const prepend = (value) => { };
+    const prepend = (value) => {
+        const node = Node(value);
+        node.next = _head;
+        _head = node;
+    };
 
     const size = () => { return _size; };
     const head = () => { return _head; };
