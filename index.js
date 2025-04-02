@@ -1,4 +1,5 @@
 import { HashMap } from "./hash_map.js";
+import { HashSet } from "./set.js";
 
 const test = HashMap();
 
@@ -36,3 +37,19 @@ console.log(test.keys());
 console.log(test.values());
 console.log(test.entries());
 console.log(test.length());
+
+console.log("testing shapes");
+
+const shapes = HashSet();
+shapes.set("triangle");
+shapes.set("triangle");
+shapes.set("triangle");
+shapes.set("square");
+shapes.set("circle");
+shapes.set("polygon");
+shapes.set("hexagon");
+shapes.remove("triangle");
+console.log(shapes.keys());
+console.log(shapes.values());
+console.log(shapes.entries());
+console.log(shapes.length());
