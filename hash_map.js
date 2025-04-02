@@ -2,6 +2,8 @@
 const HashMap = (capacity = 16, loadFactor = 0.75) => {
     let _buckets = new Array(capacity).fill(undefined);
     let _size = 0;
+    let _capacity = capacity;
+    let _loadFactor = loadFactor;
 
     const _at = (index) => {
         if (index < 0 || index >= _buckets.length) {
@@ -11,9 +13,10 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
     }
 
     const _grow = () => {
-        capacity *= 2;
+        _size = 0;
+        _capacity *= 2;
         const vals = entries();
-        _buckets = new Array(capacity).fill(undefined);
+        _buckets = new Array(_capacity).fill(undefined);
         for (let el of vals) {
             const [key, value] = el;
             set(key, value);
@@ -33,7 +36,7 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
     };
 
     const set = (key, value) => {
-        if (_size > capacity * loadFactor) {
+        if (_size > _capacity * _loadFactor) {
             _grow();
         }
 
@@ -94,7 +97,7 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
     const length = () => _size;
 
     const clear = () => {
-        _buckets = new Array(capacity).fill(undefined);
+        _buckets = new Array(_capacity).fill(undefined);
     };
 
     const keys = () => {
@@ -126,7 +129,6 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
 
     return {
         hash, set, get, has, remove, length, clear, keys, values, entries,
-        _buckets // TODO(miha): remove me!
     };
 }
 
