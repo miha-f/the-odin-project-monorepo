@@ -87,8 +87,33 @@ const LinkedList = () => {
         return result;
     };
 
-    const insertAt = (value, index) => { };
-    const removeAt = (index) => { };
+    const insertAt = (value, index) => {
+        let i = 0;
+        let curr = _head;
+        let prev = null;
+        while (curr.next && i < index) {
+            prev = curr;
+            curr = curr.next;
+            i++;
+        }
+        if (curr && prev.next && i === index) {
+            prev.next = Node(value, curr);
+        }
+    };
+
+    const removeAt = (index) => {
+        let i = 0;
+        let curr = _head;
+        let prev = null;
+        while (curr.next && i < index) {
+            prev = curr;
+            curr = curr.next;
+            i++;
+        }
+        if (curr && prev.next && i === index) {
+            prev.next = curr.next;
+        }
+    };
 
     return {
         append, prepend, size, head, tail, at, pop, contains, find,

@@ -21,5 +21,7 @@ console.log(list.contains("snake"));
 console.log(list.find("corgi"));
 console.log(list.find("turtle"));
 console.log(list.find("snake"));
+list.insertAt("cat", 1);
+list.removeAt(4);
 
 console.log(list.toString());
