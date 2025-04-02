@@ -1,4 +1,3 @@
-
 const HashMap = (capacity = 16, loadFactor = 0.75) => {
     let _buckets = new Array(capacity).fill(undefined);
     let _size = 0;
@@ -53,9 +52,10 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
 
         if (index !== -1)
             bucket[index] = { key, value };
-        else
+        else {
             bucket.push({ key, value });
-        _size++;
+            _size++;
+        }
     };
 
     const get = (key) => {
