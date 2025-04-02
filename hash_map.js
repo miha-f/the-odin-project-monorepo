@@ -56,7 +56,24 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
         return get(key) !== null;
     };
 
-    const remove = (key) => { };
+    const remove = (key) => {
+        const hashed = hash(key);
+
+        if (_at(hashed) === undefined)
+            return;
+
+        const bucket = _at(hashed);
+        let index = -1;
+        for (let i = 0; i < bucket.length; i++)
+            if (bucket[i].key === key)
+                index = i;
+
+        if (index !== -1) {
+            bucket.splice(index, 1);
+            return true;
+        } else
+            return false;
+    };
 
     const length = () => { };
 
