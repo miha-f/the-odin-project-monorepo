@@ -40,9 +40,21 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
             bucket.push({ key, value });
     };
 
-    const get = (key) => { };
+    const get = (key) => {
+        const hashed = hash(key);
 
-    const has = (key) => { };
+        const bucket = _at(hashed);
+        let index = -1;
+        for (let i = 0; i < bucket.length; i++)
+            if (bucket[i].key === key)
+                index = i;
+
+        return index !== -1 ? index : null;
+    };
+
+    const has = (key) => {
+        return get(key) !== null;
+    };
 
     const remove = (key) => { };
 
