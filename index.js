@@ -11,5 +11,8 @@ list.prepend("corgi");
 list.append("turtle");
 list.prepend("corgi");
 console.log(list.tail());
+console.log(list.at(0));
+console.log(list.at(1));
+console.log(list.at(4));
 
 console.log(list.toString());
