@@ -52,6 +52,7 @@ const LinkedList = () => {
             curr = curr.next;
         }
         prev.next = null;
+        _size--;
     };
 
     const contains = (value) => {
@@ -99,6 +100,8 @@ const LinkedList = () => {
         if (curr && prev.next && i === index) {
             prev.next = Node(value, curr);
         }
+
+        _size++;
     };
 
     const removeAt = (index) => {
@@ -113,6 +116,8 @@ const LinkedList = () => {
         if (curr && prev.next && i === index) {
             prev.next = curr.next;
         }
+
+        _size--;
     };
 
     return {
