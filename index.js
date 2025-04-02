@@ -15,12 +15,24 @@ test.set('ice cream', 'white')
 test.set('jacket', 'blue')
 test.set('kite', 'pink')
 test.set('lion', 'golden')
+// NOTE(miha): This causes hash map to grow
 test.set('moon', 'silver')
+
+console.log(test.has("moon"));
+console.log(test.has("sun"));
+console.log(test.get("moon"));
+console.log(test.get("sun"));
+console.log(test.remove("moon"));
+console.log(test.remove("moon"));
+console.log(test.get("moon"));
 
 console.log(test.keys());
 console.log(test.values());
 console.log(test.entries());
-console.log(test._buckets);
-console.log(test._buckets.length);
-console.log(test.getBuckets());
-console.log(test.getBuckets().length);
+console.log(test.length());
+
+console.log(test.clear());
+console.log(test.keys());
+console.log(test.values());
+console.log(test.entries());
+console.log(test.length());

@@ -61,13 +61,13 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
     const get = (key) => {
         const hashed = hash(key);
 
-        const bucket = _at(hashed);
+        const bucket = _at(hashed) || [];
         let index = -1;
         for (let i = 0; i < bucket.length; i++)
             if (bucket[i].key === key)
                 index = i;
 
-        return index !== -1 ? index : null;
+        return index !== -1 ? bucket[index].value : null;
     };
 
     const has = (key) => {
@@ -98,6 +98,7 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
 
     const clear = () => {
         _buckets = new Array(_capacity).fill(undefined);
+        _size = 0;
     };
 
     const keys = () => {
