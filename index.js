@@ -10,5 +10,6 @@ list.append("snake");
 list.prepend("corgi");
 list.append("turtle");
 list.prepend("corgi");
+console.log(list.tail());
 
 console.log(list.toString());

@@ -13,17 +13,27 @@ const LinkedList = () => {
                 curr = curr.next;
             curr.next = node;
         }
+        _size++;
     };
 
     const prepend = (value) => {
         const node = Node(value);
         node.next = _head;
         _head = node;
+        _size++;
     };
 
     const size = () => { return _size; };
+
     const head = () => { return _head; };
-    const tail = () => { };
+
+    const tail = () => {
+        let curr = _head;
+        while (curr.next)
+            curr = curr.next;
+        return curr;
+    };
+
     const at = (index) => { };
     const pop = () => { };
     const contains = (value) => { };
