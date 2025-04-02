@@ -1,6 +1,7 @@
 
 const HashMap = (capacity = 16, loadFactor = 0.75) => {
     const _buckets = new Array(capacity).fill(undefined);
+    const _size = 0;
 
     const _at = (index) => {
         if (index < 0 || index >= _buckets.length) {
@@ -38,6 +39,7 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
             bucket[index] = { key, value };
         else
             bucket.push({ key, value });
+        _size++;
     };
 
     const get = (key) => {
@@ -70,14 +72,17 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
 
         if (index !== -1) {
             bucket.splice(index, 1);
+            _size--;
             return true;
         } else
             return false;
     };
 
-    const length = () => { };
+    const length = () => _size;
 
-    const clear = () => { };
+    const clear = () => {
+        const _buckets = new Array(capacity).fill(undefined);
+    };
 
     const keys = () => { };
 
