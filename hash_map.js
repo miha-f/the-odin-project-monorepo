@@ -1,11 +1,12 @@
 
 const HashMap = (capacity = 16, loadFactor = 0.75) => {
-    const _buckets = [];
+    const _buckets = new Array(capacity).fill(undefined);
 
     const _at = (index) => {
         if (index < 0 || index >= _buckets.length) {
             throw new Error("Trying to access index out of bounds");
         }
+        return _buckets[index];
     }
 
     const hash = (key) => {
@@ -20,7 +21,24 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
         return hashCode;
     };
 
-    const set = (key, value) => { };
+    const set = (key, value) => {
+        // TODO(miha): Need to grow if hash map exceed loadFactor
+        const hashed = hash(key);
+
+        if (_at(hashed) === undefined)
+            _buckets[hashed] = [];
+
+        const bucket = _at(hashed);
+        let index = -1;
+        for (let i = 0; i < bucket.length; i++)
+            if (bucket[i].key === key)
+                index = i;
+
+        if (index !== -1)
+            bucket[index] = { key, value };
+        else
+            bucket.push({ key, value });
+    };
 
     const get = (key) => { };
 
@@ -38,7 +56,10 @@ const HashMap = (capacity = 16, loadFactor = 0.75) => {
 
     const entries = () => { };
 
-    return { hash, set, get, has, remove, length, clear, keys, values, entries };
+    return {
+        hash, set, get, has, remove, length, clear, keys, values, entries,
+        _buckets // TODO(miha): remove me!
+    };
 }
 
 export { HashMap };
