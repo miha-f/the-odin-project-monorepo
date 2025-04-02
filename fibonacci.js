@@ -11,4 +11,12 @@ const fibs = (n) => {
     return arr;
 }
 
-export { fibs };
+const fibsRec = (n, arr = [0, 1]) => {
+    if (arr.length > n)
+        return arr.slice(0, n);
+
+    arr.push(arr.at(-1) + arr.at(-2));
+    return fibsRec(n, arr);
+}
+
+export { fibs, fibsRec };
