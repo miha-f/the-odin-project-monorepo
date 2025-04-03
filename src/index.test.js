@@ -1,4 +1,4 @@
-import { sum, capitalize, reverseString, calculator } from "./index.js";
+import { sum, capitalize, reverseString, calculator, caesarCipher } from "./index.js";
 
 test('adds 1 + 2 to equal 3', () => {
     expect(sum(1, 2)).toBe(3);
@@ -26,4 +26,11 @@ test('calculator', () => {
     expect(calc.subtract(4, 2)).toBe(2);
     expect(calc.divide(4, 2)).toBe(2);
     expect(calc.multiply(4, 2)).toBe(8);
+});
+
+test('caesarCipher', () => {
+    expect(caesarCipher("", 3)).toBe("");
+    expect(caesarCipher('xyz', 3)).toBe("abc");
+    expect(caesarCipher('HeLLo', 3)).toBe("KhOOr");
+    expect(caesarCipher('Hello, World!', 3)).toBe("Khoor, Zruog!");
 });

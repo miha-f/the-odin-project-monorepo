@@ -20,4 +20,34 @@ const calculator = () => {
     return { add, subtract, divide, multiply };
 }
 
-export { sum, capitalize, reverseString, calculator }
+const caesarCipher = (s, shift) => {
+    const isAscii = (c) => {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    const getShiftedChar = (c) => {
+        let offset = 0;
+        if (c >= 'a' && c <= 'z')
+            offset = 97;
+        else
+            offset = 65;
+
+        return String.fromCharCode(((c.charCodeAt(0) - offset + shift) % 26) + offset)
+    }
+
+    let result = "";
+    for (const c of s) {
+        if (isAscii(c)) {
+            result += getShiftedChar(c);
+        }
+        else {
+            result += c;
+        }
+    }
+
+    return result;
+}
+
+caesarCipher('xyz', 3)
+
+export { sum, capitalize, reverseString, calculator, caesarCipher }
