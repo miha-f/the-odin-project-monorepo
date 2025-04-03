@@ -140,15 +140,39 @@ const Tree = () => {
     }
 
     const levelOrder = (callback) => {
+        if (callback === undefined)
+            throw Error("no callback error");
+
+        if (!_root)
+            return;
+
+        let queue = [_root];
+        while (queue.length) {
+            let newQueue = [];
+            for (let node of queue) {
+                callback(node);
+                if (node.left)
+                    newQueue.push(node.left);
+                if (node.right)
+                    newQueue.push(node.right);
+            }
+            queue = newQueue;
+        }
     }
 
     const inOrder = (callback) => {
+        if (callback === undefined)
+            throw Error("no callback error");
     }
 
     const preOrder = (callback) => {
+        if (callback === undefined)
+            throw Error("no callback error");
     }
 
     const postOrder = (callback) => {
+        if (callback === undefined)
+            throw Error("no callback error");
     }
 
     const height = (node) => {
