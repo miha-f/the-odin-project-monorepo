@@ -123,6 +123,20 @@ const Tree = () => {
     }
 
     const find = (value) => {
+        let node = _root;
+        let parent = null;
+        while (node) {
+            if (value == node.value)
+                break;
+
+            parent = node;
+
+            if (value > node.value)
+                node = node.right;
+            else
+                node = node.left;
+        }
+        return node;
     }
 
     const levelOrder = (callback) => {
