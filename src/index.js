@@ -48,6 +48,13 @@ const caesarCipher = (s, shift) => {
     return result;
 }
 
-caesarCipher('xyz', 3)
+const analyzeArray = (arr) => {
+    const average = arr.reduce((a, b) => a + b, 0) / arr.length;
+    const min = Math.min(...arr);
+    const max = Math.max(...arr);
+    const length = arr.length;
 
-export { sum, capitalize, reverseString, calculator, caesarCipher }
+    return { average, min, max, length };
+}
+
+export { sum, capitalize, reverseString, calculator, caesarCipher, analyzeArray }
