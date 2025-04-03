@@ -1,4 +1,4 @@
-import { knightMoves } from "./knight";
+import { knightMoves } from "./knight.js";
 
 
-// knightMoves();
+console.log(knightMoves([0, 0], [3, 3]));
