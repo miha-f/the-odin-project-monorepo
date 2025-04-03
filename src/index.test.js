@@ -1,4 +1,4 @@
-import { sum, capitalize, reverseString } from "./index.js";
+import { sum, capitalize, reverseString, calculator } from "./index.js";
 
 test('adds 1 + 2 to equal 3', () => {
     expect(sum(1, 2)).toBe(3);
@@ -18,4 +18,12 @@ test('reverseString', () => {
     expect(reverseString("Ann")).toBe("nnA");
     expect(reverseString("today is friday.")).toBe(".yadirf si yadot");
     expect(reverseString("123")).toBe("321");
+});
+
+test('calculator', () => {
+    const calc = calculator();
+    expect(calc.add(4, 2)).toBe(6);
+    expect(calc.subtract(4, 2)).toBe(2);
+    expect(calc.divide(4, 2)).toBe(2);
+    expect(calc.multiply(4, 2)).toBe(8);
 });
