@@ -2,4 +2,8 @@ const sum = (a, b) => {
     return a + b;
 }
 
-export { sum }
+const capitalize = (s) => {
+    return s ? String(s[0]).toUpperCase() + String(s).slice(1) : "";
+}
+
+export { sum, capitalize }
