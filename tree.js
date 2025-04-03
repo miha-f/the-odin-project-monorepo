@@ -39,23 +39,87 @@ const Tree = () => {
             _root = Node(value);
         } else {
             let node = _root;
-            let prev = null;
+            let parent = null;
             while (node) {
-                prev = node;
+                parent = node;
                 if (value > node.value)
                     node = node.right;
                 else
                     node = node.left;
             }
 
-            if (value > prev.value)
-                prev.right = Node(value);
+            if (value > parent.value)
+                parent.right = Node(value);
             else
-                prev.left = Node(value);
+                parent.left = Node(value);
         }
     }
 
     const deleteItem = (value) => {
+        if (_root === null)
+            return;
+
+        let node = _root;
+        let parent = null;
+        while (node) {
+            if (value == node.value)
+                break;
+
+            parent = node;
+
+            if (value > node.value)
+                node = node.right;
+            else
+                node = node.left;
+        }
+
+        if (parent === null) {
+            let changeNode = node.right;
+            while (changeNode.left)
+                changeNode = changeNode.left;
+
+            deleteItem(changeNode.value);
+            node.value = changeNode.value;
+            return;
+        }
+
+        if (parent.left && value == parent.left.value) {
+            if (!node.left && !node.right)
+                parent.left = null;
+            if (node.left && !node.right)
+                parent.left = node.left;
+            if (!node.left && node.right)
+                parent.left = node.right;
+            if (node.left && node.right) {
+                let changeNode = node.right;
+                while (changeNode.left)
+                    changeNode = changeNode.left;
+
+                deleteItem(changeNode.value);
+                node.value = changeNode.value;
+            }
+            return;
+        }
+        if (parent.right && value == parent.right.value) {
+            if (!node.left && !node.right)
+                parent.right = null;
+
+            if (!node.left && !node.right)
+                parent.right = null;
+            if (node.left && !node.right)
+                parent.right = node.left;
+            if (!node.left && node.right)
+                parent.right = node.right;
+            if (node.left && node.right) {
+                let changeNode = node.left;
+                while (changeNode.right)
+                    changeNode = changeNode.right;
+
+                deleteItem(changeNode.value);
+                node.value = changeNode.value;
+            }
+            return;
+        }
     }
 
     const find = (value) => {
