@@ -6,4 +6,8 @@ const capitalize = (s) => {
     return s ? String(s[0]).toUpperCase() + String(s).slice(1) : "";
 }
 
-export { sum, capitalize }
+const reverseString = (s) => {
+    return s.split("").reverse().join("");
+}
+
+export { sum, capitalize, reverseString }

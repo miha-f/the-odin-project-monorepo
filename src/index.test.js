@@ -1,4 +1,4 @@
-import { sum, capitalize } from "./index.js";
+import { sum, capitalize, reverseString } from "./index.js";
 
 test('adds 1 + 2 to equal 3', () => {
     expect(sum(1, 2)).toBe(3);
@@ -10,4 +10,12 @@ test('capitalize', () => {
     expect(capitalize("Ann")).toBe("Ann");
     expect(capitalize("today is friday.")).toBe("Today is friday.");
     expect(capitalize("123")).toBe("123");
+});
+
+test('reverseString', () => {
+    expect(reverseString("")).toBe("");
+    expect(reverseString("ann")).toBe("nna");
+    expect(reverseString("Ann")).toBe("nnA");
+    expect(reverseString("today is friday.")).toBe(".yadirf si yadot");
+    expect(reverseString("123")).toBe("321");
 });
