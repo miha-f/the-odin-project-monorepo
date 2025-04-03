@@ -9,6 +9,5 @@ console.log(tree.find(5));
 console.log(tree.find(55));
 
 prettyPrint(root);
-tree.levelOrder(console.log);
 
 

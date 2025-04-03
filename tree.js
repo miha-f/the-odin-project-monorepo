@@ -163,16 +163,61 @@ const Tree = () => {
     const inOrder = (callback) => {
         if (callback === undefined)
             throw Error("no callback error");
+
+        if (!_root)
+            return;
+
+        let stack = [];
+        let node = _root;
+        while (node || stack.length) {
+            while (node !== null) {
+                stack.push(node)
+                node = node.left;
+            }
+            node = stack.pop();
+            callback(node);
+            node = node.right;
+        }
     }
 
     const preOrder = (callback) => {
         if (callback === undefined)
             throw Error("no callback error");
+
+        if (!_root)
+            return;
+
+        let stack = [_root];
+
+        while (stack.length > 0) {
+            let node = stack.pop();
+            callback(node);
+
+            if (node.right) stack.push(node.right);
+            if (node.left) stack.push(node.left);
+        }
     }
 
     const postOrder = (callback) => {
         if (callback === undefined)
             throw Error("no callback error");
+
+        if (!_root)
+            return;
+
+        let stack1 = [_root];
+        let stack2 = [];
+
+        while (stack1.length > 0) {
+            let node = stack1.pop();
+            stack2.push(node);
+            if (node.left) stack1.push(node.left);
+            if (node.right) stack1.push(node.right);
+        }
+
+        while (stack2.length > 0) {
+            callback(stack2.pop());
+        }
     }
 
     const height = (node) => {
