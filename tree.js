@@ -221,9 +221,39 @@ const Tree = () => {
     }
 
     const height = (node) => {
+        if (!node) return -1;
+
+        let queue = [node];
+        let height = -1;
+
+        while (queue.length > 0) {
+            let size = queue.length;
+            height++;
+
+            for (let i = 0; i < size; i++) {
+                let node = queue.shift();
+                if (node.left) queue.push(node.left);
+                if (node.right) queue.push(node.right);
+            }
+        }
+
+        return height;
     }
 
     const depth = (node) => {
+        if (!_root) return -1;
+
+        let depth = 0;
+        let current = _root;
+
+        while (current !== null) {
+            if (current.value === node.value) return depth;
+
+            depth++;
+            current = node.value < current.value ? current.left : current.right;
+        }
+
+        return -1;
     }
 
     const isBalanced = () => {
