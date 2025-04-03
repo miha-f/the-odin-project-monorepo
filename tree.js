@@ -6,6 +6,8 @@ const Tree = () => {
     let _root = null;
 
     const buildTree = (arr) => {
+        _root = null;
+
         let array = arr.sort((a, b) => a - b).filter((item, pos, self) => {
             return !pos || item != self[pos - 1];
         });
@@ -257,9 +259,39 @@ const Tree = () => {
     }
 
     const isBalanced = () => {
+        if (!_root) return true;
+
+        let nodeToHeight = new Map();
+        let stack = [_root];
+
+        while (stack.length > 0) {
+            let node = stack[stack.length - 1];
+
+            if (
+                (!node.left || nodeToHeight.has(node.left)) &&
+                (!node.right || nodeToHeight.has(node.right))
+            ) {
+                let leftHeight = node.left ? nodeToHeight.get(node.left) : -1;
+                let rightHeight = node.right ? nodeToHeight.get(node.right) : -1;
+
+                if (Math.abs(leftHeight - rightHeight) > 1) return false;
+
+                nodeToHeight.set(node, Math.max(leftHeight, rightHeight) + 1);
+                stack.pop();
+            } else {
+                if (node.right) stack.push(node.right);
+                if (node.left) stack.push(node.left);
+            }
+        }
+
+        return true;
     }
 
     const rebalance = () => {
+        let arr = [];
+        inOrder((node) => { arr.push(node.value) })
+        _root = buildTree(arr);
+        return _root;
     }
 
     return {
