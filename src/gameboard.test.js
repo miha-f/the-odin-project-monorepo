@@ -1,16 +1,13 @@
 import { Ship } from "./ship.js";
-import { Gameboard, createGameboardShip, createGameboard, HORIZONTAL, VERTICAL, _GRID_DEFAULT, _GRID_SHIP, _GRID_HIT, _GRID_MISS } from "./gameboard.js";
+import { Gameboard, HORIZONTAL, VERTICAL, _GRID_DEFAULT, _GRID_SHIP, _GRID_HIT, _GRID_MISS } from "./gameboard.js";
 
 test('gameboard', () => {
-    const gameboard = createGameboard(
-        [
-            createGameboardShip(Ship(2), 0, 0, HORIZONTAL),
-            createGameboardShip(Ship(3), 0, 3, HORIZONTAL),
-            createGameboardShip(Ship(3), 1, 2, VERTICAL),
-            createGameboardShip(Ship(4), 4, 3, HORIZONTAL),
-            createGameboardShip(Ship(5), 1, 0, VERTICAL),
-        ]
-    );
+    const gameboard = Gameboard();
+    gameboard.addShip(Ship(2), 0, 0, HORIZONTAL);
+    gameboard.addShip(Ship(3), 0, 3, HORIZONTAL);
+    gameboard.addShip(Ship(3), 1, 2, VERTICAL);
+    gameboard.addShip(Ship(4), 4, 3, HORIZONTAL);
+    gameboard.addShip(Ship(5), 1, 0, VERTICAL);
 
     // no ship at 0,2
     expect(gameboard.getGridCell(0, 2)).toBe(_GRID_DEFAULT);
