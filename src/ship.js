@@ -10,7 +10,9 @@ const Ship = (length) => {
         return _hit >= _length;
     };
 
-    return { hit, isSunk };
+    const getLength = () => _length;
+
+    return { hit, isSunk, getLength };
 }
 
 export { Ship };
