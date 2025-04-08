@@ -48,6 +48,14 @@ main {
         border: 2px solid black;
         background-color: lightgray;
     }
+
+    .hover {
+        background-color: lightgreen;
+    }
+
+    .placed {
+        background-color: blue;
+    }
 }
 
 .guesses {
