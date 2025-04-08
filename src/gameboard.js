@@ -1,115 +1,124 @@
 // NOTE(miha): ships is an map between ship object and its coordinates.
 // {Ship(2): {x:2, y:2, dir:left}, ...}
 
-const _SIZE = 10;
+const SIZE = 10;
 
-const _GRID_DEFAULT = 0;
-const _GRID_SHIP = 1;
-const _GRID_HIT = 2;
-const _GRID_MISS = 3;
+const GRID_DEFAULT = 0;
+const GRID_SHIP = 1;
+const GRID_HIT = 2;
+const GRID_MISS = 3;
 
 const HORIZONTAL = 0;
 const VERTICAL = 1;
 
 const _inBound = (r, c) => {
-    return (r >= 0 && c >= 0 && r < _SIZE && c < _SIZE);
+    return (r >= 0 && c >= 0 && r < SIZE && c < SIZE);
 }
 
-const createGameboardShip = (ship, r, c, direction) => {
-    if (direction !== HORIZONTAL && direction !== VERTICAL)
-        throw Error("direction must be HORIZONTAL or VERTICAL");
-
-    if (!_inBound(r, c))
-        throw Error(`(r,c) not in bounds error`);
-
-    return {
-        ship,
-        r,
-        c,
-        direction,
-    };
+const _defaultGameboardRules = {
+    numberOfShipsAtStart: 5,
+    // NOTE(miha): key: ship length, value: occurences of such ship at the start
+    shipToCountMap: {
+        2: 1,
+        3: 2,
+        4: 1,
+        5: 1,
+    },
 };
 
-const createGameboard = (shipsWithPosition) => {
-    // NOTE(miha): We save our ships here. We must have 5 ships of length: 2,3,3,4,5.
-    const shipLengths = new Array(10).fill(0);
-    const positionMap = new Map();
-    const ships = [];
+const Gameboard = (rules = _defaultGameboardRules) => {
+    const _grid = new Array(SIZE * SIZE).fill(GRID_DEFAULT);
 
-    const _positionMapAdd = (r, c, val) => positionMap.set(`${r},${c}`, val);
-    const _positionMapGet = (r, c) => positionMap.get(`${r},${c}`);
+    const _positionToShip = new Map();
+    const _positionToShipGet = (r, c) => _positionToShip.get(`${r},${c}`);
+    const _positionToShipSet = (r, c, val) => _positionToShip.set(`${r},${c}`, val);
 
-    for (const { ship, r, c, direction } of shipsWithPosition) {
+    // NOTE(miha): Here we store ships based on their length (i.e. 3: [Ship(3), Ship(3)]).
+    // We need to make sure that we follow given rules (i.e. only 2 ships of len 3 for default rules).
+    let _lengthToShip = new Map();
+
+    const ready = () => {
+        const ships = Array.from(_lengthToShip.values()).reduce((acc, curr) => acc.concat(curr), []);
+        return ships.length === rules.numberOfShipsAtStart;
+    };
+
+    const addShip = (ship, r, c, direction) => {
         const len = ship.getLength();
-        if (len < 0 || len > shipLengths.length)
-            throw Error(`ship length error (0 <= ${len} < ${shipLengths.length}`);
 
-        shipLengths[len]++;
-        ships.push(ship);
+        // NOTE(miha): Check rules for total number of ships.
+        const shipsLength = Array.from(_lengthToShip.values()).reduce((sum, arr) => sum + arr.length, 0);
+        if (shipsLength.length > rules.numberOfShipsAtStart)
+            return { error: "too many ships" };
 
+        // NOTE(miha): Check rules for specific length (i.e. if we can add ship of such length).
+        if (!_lengthToShip.has(len))
+            _lengthToShip.set(len, []);
+        if (!(`${len}` in rules.shipToCountMap))
+            return { error: "ship length not present in rules" };
+        if (_lengthToShip.get(len).length >= rules.shipToCountMap[len])
+            return { error: "too much ships of same length" };
+
+        if (direction !== HORIZONTAL && direction !== VERTICAL)
+            return { error: "direction must be HORIZONTAL or VERTICAL" };
+
+        // NOTE(miha): Check if given ship is fully in bounds (start and end).
+        if (!_inBound(r, c))
+            return { error: "(r,c) not in bounds error" };
+        if (direction === HORIZONTAL && !_inBound(r, c + len))
+            return { error: "(r,c) not in bounds error" };
+        if (direction === VERTICAL && !_inBound(r + len, c))
+            return { error: "(r,c) not in bounds error" };
+
+        // NOTE(miha): Check if we can place ship on the grid (it is not occupied).
+        // If we can we also place ship on the grid. If this block returns error,
+        // grid is not usable.
         for (let i = 0; i < len; i++) {
             if (direction === HORIZONTAL) {
                 const newR = r;
                 const newC = c + i;
                 if (!_inBound(newR, newC))
-                    throw Error(`(r,c) not in bounds error`);
-                if (_positionMapGet(newR, newC))
-                    throw Error(`ship already present error`);
-                _positionMapAdd(newR, newC, ship);
+                    return { error: "(r,c) not in bounds error" };
+                if (_positionToShipGet(newR, newC))
+                    return { error: "ship already present error" };
+                _positionToShipSet(newR, newC, ship);
+                _grid[newR * SIZE + newC] = GRID_SHIP;
             } else if (direction === VERTICAL) {
                 const newR = r + i;
                 const newC = c;
                 if (!_inBound(newR, newC))
-                    throw Error(`(r,c) not in bounds error`);
-                if (_positionMapGet(newR, newC))
-                    throw Error(`ship already present error`);
-                _positionMapAdd(newR, newC, ship);
+                    return { error: "(r,c) not in bounds error" };
+                if (_positionToShipGet(newR, newC))
+                    return { error: "ship already present error" };
+                _positionToShipSet(newR, newC, ship);
+                _grid[newR * SIZE + newC] = GRID_SHIP;
             }
         }
-    }
 
-    if (ships.length !== 5)
-        throw Error(`you must pass 5 ships (5 != ${ships.length}`);
-
-    // NOTE(miha): Check that we have 2,3,3,4,5 ships
-    if (shipLengths[2] !== 1 || shipLengths[3] !== 2 || shipLengths[4] !== 1 || shipLengths[5] !== 1)
-        throw Error(`you must pass ships with lengths: 2,3,3,4,5`);
-
-    return Gameboard(ships, positionMap);
-};
-
-const Gameboard = (ships, positionToShip) => {
-    const _ships = ships;
-    const _grid = new Array(_SIZE * _SIZE).fill(_GRID_DEFAULT);
-    const _positionToShip = positionToShip;
-
-    const _positionToShipGet = (r, c) => _positionToShip.get(`${r},${c}`);
-
-    // NOTE(miha): Fill up grid with ships.
-    for (const [key, _] of _positionToShip.entries()) {
-        const [r, c] = key.split(",").map((el) => Number(el));
-        _grid[r * _SIZE + c] = _GRID_SHIP;
-    }
+        _lengthToShip.get(ship.getLength()).push(ship);
+    };
 
     const receiveAttack = (r, c) => {
-        // TODO(miha): So we need to check if (r,c) in bounds?
-        if (_grid[r * _SIZE + c] === _GRID_SHIP) {
+        if (!_inBound(r, c))
+            return { error: "(r,c) not in bounds error" };
+
+        if (_grid[r * SIZE + c] === GRID_SHIP) {
             _positionToShipGet(r, c).hit();
-            _grid[r * _SIZE + c] = _GRID_HIT;
+            _grid[r * SIZE + c] = GRID_HIT;
         } else {
-            _grid[r * _SIZE + c] = _GRID_MISS;
+            _grid[r * SIZE + c] = GRID_MISS;
         }
     };
 
     const allShipSunk = () => {
-        const result = _ships.every((ship) => ship.isSunk());
+        const ships = Array.from(_lengthToShip.values()).reduce((acc, curr) => acc.concat(curr), []);
+        const result = ships.every((ship) => ship.isSunk());
         return result;
     };
 
     const getGrid = () => _grid;
-    const getGridCell = (r, c) => _grid[r * _SIZE + c];
+    const getGridCell = (r, c) => _grid[r * SIZE + c];
 
-    return { receiveAttack, allShipSunk, getGrid, getGridCell };
+    return { receiveAttack, allShipSunk, getGrid, getGridCell, addShip, ready };
 };
 
-export { Gameboard, createGameboardShip, createGameboard, HORIZONTAL, VERTICAL, _GRID_DEFAULT, _GRID_SHIP, _GRID_HIT, _GRID_MISS }; 
+export { Gameboard, SIZE, HORIZONTAL, VERTICAL, GRID_DEFAULT, GRID_SHIP, GRID_HIT, GRID_MISS }; 
