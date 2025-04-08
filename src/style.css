@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.always-border {
+    border: 2px solid transparent;
+}
+
+.ship-border {
+    border: 2px solid red;
+}
+
+.ships {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    .ship {
+        display: flex;
+
+
+        .cell {
+            width: 25px;
+            height: 25px;
+            border: 2px solid black;
+            background-color: lightgreen;
+        }
+    }
+}
+
+.gameboard {
+    display: flex;
+    flex-wrap: wrap;
+
+    .cell {
+        width: 25px;
+        height: 25px;
+        border: 2px solid black;
+        background-color: lightgray;
+    }
+}
+
+.guesses {
+    display: flex;
+    flex-wrap: wrap;
+
+    .cell {
+        width: 25px;
+        height: 25px;
+        border: 2px solid black;
+        background-color: lightgray;
+    }
+}
