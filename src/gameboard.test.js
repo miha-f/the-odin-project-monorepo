@@ -3,11 +3,11 @@ import { Gameboard, HORIZONTAL, VERTICAL, GRID_DEFAULT, GRID_SHIP, GRID_HIT, GRI
 
 test('gameboard', () => {
     const gameboard = Gameboard();
-    gameboard.addShip(Ship(2), 0, 0, HORIZONTAL);
-    gameboard.addShip(Ship(3), 0, 3, HORIZONTAL);
-    gameboard.addShip(Ship(3), 1, 2, VERTICAL);
-    gameboard.addShip(Ship(4), 4, 3, HORIZONTAL);
-    gameboard.addShip(Ship(5), 1, 0, VERTICAL);
+    gameboard.addShip(2, 0, 0, HORIZONTAL);
+    gameboard.addShip(3, 0, 3, HORIZONTAL);
+    gameboard.addShip(3, 1, 2, VERTICAL);
+    gameboard.addShip(4, 4, 3, HORIZONTAL);
+    gameboard.addShip(5, 1, 0, VERTICAL);
 
     // no ship at 0,2
     expect(gameboard.getGridCell(0, 2)).toBe(GRID_DEFAULT);

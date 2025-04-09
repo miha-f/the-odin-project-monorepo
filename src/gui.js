@@ -1,4 +1,4 @@
-import { SIZE } from "./gameboard.js";
+import { SIZE, HORIZONTAL, VERTICAL, GRID_SHIP } from "./gameboard.js";
 import { State } from "./state.js";
 
 // TODO(miha): This will be moved to the game factory! also remove from gameboard.js
@@ -16,12 +16,40 @@ const _defaultGameboardRules = {
 const GUI = (game) => {
     const main = document.querySelector("main");
 
-
     let state = State();
+
+    const createShipDiv = (id, length) => {
+        const ship = document.createElement("div");
+        ship.classList.add("ship");
+        ship.classList.add("always-border");
+        ship.setAttribute("data-id", `ship-${id}`);
+        ship.setAttribute("data-length", `ship-${length}`);
+        for (let j = 0; j < length; j++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            ship.appendChild(cell);
+        }
+
+        ship.addEventListener("click", (e) => {
+            if (e.target.parentNode.classList.contains("ships"))
+                return;
+
+            const ships = document.querySelectorAll(".ship");
+            ships.forEach((ship) => {
+                ship.classList.remove("ship-border");
+            });
+
+            state.shipSelector.length = e.target.parentNode.querySelectorAll(".cell").length;
+
+            state.shipSelector.id = e.target.parentNode.getAttribute("data-id");
+            e.target.parentNode.classList.toggle("ship-border");
+        });
+
+        return ship;
+    };
 
     const drawShips = () => {
         const div = document.querySelector(".ships");
-        let shipCount = 0;
 
         const rotateButton = document.querySelector("button");
         rotateButton.addEventListener("click", () => {
@@ -31,32 +59,8 @@ const GUI = (game) => {
         for (const [k, v] of Object.entries(_defaultGameboardRules.shipToCountMap)) {
             const shipLength = k;
             for (let i = 0; i < v; i++) {
-                const ship = document.createElement("div");
-                ship.classList.add("ship");
-                ship.classList.add("always-border");
-                ship.setAttribute("data-id", `ship-${shipCount}`);
-                for (let j = 0; j < shipLength; j++) {
-                    const cell = document.createElement("div");
-                    cell.classList.add("cell");
-                    ship.appendChild(cell);
-                }
-
-                ship.addEventListener("click", (e) => {
-                    if (e.target.parentNode.classList.contains("ships"))
-                        return;
-
-                    const ships = document.querySelectorAll(".ship");
-                    ships.forEach((ship) => {
-                        ship.classList.remove("ship-border");
-                    });
-
-                    state.shipSelector.length = e.target.parentNode.querySelectorAll(".cell").length;
-
-                    state.shipSelector.id = e.target.parentNode.getAttribute("data-id");
-                    e.target.parentNode.classList.toggle("ship-border");
-                });
-
-                shipCount++;
+                const ship = createShipDiv(state.shipCount, shipLength);
+                state.shipCount++;
                 div.appendChild(ship);
             }
         }
@@ -112,8 +116,38 @@ const GUI = (game) => {
                 });
 
                 cell.addEventListener("click", (e) => {
-                    if (!state.shipSelector.id)
+                    const id = e.target.getAttribute("data-id").split("-")[1];
+                    const column = Math.floor(id / 10);
+                    const row = id % 10;
+                    const direction = state.shipSelector.rotate === false ? HORIZONTAL : VERTICAL;
+
+                    // NOTE(miha): If no ship is selected we are:
+                    //      1. removing ship from gameboard (if clicked on ship)
+                    //      2. doing nothing (if clicked on empty cell) 
+                    if (!state.shipSelector.id) {
+                        // NOTE(miha): Check if we are removing ship from gameboard
+                        // back to ship shelf.
+                        const cellType = game.getPlayer().getGameboard().getGridCell(row, column);
+                        if (cellType === GRID_SHIP) {
+                            const removedKeys = game.getPlayer().getGameboard().removeShip(row, column);
+                            for (const key of removedKeys) {
+                                const [row, column] = key.split(",").map(Number);
+                                const shipCell = div.querySelector(`[data-id="cell-${column * SIZE + row}"]`);
+                                shipCell.classList.remove("placed");
+                                shipCell.classList.remove("hover");
+                            }
+                            const shipsDiv = document.querySelector(".ships");
+                            const ship = createShipDiv(state.shipCount, removedKeys.length);
+                            state.shipCount++;
+                            shipsDiv.appendChild(ship);
+                        }
                         return;
+                    }
+
+                    const err = game.addPlayerShip(state.shipSelector.length, row, column, direction);
+                    if (err !== undefined) {
+                        return;
+                    }
 
                     state.shipSelector.cells.forEach((cell) => {
                         cell.classList.add("placed");
@@ -123,8 +157,8 @@ const GUI = (game) => {
                     ship.remove();
 
                     state.shipSelector = {
+                        ...state.shipSelector,
                         id: "",
-                        rotate: false,
                         length: -1,
                         cells: [],
                     };
@@ -144,7 +178,42 @@ const GUI = (game) => {
             for (let c = 0; c < SIZE; c++) {
                 const cell = document.createElement("div");
                 cell.classList.add("cell");
+                cell.setAttribute("data-id", `cell-${r * SIZE + c}`);
                 row.appendChild(cell);
+
+                cell.addEventListener("mouseenter", (e) => {
+                    const cells = div.querySelectorAll(".cell");
+                    cells.forEach((cell) => {
+                        cell.classList.remove("hover");
+                    });
+
+                    if (cell.classList.contains("hit") || cell.classList.contains("miss"))
+                        return;
+
+                    cell.classList.add("hover");
+                });
+
+                cell.addEventListener("click", (e) => {
+                    if (cell.classList.contains("hit") || cell.classList.contains("miss"))
+                        return;
+
+                    const id = e.target.getAttribute("data-id").split("-")[1];
+                    const column = Math.floor(id / 10);
+                    const row = id % 10;
+
+                    const hit = game.playRound(row, column);
+                    if (hit && hit.error)
+                        return;
+
+                    if (hit)
+                        cell.classList.add("hit");
+                    else
+                        cell.classList.add("miss");
+
+                    cell.removeEventListener("click", this);
+                    cell.removeEventListener("mouseenter", this);
+
+                });
             }
             div.appendChild(row);
         }

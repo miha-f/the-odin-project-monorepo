@@ -5,8 +5,9 @@ const State = () => {
         length: -1,
         cells: [],
     };
+    let shipCount = 0;
 
-    return { shipSelector };
+    return { shipSelector, shipCount };
 };
 
 export { State };

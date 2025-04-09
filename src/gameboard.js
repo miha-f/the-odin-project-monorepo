@@ -1,6 +1,8 @@
 // NOTE(miha): ships is an map between ship object and its coordinates.
 // {Ship(2): {x:2, y:2, dir:left}, ...}
 
+import { Ship } from "./ship.js";
+
 const SIZE = 10;
 
 const GRID_DEFAULT = 0;
@@ -37,16 +39,23 @@ const Gameboard = (rules = _defaultGameboardRules) => {
     // We need to make sure that we follow given rules (i.e. only 2 ships of len 3 for default rules).
     let _lengthToShip = new Map();
 
+    const getRules = () => rules;
+
     const ready = () => {
         const ships = Array.from(_lengthToShip.values()).reduce((acc, curr) => acc.concat(curr), []);
         return ships.length === rules.numberOfShipsAtStart;
     };
 
-    const addShip = (ship, r, c, direction) => {
+    const numberOfShips = () => {
+        return Array.from(_lengthToShip.values()).reduce((sum, arr) => sum + arr.length, 0);
+    };
+
+    const addShip = (shipLength, r, c, direction) => {
+        const ship = Ship(shipLength);
         const len = ship.getLength();
 
         // NOTE(miha): Check rules for total number of ships.
-        const shipsLength = Array.from(_lengthToShip.values()).reduce((sum, arr) => sum + arr.length, 0);
+        const shipsLength = numberOfShips();
         if (shipsLength.length > rules.numberOfShipsAtStart)
             return { error: "too many ships" };
 
@@ -55,7 +64,7 @@ const Gameboard = (rules = _defaultGameboardRules) => {
             _lengthToShip.set(len, []);
         if (!(`${len}` in rules.shipToCountMap))
             return { error: "ship length not present in rules" };
-        if (_lengthToShip.get(len).length >= rules.shipToCountMap[len])
+        if (_lengthToShip.get(len).length > rules.shipToCountMap[len])
             return { error: "too much ships of same length" };
 
         if (direction !== HORIZONTAL && direction !== VERTICAL)
@@ -69,9 +78,9 @@ const Gameboard = (rules = _defaultGameboardRules) => {
         if (direction === VERTICAL && !_inBound(r + len, c))
             return { error: "(r,c) not in bounds error" };
 
-        // NOTE(miha): Check if we can place ship on the grid (it is not occupied).
-        // If we can we also place ship on the grid. If this block returns error,
-        // grid is not usable.
+        // NOTE(miha): First we check if we can place whole ship on given cell.
+        // If not we return error. If we can we place the whole ship.
+        // NOTE(miha): Check if we can place.
         for (let i = 0; i < len; i++) {
             if (direction === HORIZONTAL) {
                 const newR = r;
@@ -80,8 +89,6 @@ const Gameboard = (rules = _defaultGameboardRules) => {
                     return { error: "(r,c) not in bounds error" };
                 if (_positionToShipGet(newR, newC))
                     return { error: "ship already present error" };
-                _positionToShipSet(newR, newC, ship);
-                _grid[newR * SIZE + newC] = GRID_SHIP;
             } else if (direction === VERTICAL) {
                 const newR = r + i;
                 const newC = c;
@@ -89,13 +96,40 @@ const Gameboard = (rules = _defaultGameboardRules) => {
                     return { error: "(r,c) not in bounds error" };
                 if (_positionToShipGet(newR, newC))
                     return { error: "ship already present error" };
+            }
+        }
+
+        // NOTE(miha): Place ship
+        for (let i = 0; i < len; i++) {
+            if (direction === HORIZONTAL) {
+                const newR = r;
+                const newC = c + i;
+                _positionToShipSet(newR, newC, ship);
+                _grid[newR * SIZE + newC] = GRID_SHIP;
+            } else if (direction === VERTICAL) {
+                const newR = r + i;
+                const newC = c;
                 _positionToShipSet(newR, newC, ship);
                 _grid[newR * SIZE + newC] = GRID_SHIP;
             }
         }
 
+
         _lengthToShip.get(ship.getLength()).push(ship);
     };
+
+    const removeShip = (r, c) => {
+        const ship = _positionToShipGet(r, c);
+        const removed = [];
+        for (const [key, val] of _positionToShip.entries()) {
+            if (ship === val) {
+                _positionToShip.delete(key);
+                _grid[r * SIZE + c] = GRID_DEFAULT;
+                removed.push(key);
+            }
+        }
+        return removed;
+    }
 
     const receiveAttack = (r, c) => {
         if (!_inBound(r, c))
@@ -118,7 +152,7 @@ const Gameboard = (rules = _defaultGameboardRules) => {
     const getGrid = () => _grid;
     const getGridCell = (r, c) => _grid[r * SIZE + c];
 
-    return { receiveAttack, allShipSunk, getGrid, getGridCell, addShip, ready };
+    return { receiveAttack, allShipSunk, getGrid, getGridCell, addShip, ready, numberOfShips, getRules, removeShip };
 };
 
 export { Gameboard, SIZE, HORIZONTAL, VERTICAL, GRID_DEFAULT, GRID_SHIP, GRID_HIT, GRID_MISS }; 

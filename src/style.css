@@ -22,6 +22,7 @@ main {
 
 .ships {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 5px;
 
@@ -67,5 +68,17 @@ main {
         height: 25px;
         border: 2px solid black;
         background-color: lightgray;
+    }
+
+    .hit {
+        background-color: red;
+    }
+
+    .miss {
+        background-color: blue;
+    }
+
+    .hover {
+        background-color: gray;
     }
 }
