@@ -205,6 +205,14 @@ const GUI = (game) => {
                     if (hit && hit.error)
                         return;
 
+                    if (hit && hit.winner) {
+                        if (hit.winner === "computer")
+                            drawModal("More luck next time!", "Computer won.");
+                        else
+                            drawModal("Congratulations, You won!", "Incredible performance.");
+                        return;
+                    }
+
                     if (hit)
                         cell.classList.add("hit");
                     else
@@ -219,7 +227,16 @@ const GUI = (game) => {
         }
     };
 
-    return { drawShips, drawGameboard, drawGuesses };
+    const drawModal = (h2Text, pText) => {
+        const modal = document.querySelector(".modal-overlay");
+        modal.style.display = "flex";
+        const h2 = modal.querySelector("h2");
+        h2.textContent = h2Text;
+        const p = modal.querySelector("p");
+        p.textContent = pText;
+    };
+
+    return { drawShips, drawGameboard, drawGuesses, drawModal };
 
 };
 

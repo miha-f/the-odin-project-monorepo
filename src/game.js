@@ -74,9 +74,10 @@ const Game = () => {
 
         const playerLost = _player.getGameboard().allShipSunk();
         const computerLost = _computer.getGameboard().allShipSunk();
-        if (playerLost || computerLost) {
-            // display winner modal + reset button
-        }
+        if (playerLost)
+            return { winner: "computer" };
+        if (computerLost)
+            return { winner: "player" };
 
         return playerAttack;
     };
