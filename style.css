@@ -86,6 +86,82 @@ main {
                 color: black;
             }
         }
+    }
 
+    .projects {
+        article {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        >h2 {
+            text-align: center;
+            font-size: 4rem;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .project-card {
+            max-width: 90%;
+            min-height: 200px;
+            background-color: white;
+            margin-bottom: 20px;
+            box-shadow:
+                4px 0 6px rgba(0, 0, 0, 0.3),
+                4px 4px 6px rgba(0, 0, 0, 0.3);
+
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+
+            img {
+                height: 150px;
+                width: 100%;
+                object-fit: cover;
+            }
+
+            .project-header {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                margin: 5px 0;
+
+                h2 {
+                    text-align: center;
+                    font-size: 2rem;
+                    color: black;
+                    display: inline;
+                }
+
+                a {
+                    text-decoration: none;
+                    color: black;
+                }
+
+                i {
+                    width: 1rem;
+                    font-size: 1rem;
+                }
+
+                i:hover {
+                    font-size: 1.5rem;
+                }
+            }
+
+
+            p {
+                padding: 10px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .project-card:hover {
+            box-shadow:
+                4px 0 6px rgba(0, 0, 0, 0.6),
+                4px 4px 6px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+        }
     }
 }
