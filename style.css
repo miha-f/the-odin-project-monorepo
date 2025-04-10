@@ -95,6 +95,10 @@ main {
             align-items: center;
         }
 
+        article:last-child {
+            margin-bottom: 50px;
+        }
+
         >h2 {
             text-align: center;
             font-size: 4rem;
@@ -163,5 +167,60 @@ main {
                 4px 4px 6px rgba(0, 0, 0, 0.6);
             cursor: pointer;
         }
+
+    }
+}
+
+footer {
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 5px;
+
+    color: white;
+    background-color: var(--bg-secondary);
+
+    text-align: center;
+
+    h2 {
+        font-size: 3rem;
+        margin-bottom: 5px;
+    }
+
+    p {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+
+    .footer-address {
+        text-align: left;
+        margin-bottom: 5px;
+
+        p {
+            font-size: 1rem;
+        }
+    }
+
+    .footer-contact {
+        text-align: left;
+        margin-bottom: 5px;
+
+        p {
+            font-size: 1rem;
+        }
+    }
+
+    .footer-icons {
+        margin-bottom: 5px;
+
+        i {
+            font-size: 2rem;
+        }
+    }
+
+    img {
+        width: 100%;
+        height: auto;
     }
 }
