@@ -18,20 +18,6 @@
     box-sizing: border-box;
 }
 
-.diagonal-bg {
-    position: absolute;
-    background-color: var(--bg-secondary);
-    overflow: hidden;
-    transform: rotate(-10deg);
-    transform-origin: center;
-    top: -20%;
-    left: -50%;
-    width: max(200%, 200px);
-    height: 450px;
-    z-index: -1;
-
-}
-
 :root {
     --bg-primary: #ffffff;
     --bg-secondary: #0891b2;
@@ -40,6 +26,24 @@
     font-family: "Roboto", "Playfair Display", system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-img {
-    max-width: 300px;
+main {
+
+    .diagonal-bg {
+        position: absolute;
+        background-color: var(--bg-secondary);
+        overflow: hidden;
+        transform: skewY(-10deg);
+        transform-origin: center;
+        top: -20%;
+        width: 100vw;
+        height: 450px;
+        z-index: -1;
+        box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero {
+        img {
+            max-width: 300px;
+        }
+    }
 }
