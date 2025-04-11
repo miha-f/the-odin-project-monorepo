@@ -5,7 +5,7 @@ const ContactForm = ({ isEditMode }) => {
 
     return (
         <>
-            <div class="form">
+            <div class="contact-form">
                 <Input isEditMode={isEditMode} label="Name" />
                 <Input isEditMode={isEditMode} label="Email" type="email" />
                 <Input isEditMode={isEditMode} label="Telephone" type="tel" />

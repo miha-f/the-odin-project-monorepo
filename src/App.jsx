@@ -14,7 +14,17 @@ function App() {
     return (
         <>
             <Header isEditMode={isEditMode} toggleEditMode={toggleEditMode} />
-            <ContactForm isEditMode={isEditMode} />
+            <main>
+                <h2>Contact</h2>
+                <ContactForm isEditMode={isEditMode} />
+                <hr />
+
+                <h2>Education</h2>
+                <hr />
+
+                <h2>Past experience</h2>
+                <hr />
+            </main>
         </>
     )
 }
