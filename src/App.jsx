@@ -14,7 +14,7 @@ function App() {
     return (
         <>
             <Header isEditMode={isEditMode} toggleEditMode={toggleEditMode} />
-            <Input />
+            <Input label="Name" />
             <p>Hello</p>
         </>
     )
