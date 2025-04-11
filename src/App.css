@@ -4,6 +4,10 @@ main {
     align-items: center;
 }
 
+h2 {
+    margin-top: 20px;
+}
+
 hr {
     height: 4px;
     width: 100vw;

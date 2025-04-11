@@ -4,6 +4,7 @@ import Header from './Header'
 import FormManager from './FormManager';
 import ContactForm from './ContactForm';
 import EducationForm from './EducationForm';
+import JobForm from './JobForm';
 
 function App() {
     const [isEditMode, setIsEditMode] = useState(true);
@@ -29,11 +30,10 @@ function App() {
                 <hr />
 
                 <FormManager
-                    FormComponent={EducationForm}
+                    FormComponent={JobForm}
                     title="Past experience"
                     isEditMode={isEditMode}
                 />
-                <hr />
             </main>
         </>
     )

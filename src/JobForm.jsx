@@ -1,16 +1,16 @@
 import Input from './Input'
 import './Form.css'
 
-const EducationForm = ({ id, isEditMode, index, removeForm }) => {
+const JobForm = ({ id, isEditMode, index, removeForm }) => {
     const handleRemove = () => {
         removeForm(id);
     };
 
     return (
         <div class="form">
-            <h3>Education Entry {index + 1}</h3>
-            <Input isEditMode={isEditMode} label="Education name" />
-            <Input isEditMode={isEditMode} label="Education title" />
+            <h3>Job Entry {index + 1}</h3>
+            <Input isEditMode={isEditMode} label="Job name" />
+            <Input isEditMode={isEditMode} label="Job title" />
             <Input isEditMode={isEditMode} label="Address" />
             <Input isEditMode={isEditMode} label="Start date" />
             <Input isEditMode={isEditMode} label="End date" />
@@ -21,4 +21,4 @@ const EducationForm = ({ id, isEditMode, index, removeForm }) => {
     );
 }
 
-export default EducationForm;
+export default JobForm;
