@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Header from './Header'
+import FormManager from './FormManager';
 import ContactForm from './ContactForm';
 import EducationForm from './EducationForm';
 
@@ -20,11 +21,18 @@ function App() {
                 <ContactForm isEditMode={isEditMode} />
                 <hr />
 
-                <h2>Education</h2>
-                <EducationForm isEditMode={isEditMode} />
+                <FormManager
+                    FormComponent={EducationForm}
+                    title="Education"
+                    isEditMode={isEditMode}
+                />
                 <hr />
 
-                <h2>Past experience</h2>
+                <FormManager
+                    FormComponent={EducationForm}
+                    title="Past experience"
+                    isEditMode={isEditMode}
+                />
                 <hr />
             </main>
         </>
