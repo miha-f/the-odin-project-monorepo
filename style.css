@@ -280,3 +280,54 @@ footer {
         }
     }
 }
+
+@media (min-width: 1024px) {
+    main {
+        max-width: 1300px;
+        margin: 0 auto;
+
+        .hero {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 30px;
+
+            .image-container {
+                width: min(43%, 400px);
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+
+            }
+
+            .about-me {
+                width: 60%;
+                margin-top: 100px;
+                padding: 20px;
+            }
+
+            .icons {
+                display: none;
+            }
+        }
+
+        .projects {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+
+            >h2 {
+                width: 100%;
+            }
+
+
+        }
+    }
+
+    footer {
+        img {
+            max-width: 500px;
+        }
+    }
+}
