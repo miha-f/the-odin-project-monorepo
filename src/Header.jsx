@@ -1,9 +1,11 @@
 import './Header.css'
 
-const Header = () => {
+const Header = ({ isEditMode, toggleEditMode }) => {
     return (
         <header class="site-header">
-            <h1>My Sticky Header</h1>
+            <button onClick={toggleEditMode}>
+                {isEditMode ? 'Edit' : 'View'}
+            </button>
         </header>
     );
 }

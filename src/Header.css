@@ -6,4 +6,30 @@
     padding: 1rem 2rem;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    opacity: 0.8;
+    color: #333;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+button:focus {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
 }

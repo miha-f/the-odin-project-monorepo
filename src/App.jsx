@@ -1,12 +1,19 @@
+import { useState } from 'react'
 import './App.css'
 import Header from './Header'
 import Input from './Input'
 
 function App() {
+    const [isEditMode, setIsEditMode] = useState(true);
+
+    const toggleEditMode = () => {
+        setIsEditMode((prev) => !prev);
+    };
+
 
     return (
         <>
-            <Header />
+            <Header isEditMode={isEditMode} toggleEditMode={toggleEditMode} />
             <Input />
             <p>Hello</p>
         </>
