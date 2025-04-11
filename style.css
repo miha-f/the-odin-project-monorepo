@@ -54,7 +54,7 @@ main {
 
         .image-container {
             position: relative;
-            width: 100%;
+            width: 300px;
             margin: auto;
 
             img {
@@ -78,6 +78,7 @@ main {
 
         .about-me {
             padding: 5px;
+            background-color: var(--bg-primary);
 
             h2 {
                 text-align: center;
@@ -141,6 +142,7 @@ main {
                 a {
                     text-decoration: none;
                     color: black;
+                    width: 1rem;
                 }
 
                 i {
@@ -221,5 +223,60 @@ footer {
     img {
         width: 100%;
         height: auto;
+    }
+}
+
+@media (min-width: 768px) {
+    main {
+        max-width: 980px;
+        margin: 0 auto;
+
+        .hero {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 30px;
+
+            .image-container {
+                width: 43%;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+
+            }
+
+            .about-me {
+                width: 60%;
+                margin-top: 100px;
+                padding: 20px;
+            }
+
+            .icons {
+                display: none;
+            }
+        }
+
+        .projects {
+            width: 90%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+
+            >h2 {
+                width: 100%;
+            }
+
+            article {
+                max-width: 300px;
+            }
+
+        }
+    }
+
+    footer {
+        img {
+            max-width: 500px;
+        }
     }
 }
