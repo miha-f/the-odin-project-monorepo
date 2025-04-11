@@ -16,7 +16,7 @@ function FormManager({ FormComponent, title, isEditMode, initialData = [{}] }) {
         <div class="form-manager">
             <h2>{title}</h2>
             {formEntries.map((entry, index) => (
-                <div key={index}>
+                <div key={index} class="form-container">
                     <FormComponent isEditMode={isEditMode} index={index} removeForm={removeForm} />
                 </div>
             ))}
