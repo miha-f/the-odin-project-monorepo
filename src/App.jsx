@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Header from './Header'
-import Input from './Input'
+import ContactForm from './ContactForm';
 
 function App() {
     const [isEditMode, setIsEditMode] = useState(true);
@@ -14,8 +14,7 @@ function App() {
     return (
         <>
             <Header isEditMode={isEditMode} toggleEditMode={toggleEditMode} />
-            <Input label="Name" />
-            <p>Hello</p>
+            <ContactForm isEditMode={isEditMode} />
         </>
     )
 }

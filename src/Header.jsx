@@ -4,7 +4,7 @@ const Header = ({ isEditMode, toggleEditMode }) => {
     return (
         <header class="site-header">
             <button onClick={toggleEditMode}>
-                {isEditMode ? 'Edit' : 'View'}
+                {isEditMode ? 'View' : 'Edit'}
             </button>
         </header>
     );
