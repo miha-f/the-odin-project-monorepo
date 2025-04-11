@@ -1,26 +1,28 @@
 import { useState } from "react";
 import './FormManager.css';
 
-function FormManager({ FormComponent, title, isEditMode, initialData = [{}] }) {
-    const [formEntries, setFormEntries] = useState(initialData);
+function FormManager({ FormComponent, title, isEditMode }) {
+    const [formEntries, setFormEntries] = useState([{ id: crypto.randomUUID() }]);
 
     const addForm = () => {
-        setFormEntries((prev) => [...prev, {}]);
+        setFormEntries((prev) => [...prev, { id: crypto.randomUUID() }]);
     };
 
-    const removeForm = (index) => {
-        setFormEntries((prev) => prev.filter((_, i) => i !== index));
+    const removeForm = (idToRemove) => {
+        setFormEntries(formEntries.filter(({ id }) => id !== idToRemove));
     };
 
     return (
         <div class="form-manager">
             <h2>{title}</h2>
-            {formEntries.map((entry, index) => (
-                <div key={index} class="form-container">
-                    <FormComponent isEditMode={isEditMode} index={index} removeForm={removeForm} />
+            {formEntries.map(({ id }, index) => (
+                <div key={id} class="form-container">
+                    <FormComponent id={id} isEditMode={isEditMode} index={index} removeForm={removeForm} />
                 </div>
             ))}
-            <button onClick={addForm}>Add {title} Entry</button>
+            {isEditMode &&
+                <button onClick={addForm}>Add {title} Entry</button>
+            }
         </div>
     );
 }
