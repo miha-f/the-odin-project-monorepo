@@ -10,6 +10,8 @@ import "./style.css";
 //      - sorting at top (priority, date, title, ...)
 //      - maybe don't add option to choose project from new todo form (for form
 //        it would make sense to add new project from sidebar)
+//      - remove project
+//      - edit todo (opens todo form and you can edit data)
 
 import { sidebarGui, contentGui } from "./gui.js";
 import { localStore } from "./store.js";
