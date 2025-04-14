@@ -1,0 +1,35 @@
+.imageGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, auto);
+    gap: 10px;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.imageGrid img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.imageGrid img:hover {
+    opacity: 0.8;
+    background-color: #eee;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .imageGrid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, auto);
+    }
+}
+
+@media (max-width: 480px) {
+    .imageGrid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(10, auto);
+    }
+}
