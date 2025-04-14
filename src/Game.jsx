@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useGetAllPokemons, getPokemonImageUrl } from "./api.js";
 import Header from './Header';
-
+import ImageGrid from './ImageGrid';
 
 const Game = () => {
     const [bestScore, setBestScore] = useState(0);
-    const [currScore, setCurrScore] = useState(0);
+    const [currentScore, setCurrentScore] = useState(0);
     const [visibleCount, setVisibleCount] = useState(20);
 
     const { data, error, loading } = useGetAllPokemons();
@@ -44,24 +44,10 @@ const Game = () => {
     return (
         <>
             <Header>
-                <p>123</p>
-                <p>345</p>
+                <p>Best score: {bestScore}</p>
+                <p>Current score: {currentScore}</p>
             </Header>
-            <div>
-                <div style={{ display: "flex", flexWrap: "wrap" }}>
-                    {visiblePokemons.map((pokemon) => (
-                        <div key={pokemon.name} style={{ margin: 10 }}>
-                            <p>{pokemon.name}</p>
-                            {images[pokemon.name]
-                                ? <img src={images[pokemon.name]} alt={pokemon.name} width={96} />
-                                : <p>Loading image...</p>}
-                        </div>
-                    ))}
-                </div>
-                <button onClick={() => setVisibleCount(count => count + 20)}>
-                    Load More
-                </button>
-            </div>
+            <ImageGrid images={Object.values(images)} />
         </>
     );
 
