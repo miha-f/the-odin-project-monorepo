@@ -1,10 +1,13 @@
 import styles from './ImageGrid.module.css'
 
-const ImageGrid = ({ images }) => {
+const ImageGrid = ({ images, onClick }) => {
+    const urls = Object.values(images);
+    const names = Object.keys(images);
+
     return (
         <div className={styles.imageGrid}>
-            {images.map((img, idx) => (
-                <img key={idx} src={img} alt={`image-${idx}`} />
+            {urls.map((img, idx) => (
+                <img onClick={() => onClick(names[idx])} key={names[idx]} src={img} alt={`image-${idx}`} />
             ))}
         </div>
     );

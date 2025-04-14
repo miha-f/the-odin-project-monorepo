@@ -6,8 +6,8 @@ import ImageGrid from './ImageGrid';
 const Game = () => {
     const [bestScore, setBestScore] = useState(0);
     const [currentScore, setCurrentScore] = useState(0);
+    const [clickedPokemonsSet, setClickedPokemonsSet] = useState(new Set());
     const [visibleCount, setVisibleCount] = useState(20);
-
     const { data, error, loading } = useGetAllPokemons();
     const [images, setImages] = useState({});
 
@@ -36,10 +36,16 @@ const Game = () => {
 
     }, [data, visibleCount]);
 
+    const handleClick = (name) => {
+        if (clickedPokemonsSet.has(name))
+            console.log("you already clicked pokemon: ", name);
+        else
+            console.log(name);
+        setClickedPokemonsSet((prevSet) => new Set(prevSet).add(name));
+    }
+
     if (loading) return <p>Loading...</p>
     if (error) return <p>Error</p>
-
-    const visiblePokemons = data.results.slice(0, visibleCount);
 
     return (
         <>
@@ -47,7 +53,7 @@ const Game = () => {
                 <p>Best score: {bestScore}</p>
                 <p>Current score: {currentScore}</p>
             </Header>
-            <ImageGrid images={Object.values(images)} />
+            <ImageGrid images={images} onClick={handleClick} />
         </>
     );
 
