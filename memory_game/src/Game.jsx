@@ -58,6 +58,8 @@ const Game = () => {
     const playAgain = () => {
         setCurrentScore(0);
         setPlaying(true);
+        setVisibleCount(20);
+        setClickedPokemonsSet(new Set());
     }
 
     const shuffleAndSliceObject = (obj) => {
