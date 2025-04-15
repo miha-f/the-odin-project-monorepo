@@ -14,6 +14,7 @@ document.querySelectorAll('.dropdown').forEach(drop => {
 
         // NOTE(miha): Close other dropdowns, if any open
         document.querySelectorAll('.menu.show').forEach(m => {
+            console.log("closin other");
             m.classList.remove('show');
             m.parentElement.querySelector('.drop-down').classList.remove('open');
         });

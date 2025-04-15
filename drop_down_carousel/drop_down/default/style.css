@@ -76,32 +76,33 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1;
 
-    .menu.show {
-        display: flex;
-    }
+}
 
-    .menu ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
+.menu.show {
+    display: flex;
+}
 
-    .menu li {
-        border-bottom: 1px solid #eee;
-    }
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 
-    .menu li:last-child {
-        border-bottom: none;
-    }
+.menu li {
+    border-bottom: 1px solid #eee;
+}
 
-    .menu a {
-        display: block;
-        padding: 10px;
-        color: #333;
-        text-decoration: none;
-    }
+.menu li:last-child {
+    border-bottom: none;
+}
 
-    .menu a:hover {
-        background-color: #f7f7f7;
-    }
+.menu a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.menu a:hover {
+    background-color: #f7f7f7;
 }
