@@ -2,7 +2,6 @@
   "name": "memory_game",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://miha-f.github.io/the-odin-project-monorepo/memory_game/",
   "type": "module",
   "scripts": {
     "dev": "vite",
