@@ -1,15 +1,16 @@
+import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 
 const routes = [
     {
         path: "/",
-        element: <Home />,
+        element: <MainLayout />,
         // errorElement: <App />,
-    },
-    {
-        path: "shop",
-        element: <Shop />,
+        children: [
+            { path: "", element: <Home /> },
+            { path: "shop", element: <Shop /> },
+        ]
     },
 ];
 
