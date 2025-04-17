@@ -1,10 +1,18 @@
 import { FaStar } from "react-icons/fa";
 import { useGetProduct } from "../api/Products";
 import { useParams } from "react-router-dom";
+import { useCart } from '@/context/CartContext';
 
 const Product = () => {
     const { id } = useParams();
     const { data: product, loading, error } = useGetProduct(id);
+    const { addToCart } = useCart();
+
+    const handleOnClick = (e, product) => {
+        e.stopPropagation();
+        e.preventDefault();
+        addToCart(product);
+    }
 
     if (loading) return <p>Loading...</p>
     if (error) return <p>Error</p>
@@ -26,7 +34,7 @@ const Product = () => {
                         <span className="text-gray-400">({product.rating.count})</span>
                     </div>
                 </div>
-                <button onClick={(e) => addToCart(e)} className="mx-auto w-40 mt-auto text-white bg-gray-800 py-2 rounded-xl font-semibold hover:bg-gray-500">
+                <button onClick={(e) => handleOnClick(e, product)} className="mx-auto w-40 mt-auto text-white bg-gray-800 py-2 rounded-xl font-semibold hover:bg-gray-500">
                     Add to Cart
                 </button>
             </div>

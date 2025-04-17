@@ -1,12 +1,15 @@
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useCart } from '@/context/CartContext';
 
 const ProductItem = ({ product }) => {
 
-    const addToCart = (e) => {
+    const { addToCart } = useCart();
+
+    const handleOnClick = (e, product) => {
         e.stopPropagation();
         e.preventDefault();
-        console.log("click add to cart");
+        addToCart(product);
     }
 
     return (
@@ -27,7 +30,7 @@ const ProductItem = ({ product }) => {
                             <span className="text-gray-400">({product.rating.count})</span>
                         </div>
                     </div>
-                    <button onClick={(e) => addToCart(e)} className="mt-auto text-white bg-gray-800 py-2 rounded-xl font-semibold hover:bg-gray-500">
+                    <button onClick={(e) => handleOnClick(e, product)} className="mt-auto text-white bg-gray-800 py-2 rounded-xl font-semibold hover:bg-gray-500">
                         Add to Cart
                     </button>
                 </div>

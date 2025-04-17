@@ -8,11 +8,11 @@ const CartDropdown = ({ items, onClose, onRemove, onIncrement, onDecrement, onCh
                     items.map((item) => (
                         <div key={item.id} className="text-black p-4 flex justify-between items-center">
                             <div className="w-1/3">
-                                <div className="font-medium">{item.name}</div>
-                                <div className="text-sm text-gray-500">Qty: {item.quantity}</div>
+                                <div className="font-medium text-clamp-1">{item.title}</div>
+                                <div className="text-sm text-gray-500">{item.price * item.quantity}$</div>
                             </div>
                             <div className="w-1/3 flex justify-center">
-                                <img src="https://placehold.co/50x50" />
+                                <img className="w-[50px] h-[50px]" src={item.image} />
                             </div>
                             <div className="flex gap-2 items-center w-1/3">
                                 <button onClick={() => onDecrement(item.id)} className="px-2">-</button>
