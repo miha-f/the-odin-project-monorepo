@@ -19,7 +19,9 @@ const MainLayout = () => {
         <div className="min-h-screen flex flex-col">
             <header className="bg-gray-800 text-white p-4">
                 <nav className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
-                    <h1 className="text-xl font-semibold">Shopping Cart</h1>
+                    <NavLink to="/" >
+                        <h1 className="text-xl font-semibold">Shopping Cart</h1>
+                    </NavLink>
                     <div className="space-x-4 w-1/2 container flex items-center mt-3 justify-center sm:justify-end sm:mt-auto">
                         <MyNavLink name="Home" url="/" />
                         <MyNavLink name="Shop" url="/shop" />
