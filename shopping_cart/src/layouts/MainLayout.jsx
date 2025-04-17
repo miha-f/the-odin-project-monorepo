@@ -17,7 +17,7 @@ const MyNavLink = ({ name, url }) => {
 
 const MainLayout = () => {
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col max-w-screen-xl mx-auto">
             <header className="bg-gray-800 text-white p-4">
                 <nav className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
                     <NavLink to="/" >
