@@ -8,6 +8,7 @@ const MyNavLink = ({ name, url }) => {
             className={({ isActive }) =>
                 isActive ? 'text-yellow-400' : 'hover:text-yellow-300'
             }
+            end
         >
             {name}
         </NavLink>
@@ -25,6 +26,7 @@ const MainLayout = () => {
                     <div className="space-x-4 w-1/2 container flex items-center mt-3 justify-center sm:justify-end sm:mt-auto">
                         <MyNavLink name="Home" url="/" />
                         <MyNavLink name="Shop" url="/shop" />
+                        <MyNavLink name="Checkout" url="/shop/checkout" />
                         <CartContainer />
                     </div>
                 </nav>

@@ -9,9 +9,6 @@ const CartContainer = () => {
 
     const toggleDropdown = () => setShowDropdown(!showDropdown);
     const closeDropdown = () => setShowDropdown(false);
-    const handleCheckout = () => {
-        alert("Go to checkout page");
-    };
 
     return (
         <div>
@@ -24,7 +21,6 @@ const CartContainer = () => {
                         onIncrement={increment}
                         onDecrement={decrement}
                         onRemove={removeFromCart}
-                        onCheckout={handleCheckout}
                     />
                 )}
             </div>

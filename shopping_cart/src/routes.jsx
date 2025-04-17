@@ -2,6 +2,7 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import Product from "./pages/Product";
+import Checkout from "./pages/Checkout";
 
 const routes = [
     {
@@ -11,6 +12,7 @@ const routes = [
         children: [
             { path: "", element: <Home /> },
             { path: "shop", element: <Shop /> },
+            { path: "shop/checkout", element: <Checkout /> },
             { path: "product/:id", element: <Product /> },
         ]
     },

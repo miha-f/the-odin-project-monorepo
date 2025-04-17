@@ -1,4 +1,6 @@
-const CartDropdown = ({ items, onClose, onRemove, onIncrement, onDecrement, onCheckout }) => {
+import { Link } from "react-router-dom";
+
+const CartDropdown = ({ items, onClose, onRemove, onIncrement, onDecrement }) => {
     return (
         <div className="absolute -right-20 sm:right-0 mt-2 w-80 bg-white shadow-lg rounded-lg border z-50">
             <div className="max-h-64 overflow-y-auto divide-y divide-gray-200">
@@ -26,9 +28,11 @@ const CartDropdown = ({ items, onClose, onRemove, onIncrement, onDecrement, onCh
             </div>
             <div className="p-4 flex justify-between">
                 <button onClick={onClose} className="text-sm text-white bg-gray-800 px-4 py-1 text-semibold rounded">Continue Shopping</button>
-                <button onClick={onCheckout} className="bg-gray-800 text-white text-semibold px-4 py-1 rounded text-sm">
-                    Checkout
-                </button>
+                <Link to="/shop/checkout">
+                    <button className="bg-gray-800 text-white text-semibold px-4 py-1 rounded text-sm">
+                        Checkout
+                    </button>
+                </Link>
             </div>
         </div>
     );
