@@ -5,11 +5,7 @@ import routes from "./routes";
 import "./index.css";
 import { CartProvider } from './context/CartContext';
 
-const basename = import.meta.env.DEV ? "/" : "/the-odin-project-monorepo/shopping_cart/dist/";
-
-const router = createBrowserRouter(routes, {
-    basename,
-});
+const router = createBrowserRouter(routes);
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
