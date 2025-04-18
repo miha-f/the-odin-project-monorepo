@@ -18,6 +18,12 @@ class UsersStorage {
         return this.storage[id];
     }
 
+    getUserByName(name) {
+        return Object.values(this.storage).filter(user =>
+            user.firstName.toLowerCase().includes(name.toLowerCase())
+        );
+    }
+
     updateUser(id, { firstName, lastName, email, age, bio }) {
         this.storage[id] = { id, firstName, lastName, email, age, bio };
     }

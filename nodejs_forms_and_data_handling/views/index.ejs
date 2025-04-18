@@ -17,5 +17,10 @@
     <% } %>
   </ul>
   <a href="/create">Create a user</a>
+  <form action="/search" method="GET" style="display:inline;">
+    <label for="searchQuery">Search: </label>
+    <input type="text" name="searchQuery" id="searchQuery" required>
+    <button type="submit">Search</button>
+  </form>
 </body>
 </html>
