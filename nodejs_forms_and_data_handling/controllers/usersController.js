@@ -1,6 +1,7 @@
 const usersStorage = require("../storages/usersStorage");
 const { body, validationResult } = require("express-validator");
 
+const emailErr = "must be valid email.";
 const alphaErr = "must only contain letters.";
 const lengthErr = "must be between 1 and 10 characters.";
 
@@ -11,6 +12,16 @@ const validateUser = [
     body("lastName").trim()
         .isAlpha().withMessage(`Last name ${alphaErr}`)
         .isLength({ min: 1, max: 10 }).withMessage(`Last name ${lengthErr}`),
+    body("email").trim()
+        .isEmail().withMessage(`Email ${emailErr}`),
+    body('age')
+        .optional({ values: "falsy" })
+        .isInt({ min: 18, max: 120 })
+        .withMessage('Age must be between 18 and 120')
+        .toInt(),
+    body("bio").trim()
+        .optional({ values: "falsy" })
+        .isLength({ max: 200 }).withMessage(`Bio ${lengthErr}`),
 ];
 
 exports.usersListGet = (req, res) => {
@@ -37,8 +48,8 @@ exports.usersCreatePost = [
                 errors: errors.array(),
             });
         }
-        const { firstName, lastName } = req.body;
-        usersStorage.addUser({ firstName, lastName });
+        const { firstName, lastName, email, age, bio } = req.body;
+        usersStorage.addUser({ firstName, lastName, email, age, bio });
         res.redirect("/");
     }
 ];
@@ -63,8 +74,8 @@ exports.usersUpdatePost = [
                 errors: errors.array(),
             });
         }
-        const { firstName, lastName } = req.body;
-        usersStorage.updateUser(req.params.id, { firstName, lastName });
+        const { firstName, lastName, email, age, bio } = req.body;
+        usersStorage.updateUser(req.params.id, { firstName, lastName, email, age, bio });
         res.redirect("/");
     }
 ];
