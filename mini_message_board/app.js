@@ -19,6 +19,9 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express.urlencoded({ extended: true }));
+app.locals.getCurrentYear = () => {
+    return new Date().getFullYear();
+};
 
 app.get('/', async (req, res) => {
     const messages = await prisma.message.findMany({
