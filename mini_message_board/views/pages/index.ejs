@@ -1,2 +1,14 @@
-<h2>Welcome to the Home Page</h2>
-<p>This is styled with Materialize CSS.</p>
+<h2>Messages</h2>
+
+<ul>
+    <% if (locals.messages) {%>
+        <% messages.forEach(message=> { %>
+            <li>
+                ID: <%= message.id %>, userame: <%= message.username %>,
+                        message: <%= message.message %>
+            </li>
+            <% }); %>
+                <% } else { %>
+                    No messages yet, feel free to create new one!
+                    <% } %>
+</ul>

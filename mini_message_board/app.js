@@ -1,5 +1,10 @@
 const express = require('express');
 const path = require('path');
+const storage = require('./db');
+storage.addMessage({ username: "jake", message: "hi" });
+storage.addMessage({ username: "alice", message: "hello world" });
+storage.addMessage({ username: "jake", message: "what a beatuful day!" });
+storage.addMessage({ username: "alice", message: "can't wait for the icecream" });
 
 const app = express();
 
@@ -17,16 +22,21 @@ app.use((req, res, next) => {
     };
     next();
 });
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Home' });
+    const messages = storage.getMessages();
+    res.render('index', { title: 'Home', messages: messages });
 });
 
 app.get('/new', (req, res) => {
-    res.render('new', { title: 'Home' });
+    res.render('new', { title: 'New' });
 });
 
 app.post('/new', (req, res) => {
+    const { username, message } = req.body;
+    storage.addMessage({ username, message });
+    res.redirect("/");
 });
 
 const PORT = process.env.PORT || 3000;
