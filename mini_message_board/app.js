@@ -1,10 +1,6 @@
 const express = require('express');
 const path = require('path');
-const storage = require('./db');
-storage.addMessage({ username: "jake", message: "hi" });
-storage.addMessage({ username: "alice", message: "hello world" });
-storage.addMessage({ username: "jake", message: "what a beatuful day!" });
-storage.addMessage({ username: "alice", message: "can't wait for the icecream" });
+const prisma = require('./db');
 
 const app = express();
 
@@ -24,8 +20,9 @@ app.use((req, res, next) => {
 });
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-    const messages = storage.getMessages();
+app.get('/', async (req, res) => {
+    const messages = await prisma.message.findMany();
+    console.log(messages);
     res.render('index', { title: 'Home', messages: messages });
 });
 
@@ -33,9 +30,12 @@ app.get('/new', (req, res) => {
     res.render('new', { title: 'New' });
 });
 
-app.post('/new', (req, res) => {
+app.post('/new', async (req, res) => {
     const { username, message } = req.body;
-    storage.addMessage({ username, message });
+    const date = new Date();
+    await prisma.message.create({
+        data: { username, message, date },
+    });
     res.redirect("/");
 });
 
