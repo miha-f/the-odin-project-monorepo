@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const prisma = require('./db');
+const { body, validationResult } = require("express-validator");
 
 const app = express();
 
@@ -31,7 +32,6 @@ app.get('/', async (req, res) => {
     const totalMessages = await prisma.message.count();
     const totalPages = Math.ceil(totalMessages / ITEMS_PER_PAGE);
 
-
     const messages = await prisma.message.findMany({
         skip: skip,
         orderBy: {
@@ -39,7 +39,6 @@ app.get('/', async (req, res) => {
         },
         take: ITEMS_PER_PAGE,
     });
-    console.log(messages);
     const formattedMessages = messages.map(msg => ({
         ...msg,
         formattedDate: msg.date.toLocaleDateString('en-DE', {
@@ -54,17 +53,40 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/new', (req, res) => {
-    res.render('new', { title: 'New' });
+    res.render('new', { title: 'New', formData: undefined, errors: undefined });
 });
 
-app.post('/new', async (req, res) => {
-    const { username, message } = req.body;
-    const date = new Date();
-    await prisma.message.create({
-        data: { username, message, date },
-    });
-    res.redirect("/");
-});
+app.post('/new', [
+    body("username")
+        .trim()
+        .notEmpty()
+        .withMessage("Username can not be empty.")
+        .isAlpha()
+        .withMessage("Username must only contain alphabet letters."),
+    body("message")
+        .trim()
+        .notEmpty()
+        .withMessage("Message can not be empty."),
+],
+    async (req, res) => {
+        const validationErrors = validationResult(req);
+        if (!validationErrors.isEmpty()) {
+            const errors = validationErrors.errors.map(err => ({
+                field: err.path,
+                message: err.msg
+            }));
+            const { username, message } = req.body;
+            res.render('new', { title: 'New', formData: { username, message }, errors: errors });
+            return;
+        }
+        const { username, message } = req.body;
+        const date = new Date();
+        await prisma.message.create({
+            data: { username, message, date },
+        });
+        res.redirect("/");
+    }
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));

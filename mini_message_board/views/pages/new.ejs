@@ -4,13 +4,27 @@
     <div class="row">
         <div class="input-field col s12 m6">
             <label for="username">Username</label>
-            <input name="username" id="username" type="text" class="validate">
+            <input name="username" id="username" type="text" class="validate" value="<%= formData?.username ?? '' %>">
+            <% if (locals.errors) { %>
+                <% errors.forEach(err => {  %>
+                <% if (err.field === "username") { %>
+                <p class="red-text"><%=err.message %></p>
+                <% } %>
+                <% }); %>
+            <% } %>
         </div>
     </div>
     <div class="row">
         <div class="input-field col s12">
             <label for="message">Textarea</label>
-            <textarea name="message" id="message" class="materialize-textarea"></textarea>
+            <textarea name="message" id="message" class="materialize-textarea" value="<%= formData?.message ?? '' %>"></textarea>
+            <% if (locals.errors) { %>
+                <% errors.forEach(err => {  %>
+                <% if (err.field === "message") { %>
+                <p class="red-text"><%=err.message %></p>
+                <% } %>
+                <% }); %>
+            <% } %>
         </div>
     </div>
     <div class="row">
