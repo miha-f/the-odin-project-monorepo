@@ -23,13 +23,23 @@ app.locals.getCurrentYear = () => {
     return new Date().getFullYear();
 };
 
+const ITEMS_PER_PAGE = 20;
+
 app.get('/', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const totalMessages = await prisma.message.count();
+    const totalPages = Math.ceil(totalMessages / ITEMS_PER_PAGE);
+
+
     const messages = await prisma.message.findMany({
+        skip: skip,
         orderBy: {
             date: 'desc'
         },
-        take: 20,
+        take: ITEMS_PER_PAGE,
     });
+    console.log(messages);
     const formattedMessages = messages.map(msg => ({
         ...msg,
         formattedDate: msg.date.toLocaleDateString('en-DE', {
@@ -40,7 +50,7 @@ app.get('/', async (req, res) => {
             minute: '2-digit'
         })
     }));
-    res.render('index', { title: 'Home', messages: formattedMessages });
+    res.render('index', { title: 'Home', messages: formattedMessages, page: page, totalPages: totalPages });
 });
 
 app.get('/new', (req, res) => {

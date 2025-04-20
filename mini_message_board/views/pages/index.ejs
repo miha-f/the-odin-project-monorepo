@@ -1,25 +1,48 @@
 <h2 class="center">Messages</h2>
 
 <ul>
+
     <% if (locals.messages) {%>
-        <% messages.forEach(message=> { %>
-            <div class="container">
-                <div class="card blue-grey lighten-5">
-                    <div class="card-content">
-                        <span class="card-title"><strong>@<%= message.username %></strong></span>
-                        <p>
-                            <%= message.message %>
-                        </p>
+        <ul class="collection">
+            <% messages.forEach(message=> { %>
+                <li class="collection-item">
+                    <div>
+                        <h5>
+                            @<%= message.username %>
+                                </h3>
+                                <p class="secondary-content">
+                                    <%= message.formattedDate %>
+                                </p>
+                                <p>
+                                    <%= message.message %>
+                                </p>
+                                <br>
                     </div>
-                    <div class="card-action right-align">
-                        <small class="grey-text">
-                            <%= message.formattedDate %>
-                        </small>
-                    </div>
-                </div>
-            </div>
-            <% }); %>
-                <% } else { %>
-                    No messages yet, feel free to create new one!
-                    <% } %>
+                </li>
+                <% }); %>
+        </ul>
+        <% } %>
+
+            <ul class="pagination s12">
+                <% if (page> 1) { %>
+                    <li class="waves-effect"><a href="/?page=<%= page - 1 %>"><i
+                                class="material-icons">chevron_left</i></a></li>
+                    <% } else { %>
+                        <li class="disabled"><a><i class="material-icons">chevron_left</i></a></li>
+                        <% } %>
+
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <li class="blue lighten-2 <%= i === page ? 'active' : 'waves-effect' %>"><a
+                                        href="/?page=<%= i %>">
+                                        <%= i %>
+                                    </a></li>
+                                <% } %>
+
+                                    <% if (page < totalPages) { %>
+                                        <li class="waves-effect"><a href="/?page=<%= page + 1 %>"><i
+                                                    class="material-icons">chevron_right</i></a></li>
+                                        <% } else { %>
+                                            <li class="disabled"><a><i class="material-icons">chevron_right</i></a></li>
+                                            <% } %>
+            </ul>
 </ul>
