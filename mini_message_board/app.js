@@ -22,8 +22,11 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'Home' });
 });
 
-app.get('/about', (req, res) => {
-    res.render('about', { title: 'About' });
+app.get('/new', (req, res) => {
+    res.render('new', { title: 'Home' });
+});
+
+app.post('/new', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
