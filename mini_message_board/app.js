@@ -21,9 +21,23 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
-    const messages = await prisma.message.findMany();
-    console.log(messages);
-    res.render('index', { title: 'Home', messages: messages });
+    const messages = await prisma.message.findMany({
+        orderBy: {
+            date: 'desc'
+        },
+        take: 20,
+    });
+    const formattedMessages = messages.map(msg => ({
+        ...msg,
+        formattedDate: msg.date.toLocaleDateString('en-DE', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+    }));
+    res.render('index', { title: 'Home', messages: formattedMessages });
 });
 
 app.get('/new', (req, res) => {
