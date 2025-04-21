@@ -1,48 +1,45 @@
 <h2 class="center">Messages</h2>
 
-<ul>
+<% if (locals.messages) {%>
+    <ul class="collection">
+        <% messages.forEach(message=> { %>
+            <li class="collection-item">
+                <div>
+                    <h5>
+                        @<%= message.username %>
+                    </h5>
+                    <p class="secondary-content blue-text">
+                        <%= message.formattedDate %>
+                    </p>
+                    <p>
+                        <%= message.message %>
+                    </p>
+                    <br>
+                </div>
+            </li>
+        <% }); %>
+    </ul>
+<% } %>
 
-    <% if (locals.messages) {%>
-        <ul class="collection">
-            <% messages.forEach(message=> { %>
-                <li class="collection-item">
-                    <div>
-                        <h5>
-                            @<%= message.username %>
-                                </h3>
-                                <p class="secondary-content">
-                                    <%= message.formattedDate %>
-                                </p>
-                                <p>
-                                    <%= message.message %>
-                                </p>
-                                <br>
-                    </div>
-                </li>
-                <% }); %>
-        </ul>
-        <% } %>
+<ul class="pagination s12 center">
+    <% if (page > 1) { %>
+        <li class="waves-effect"><a href="?page=1">First</a></li>
+        <li class="waves-effect"><a href="?page=<%= page - 1 %>"><i class="material-icons">chevron_left</i></a></li>
+    <% } %>
 
-            <ul class="pagination s12">
-                <% if (page> 1) { %>
-                    <li class="waves-effect"><a href="/?page=<%= page - 1 %>"><i
-                                class="material-icons">chevron_left</i></a></li>
-                    <% } else { %>
-                        <li class="disabled"><a><i class="material-icons">chevron_left</i></a></li>
-                        <% } %>
+    <% 
+        const delta = 2;
+        const start = Math.max(1, page - delta);
+        const end = Math.min(totalPages, page + delta);
+        for (let i = start; i <= end; i++) {
+    %>
+        <li class="blue lighten-1 <%= i === page ? 'active' : 'waves-effect' %>">
+        <a href="?page=<%= i %>"><%= i %></a>
+        </li>
+    <% } %>
 
-                            <% for (let i=1; i <=totalPages; i++) { %>
-                                <li class="blue lighten-2 <%= i === page ? 'active' : 'waves-effect' %>"><a
-                                        href="/?page=<%= i %>">
-                                        <%= i %>
-                                    </a></li>
-                                <% } %>
-
-                                    <% if (page < totalPages) { %>
-                                        <li class="waves-effect"><a href="/?page=<%= page + 1 %>"><i
-                                                    class="material-icons">chevron_right</i></a></li>
-                                        <% } else { %>
-                                            <li class="disabled"><a><i class="material-icons">chevron_right</i></a></li>
-                                            <% } %>
-            </ul>
+<% if (page < totalPages) { %>
+    <li class="waves-effect"><a href="?page=<%= page + 1 %>"><i class="material-icons">chevron_right</i></a></li>
+    <li class="waves-effect"><a href="?page=<%= totalPages %>">Last</a></li>
+<% } %>
 </ul>
