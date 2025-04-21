@@ -4,7 +4,7 @@ const { faker } = require('@faker-js/faker');
 const prisma = new PrismaClient();
 
 async function main() {
-    const messages = Array.from({ length: 50 }).map(() => ({
+    const messages = Array.from({ length: 1000 }).map(() => ({
         username: faker.internet.userName(),
         message: faker.lorem.sentence(),
         date: faker.date.recent(10),

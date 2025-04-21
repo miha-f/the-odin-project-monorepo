@@ -6,6 +6,8 @@
         "start": "node app.js",
         "dev": "node --watch app.js",
         "seed": "npx prisma db seed",
+        "reset:db": "npx prisma db push --force-reset",
+        "generate:db": "npx prisma generate",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "prisma": {
