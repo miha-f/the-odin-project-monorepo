@@ -2,22 +2,182 @@
 <html>
 
 <head>
-    <title>
-        Inventory
-    </title>
+    <title>Inventory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/output.css">
 </head>
 
 <body>
-    <nav>
+    <nav class="
+        flex justify-between
+        top-0 left-0 right-0 h-16 bg-blue-600 text-white z-50 flex items-center px-4
+    ">
+        <button id="sidebar-toggle">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
+        </button>
+
+        <div>Dashboard</div>
+
+        <button id="menu-toggle">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
     </nav>
 
+    <div id="mobile-menu" class="
+        md:hidden hidden
+        top-16 left-0 right-0 bg-white text-black z-40
+    ">
+        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Dashboard</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Users</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Settings</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
+    </div>
+
+    <div id="mobile-sidebar" class="fixed top-16 left-0 h-full w-64 bg-white shadow transform -translate-x-full transition-transform duration-300 z-40">
+        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Settings</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
+    </div>
+    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-gray bg-opacity-50 hidden z-30"></div>
+
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+    <p>hmm</p>
+                                                                          
     <main>
         <%- include(view) %>
     </main>
 
     <footer>
     </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const sidebarBtn = document.getElementById('sidebar-toggle');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileSidebarOverlay = document.getElementById('mobile-sidebar-overlay');
+        sidebarBtn.addEventListener('click', () => {
+            mobileSidebar.classList.toggle('-translate-x-full');
+            mobileSidebarOverlay.classList.toggle('hidden');
+        });
+        mobileSidebarOverlay.addEventListener('click', () => {
+            mobileSidebar.classList.toggle('-translate-x-full');
+            mobileSidebarOverlay.classList.add('hidden');
+        });
+    </script>
 </body>
 
 </html>
