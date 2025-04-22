@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="/css/output.css">
 </head>
 
-<body>
+<body class="bg-bg text-text">
     <nav class="
         flex justify-between
-        top-0 left-0 right-0 h-16 bg-blue-600 dark:bg-slate-800 text-white z-50 flex items-center px-4
+        top-0 left-0 right-0 h-16 bg-surface z-50 flex items-center px-4
     ">
         <button id="sidebar-toggle" class="md:hidden">
             <svg id="sidebar-toggle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
@@ -31,35 +31,35 @@
         </button>
         
         <div class="hidden md:flex">
-            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Dashboard</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Users</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Settings</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Dashboard</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Users</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
         </div>
     </nav>
 
     <div id="mobile-menu" class="
         md:hidden
         max-h-0 overflow-hidden
-        top-16 left-0 right-0 bg-white text-black z-40 shadow
+        top-16 left-0 right-0 z-40 shadow
         transition-all duration-500 ease-linear
     ">
-        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Dashboard</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Users</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Settings</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Dashboard</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Users</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
     </div>
 
     <div id="mobile-sidebar" class="
-        md:hidden
-        fixed top-16 left-0 h-full w-64 bg-white shadow 
+        md:hidden bg-surface
+        fixed top-16 left-0 h-full w-64 shadow 
         transform -translate-x-full transition-transform duration-300 z-40
     ">
-        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Settings</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
     </div>
     <div id="mobile-sidebar-overlay" class="
-        fixed inset-0 bg-gray bg-opacity-50 hidden z-30
+        fixed top-16 inset-0 backdrop-blur-sm hidden z-30
     "></div>
 
      <button id="toggle-dark">Toggle Dark</button>
@@ -69,10 +69,10 @@
 </div>
 
      <div class="bg-white text-black dark:bg-gray-900 dark:text-white p-4 rounded">
-  Hello, dark mode!
+  Hello, dark mode! this text is over here! i hope so!!!
 </div>
 
-    <p>hmm</p>
+    <p class="bg-bg">hmm</p>
     <p>hmm</p>
     <p>hmm</p>
     <p>hmm</p>

@@ -1,3 +1,45 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-primary: var(--color-blue-600);
+    --color-secondary: var(--color-purple-600);
+    --color-accent: var(--color-amber-500);
+    --color-bg: #ffffff;
+    --color-bg-alt: var(--color-gray-50);
+    --color-surface: var(--color-gray-100);
+    --color-border: var(--color-gray-200);
+    --color-text: var(--color-gray-900);
+    --color-text-muted: var(--color-gray-500);
+    --color-heading: var(--color-gray-800);
+    --color-link: var(--color-blue-600);
+    --color-link-hover: var(--color-blue-700);
+    --color-success: var(--color-green-500);
+    --color-error: var(--color-red-500);
+    --color-warning: var(--color-amber-500);
+    --color-info: var(--color-blue-500);
+    --color-overlay: rgba(0, 0, 0, 0.4);
+}
+
+@layer base {
+    @variant dark {
+        --color-primary: var(--color-slate-900);
+        --color-secondary: var(--color-purple-400);
+        --color-accent: var(--color-amber-400);
+        --color-bg: var(--color-slate-800);
+        --color-bg-alt: var(--color-slate-900);
+        --color-surface: var(--color-slate-700);
+        --color-border: var(--color-slate-600);
+        --color-text: var(--color-slate-100);
+        --color-text-muted: var(--color-slate-400);
+        --color-heading: var(--color-slate-200);
+        --color-link: var(--color-blue-400);
+        --color-link-hover: var(--color-blue-500);
+        --color-success: var(--color-green-400);
+        --color-error: var(--color-red-400);
+        --color-warning: var(--color-amber-400);
+        --color-info: var(--color-blue-400);
+        --color-overlay: rgba(255, 255, 255, 0.1);
+    }
+}
