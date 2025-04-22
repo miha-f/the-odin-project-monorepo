@@ -30,12 +30,13 @@ const seedCategories = async (n = 5) => {
 const seedItems = async (companies, categories, n = 5) => {
     const items = [];
     for (let i = 0; i < n; i++) {
+        const id = i;
         const name = faker.commerce.productName();
         const description = faker.lorem.sentence();
         const imageUrl = "https://placehold.co/100x100";
         const categoryId = Math.floor(Math.random() * categories.length) + 1;
         const companyId = Math.floor(Math.random() * companies.length) + 1;
-        items.push({ name, description, imageUrl, categoryId, companyId });
+        items.push({ id, name, description, imageUrl, categoryId, companyId });
     }
 
     for (const { name, description, imageUrl, categoryId, companyId } of items) {
