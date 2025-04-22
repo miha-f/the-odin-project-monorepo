@@ -10,26 +10,39 @@
 <body>
     <nav class="
         flex justify-between
-        top-0 left-0 right-0 h-16 bg-blue-600 text-white z-50 flex items-center px-4
+        top-0 left-0 right-0 h-16 bg-blue-600 dark:bg-slate-800 text-white z-50 flex items-center px-4
     ">
-        <button id="sidebar-toggle">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <button id="sidebar-toggle" class="md:hidden">
+            <svg id="sidebar-toggle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="
+                    size-6
+                    transform transition-transform duration-300
+            ">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
         </button>
 
-        <div>Dashboard</div>
+        <div>Inventory</div>
 
-        <button id="menu-toggle">
+        <button id="menu-toggle" class="md:hidden">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
         </button>
+        
+        <div class="hidden md:flex">
+            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Dashboard</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Users</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Settings</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
+        </div>
     </nav>
 
     <div id="mobile-menu" class="
-        md:hidden hidden
-        top-16 left-0 right-0 bg-white text-black z-40
+        md:hidden
+        max-h-0 overflow-hidden
+        top-16 left-0 right-0 bg-white text-black z-40 shadow
+        transition-all duration-500 ease-linear
     ">
         <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Dashboard</a>
         <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Users</a>
@@ -37,11 +50,27 @@
         <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
     </div>
 
-    <div id="mobile-sidebar" class="fixed top-16 left-0 h-full w-64 bg-white shadow transform -translate-x-full transition-transform duration-300 z-40">
+    <div id="mobile-sidebar" class="
+        md:hidden
+        fixed top-16 left-0 h-full w-64 bg-white shadow 
+        transform -translate-x-full transition-transform duration-300 z-40
+    ">
         <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Settings</a>
         <a href="#" class="block px-2 py-2 rounded hover:bg-gray-100">Logout</a>
     </div>
-    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-gray bg-opacity-50 hidden z-30"></div>
+    <div id="mobile-sidebar-overlay" class="
+        fixed inset-0 bg-gray bg-opacity-50 hidden z-30
+    "></div>
+
+     <button id="toggle-dark">Toggle Dark</button>
+
+ <div class="bg-skin-bg text-skin-text">
+  <button class="bg-skin-primary text-white p-2 rounded">Primary Action</button>
+</div>
+
+     <div class="bg-white text-black dark:bg-gray-900 dark:text-white p-4 rounded">
+  Hello, dark mode!
+</div>
 
     <p>hmm</p>
     <p>hmm</p>
@@ -160,21 +189,40 @@
     </footer>
 
     <script>
+        const btn = document.getElementById('toggle-dark');
+        const body = document.querySelector('body');
+
+        btn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
         const menuBtn = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
         menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+            const isOpen = mobileMenu.classList.contains('max-h-0');
+            if (isOpen) {
+                mobileMenu.classList.remove('max-h-0');
+                mobileMenu.classList.add('max-h-96');
+            } else {
+                mobileMenu.classList.remove('max-h-96');
+                mobileMenu.classList.add('max-h-0');
+            }
+            
+            // mobileMenu.classList.toggle('hidden');
         });
 
         const sidebarBtn = document.getElementById('sidebar-toggle');
+        const mobileSidebarBtnIcon = document.getElementById('sidebar-toggle-icon');
         const mobileSidebar = document.getElementById('mobile-sidebar');
         const mobileSidebarOverlay = document.getElementById('mobile-sidebar-overlay');
         sidebarBtn.addEventListener('click', () => {
             mobileSidebar.classList.toggle('-translate-x-full');
+            mobileSidebarBtnIcon.classList.toggle('rotate-90');
             mobileSidebarOverlay.classList.toggle('hidden');
         });
         mobileSidebarOverlay.addEventListener('click', () => {
             mobileSidebar.classList.toggle('-translate-x-full');
+            mobileSidebarBtnIcon.classList.toggle('rotate-90');
             mobileSidebarOverlay.classList.add('hidden');
         });
     </script>
