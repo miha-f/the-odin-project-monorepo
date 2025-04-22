@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { Item: ItemModel } = require("../models/models.js");
+const NotFoundError = require("../errors/notFoundError.js");
 
 const Item = () => {
 
@@ -12,7 +13,7 @@ const Item = () => {
         const { itemId } = req.params;
         const item = await ItemModel.findById(itemId);
         if (!item) {
-            throw new Error("OH NO!");
+            throw new NotFoundError("Item not found");
         }
         res.send(item);
     });

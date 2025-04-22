@@ -29,8 +29,10 @@ app.use("/categories", categoryRouter);
 app.use("/stocks", stockRouter);
 
 app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(err.statusCode || 500).send(err.message);
+    switch (err.statusCode || 500) {
+        case 404: res.render("404", { errorMessage: err.message }); break;
+        default: res.render("error"); break;
+    }
 });
 
 
