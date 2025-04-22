@@ -9,7 +9,7 @@
 
 <body class="bg-bg text-text">
     <nav class="
-        flex justify-between
+        flex justify-between border-b border-border
         top-0 left-0 right-0 h-16 bg-surface z-50 flex items-center px-4
     ">
         <button id="sidebar-toggle" class="md:hidden">
@@ -51,139 +51,33 @@
     </div>
 
     <div id="mobile-sidebar" class="
-        md:hidden bg-surface
+        bg-surface
         fixed top-16 left-0 h-full w-64 shadow 
         transform -translate-x-full transition-transform duration-300 z-40
     ">
         <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
         <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
     </div>
     <div id="mobile-sidebar-overlay" class="
         fixed top-16 inset-0 backdrop-blur-sm hidden z-30
     "></div>
 
-     <button id="toggle-dark">Toggle Dark</button>
+    <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] md:h-screen">
+        <div class="hidden md:flex md:flex-col md:bg-surface">
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Dashboard</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Users</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
+        </div>
+        <div class="container mx-auto">
+            <main>
+                <button id="toggle-dark">Toggle Dark</button>
+                <%- include(view) %>
+            </main>
+        </div>
+    </div>
 
- <div class="bg-skin-bg text-skin-text">
-  <button class="bg-skin-primary text-white p-2 rounded">Primary Action</button>
-</div>
-
-     <div class="bg-white text-black dark:bg-gray-900 dark:text-white p-4 rounded">
-  Hello, dark mode! this text is over here! i hope so!!!
-</div>
-
-    <p class="bg-bg">hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-    <p>hmm</p>
-                                                                          
-    <main>
-        <%- include(view) %>
-    </main>
 
     <footer>
     </footer>
