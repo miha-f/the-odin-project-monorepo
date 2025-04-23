@@ -1,78 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>Inventory</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/output.css">
 </head>
 
 <body class="bg-bg text-text">
-    <nav class="
+    <header>
+        <nav class="
         flex justify-between border-b border-border
-        top-0 left-0 right-0 h-16 bg-surface z-50 flex items-center px-4
-    ">
-        <button id="sidebar-toggle" class="md:hidden">
-            <svg id="sidebar-toggle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                class="
+        top-0 left-0 right-0 h-16 bg-surface z-50 flex items-center px-4" aria-label="Header navigation">
+            <button id="sidebar-toggle" class="md:hidden" aria-label="Open sidebar" aria-controls="mobile-sidebar"
+                aria-expanded="false">
+                <svg id="sidebar-toggle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor" class="
                     size-6
                     transform transition-transform duration-300
             ">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-            </svg>
-        </button>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </button>
 
-        <div>Inventory</div>
+            <div><a href="/">Inventory</a></div>
 
-        <button id="menu-toggle" class="md:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-        </button>
-        
-        <div class="hidden md:flex">
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Dashboard</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Users</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
-        </div>
-    </nav>
+            <button id="menu-toggle" class="md:hidden" aria-label="Open menu" aria-controls="mobile-menu"
+                aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+
+            <div class="hidden md:flex" aria-label="Menu navigation">
+                <!-- <button id="toggle-dark" class="block px-2 py-2 rounded hover:bg-overlay">Toggle Dark</button> -->
+                <label for="toggle-dark" class="inline-flex items-center cursor-pointer">
+                    <div class="px-2 py-2 block">
+                        <div class="relative">
+                            <input id="toggle-dark" type="checkbox" class="sr-only">
+                            <div class="block w-14 h-8 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                            <div class="dot absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out
+                flex items-center justify-center
+                dark:translate-x-6">
+                                <!-- Light Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4 text-yellow-500 block dark:hidden" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                                </svg>
+                                <!-- Dark Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 hidden dark:block"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+                <!-- TODO(miha): If user is auth, we display its info -->
+                <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Register</a>
+                <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Log in</a>
+            </div>
+        </nav>
+    </header>
 
     <div id="mobile-menu" class="
         md:hidden
         max-h-0 overflow-hidden
         top-16 left-0 right-0 z-40 shadow
         transition-all duration-500 ease-linear
-    ">
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Dashboard</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Users</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
+    " aria-label="Mobile menu navigation">
+        <!-- <button id="toggle-dark" class="block px-2 py-2 rounded hover:bg-overlay">Toggle Dark</button> -->
+        <label for="toggle-dark" class="inline-flex items-center cursor-pointer">
+            <div class="px-2 py-2 block">
+                <div class="relative">
+                    <input id="toggle-dark" type="checkbox" class="sr-only">
+                    <div class="block w-14 h-8 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                    <div class="dot absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out
+                flex items-center justify-center
+                dark:translate-x-6">
+                        <!-- Light Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 block dark:hidden"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                        </svg>
+                        <!-- Dark Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 hidden dark:block"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </label>
+        <!-- TODO(miha): If user is auth, we display its info -->
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Register</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Log in</a>
     </div>
 
     <div id="mobile-sidebar" class="
         bg-surface
         fixed top-16 left-0 h-full w-64 shadow 
         transform -translate-x-full transition-transform duration-300 z-40
-    ">
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
+    " aria-label="Mobile sidebar navigation">
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Items</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Categories</a>
+        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Companies</a>
     </div>
     <div id="mobile-sidebar-overlay" class="
         fixed top-16 inset-0 backdrop-blur-sm hidden z-30
     "></div>
 
     <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] md:h-screen">
-        <div class="hidden md:flex md:flex-col md:bg-surface">
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Dashboard</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Users</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Settings</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
+        <!-- NOTE(miha): Always visible sidebar (from md screen up) -->
+        <div aria-label="Sidebar navigation" class="hidden md:flex md:flex-col md:bg-surface">
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Items</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Categories</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Companies</a>
         </div>
         <div class="container mx-auto">
             <main>
-                <button id="toggle-dark">Toggle Dark</button>
                 <%- include(view) %>
             </main>
         </div>
@@ -87,7 +141,18 @@
 
         btn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
+            if (btn.checked)
+                localStorage.theme = 'dark';
+            else
+                localStorage.theme = 'light';
         });
+
+        const html = document.documentElement;
+        if (localStorage.theme === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            btn.checked = true;
+        }
 
         const menuBtn = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -100,8 +165,6 @@
                 mobileMenu.classList.remove('max-h-96');
                 mobileMenu.classList.add('max-h-0');
             }
-            
-            // mobileMenu.classList.toggle('hidden');
         });
 
         const sidebarBtn = document.getElementById('sidebar-toggle');
@@ -118,6 +181,7 @@
             mobileSidebarBtnIcon.classList.toggle('rotate-90');
             mobileSidebarOverlay.classList.add('hidden');
         });
+
     </script>
 </body>
 

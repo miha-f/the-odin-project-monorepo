@@ -6,6 +6,7 @@ const Item = () => {
 
     const getAll = asyncHandler(async (req, res) => {
         const items = await ItemModel.getAll();
+        // TODO(miha): render itemList.ejs template
         res.send(items);
     });
 
