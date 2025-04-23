@@ -37,6 +37,7 @@
 
             <div class="hidden md:flex" aria-label="Menu navigation">
                 <!-- <button id="toggle-dark" class="block px-2 py-2 rounded hover:bg-overlay">Toggle Dark</button> -->
+                <input type="text" value="search bar TODO" />
                 <label for="toggle-dark" class="inline-flex items-center cursor-pointer">
                     <div class="px-2 py-2 block">
                         <div class="relative">
@@ -75,6 +76,7 @@
         top-16 left-0 right-0 z-40 shadow
         transition-all duration-500 ease-linear
     " aria-label="Mobile menu navigation">
+        <input type="text" value="search bar TODO" />
         <!-- <button id="toggle-dark" class="block px-2 py-2 rounded hover:bg-overlay">Toggle Dark</button> -->
         <label for="toggle-dark" class="inline-flex items-center cursor-pointer">
             <div class="px-2 py-2 block">
@@ -110,9 +112,9 @@
         fixed top-16 left-0 h-full w-64 shadow 
         transform -translate-x-full transition-transform duration-300 z-40
     " aria-label="Mobile sidebar navigation">
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Items</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Categories</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Companies</a>
+        <a href="/items" class="block px-2 py-2 rounded hover:bg-overlay">Items</a>
+        <a href="/categories" class="block px-2 py-2 rounded hover:bg-overlay">Categories</a>
+        <a href="/companies" class="block px-2 py-2 rounded hover:bg-overlay">Companies</a>
     </div>
     <div id="mobile-sidebar-overlay" class="
         fixed top-16 inset-0 backdrop-blur-sm hidden z-30
@@ -121,12 +123,16 @@
     <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] md:h-screen">
         <!-- NOTE(miha): Always visible sidebar (from md screen up) -->
         <div aria-label="Sidebar navigation" class="hidden md:flex md:flex-col md:bg-surface">
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Items</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Categories</a>
-            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Companies</a>
+            <a href="/items" class="block px-2 py-2 rounded hover:bg-overlay">Items</a>
+            <a href="/categories" class="block px-2 py-2 rounded hover:bg-overlay">Categories</a>
+            <a href="/companies" class="block px-2 py-2 rounded hover:bg-overlay">Companies</a>
         </div>
+
+
+
+
         <div class="container mx-auto">
-            <main>
+            <main class="p-4">
                 <%- include(view) %>
             </main>
         </div>
