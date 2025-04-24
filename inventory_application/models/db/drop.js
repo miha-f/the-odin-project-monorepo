@@ -1,7 +1,12 @@
 const pool = require("./db.js");
 
 const main = async () => {
-    const query = `DROP TABLE IF EXISTS store;`;
+    const query = `
+        DROP TABLE IF EXISTS companies, 
+                             categories, 
+                             items, 
+                             stocks;
+    `;
 
     try {
         await pool.query(query);

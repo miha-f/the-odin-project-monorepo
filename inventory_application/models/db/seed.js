@@ -30,7 +30,7 @@ const seedCategories = async (n = 5) => {
 const seedItems = async (companies, categories, n = 5) => {
     const items = [];
     for (let i = 0; i < n; i++) {
-        const id = i;
+        const id = i + 1;
         const name = faker.commerce.productName();
         const description = faker.lorem.sentence();
         const imageUrl = "https://placehold.co/100x100";
