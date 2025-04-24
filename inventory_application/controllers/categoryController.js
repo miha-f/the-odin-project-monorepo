@@ -4,8 +4,22 @@ const { Category: CategoryModel } = require("../models/models.js");
 const Category = () => {
 
     const getAll = asyncHandler(async (req, res) => {
-        const categories = await CategoryModel.getAll();
-        res.send(categories);
+        const ITEMS_PER_PAGE = 10;
+        const page = parseInt(req.query.page) || 1;
+        const offset = (page - 1) * ITEMS_PER_PAGE;
+        const totalItems = (await CategoryModel.getAllCount()).count;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        const categoriesDb = await CategoryModel.getAll(ITEMS_PER_PAGE, offset);
+        const categories = categoriesDb.map(category => ({
+            ...category,
+            formattedDate: new Date(category.updated_at).toLocaleDateString('en-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            })
+        }));
+
+        res.render('categories', { categories: categories, page: page, totalPages: totalPages });
     });
 
     const getById = asyncHandler(async (req, res) => {
