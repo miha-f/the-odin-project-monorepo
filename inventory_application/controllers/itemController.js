@@ -5,9 +5,9 @@ const NotFoundError = require("../errors/notFoundError.js");
 const Item = () => {
 
     const getAll = asyncHandler(async (req, res) => {
-        const items = await ItemModel.getAll();
+        const items = await ItemModel.getAll(10, 10);
         // TODO(miha): render itemList.ejs template
-        res.send(items);
+        res.render('items', { items: items });
     });
 
     const getById = asyncHandler(async (req, res) => {
