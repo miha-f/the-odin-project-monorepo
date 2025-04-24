@@ -1,8 +1,18 @@
 const pool = require("./db/db.js");
 
 class Item {
-    static async getAll() {
-        const query = 'SELECT * FROM items';
+    static async getAllCount() {
+        let query = 'SELECT COUNT(*) FROM items';
+        const res = await pool.query(query);
+        return res.rows[0];
+    }
+
+    static async getAll(limit = undefined, offset = undefined) {
+        let query = 'SELECT * FROM items';
+        if (limit)
+            query += ` LIMIT ${limit}`;
+        if (offset)
+            query += ` OFFSET ${offset}`;
         const res = await pool.query(query);
         return res.rows;
     }
@@ -45,8 +55,12 @@ class Item {
 };
 
 class Company {
-    static async getAll() {
-        const query = 'SELECT * FROM companies';
+    static async getAll(limit = undefined, offset = undefined) {
+        let query = 'SELECT * FROM companies';
+        if (limit)
+            query += ` LIMIT ${limit}`;
+        if (offset)
+            query += ` OFFSET ${offset}`;
         const res = await pool.query(query);
         return res.rows;
     }
@@ -85,8 +99,12 @@ class Company {
 };
 
 class Category {
-    static async getAll() {
-        const query = 'SELECT * FROM categories';
+    static async getAll(limit = undefined, offset = undefined) {
+        let query = 'SELECT * FROM categories';
+        if (limit)
+            query += ` LIMIT ${limit}`;
+        if (offset)
+            query += ` OFFSET ${offset}`;
         const res = await pool.query(query);
         return res.rows;
     }
@@ -125,8 +143,29 @@ class Category {
 };
 
 class Stock {
-    static async getAll() {
-        const query = 'SELECT * FROM stocks';
+
+    static async getAllDetailed(limit = undefined, offset = undefined) {
+        let query = `select s.price, s.quantity, s.updated_at, i.name as item_name, 
+                    i.id as item_id, i.description, i.image_url, c.name as company_name, 
+                    c.id as company_id, c2.name as category_name, c2.id as category_id 
+                from stocks s 
+                left join items i on s.item_id = i.id 
+                left join companies c on i.company_id = c.id 
+                left join categories c2 on i.category_id = c2.id`;
+        if (limit)
+            query += ` LIMIT ${limit}`;
+        if (offset)
+            query += ` OFFSET ${offset}`;
+        const res = await pool.query(query);
+        return res.rows;
+    }
+
+    static async getAll(limit = undefined, offset = undefined) {
+        let query = 'SELECT * FROM stocks';
+        if (limit)
+            query += ` LIMIT ${limit}`;
+        if (offset)
+            query += ` OFFSET ${offset}`;
         const res = await pool.query(query);
         return res.rows;
     }
