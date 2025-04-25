@@ -15,8 +15,9 @@ const companyRouter = Router();
 companyRouter.get("/", Company.getAll);
 companyRouter.get("/new", Company.createForm);
 companyRouter.get("/:companyId", Company.getById);
-companyRouter.post("/", Company.create);
-companyRouter.patch("/:companyId", Company.update);
+companyRouter.get("/:companyId/edit", Company.editForm);
+companyRouter.post("/:companyId/update", Company.createOrUpdate(true));
+companyRouter.post("/", Company.createOrUpdate(false));
 companyRouter.delete("/:companyId", Company.remove);
 
 const categoryRouter = Router();

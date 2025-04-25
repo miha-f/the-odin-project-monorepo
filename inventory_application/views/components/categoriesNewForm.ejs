@@ -2,7 +2,7 @@
   <h1 class="text-4xl font-bold text-text"><%= categoryId ? 'Edit' : 'Create' %> Category</h1>
   <div class="flex flex-col sm:flex-row items-center gap-4">
     <div class="w-full">
-      <label for="categoryName" class="block text-sm font-medium text-text">Item Name</label>
+      <label for="categoryName" class="block text-sm font-medium text-text">Category Name</label>
       <input type="text" id="categoryName" name="categoryName" required
              value="<%= formData ? formData.categoryName : '' %>"
              placeholder="Enter item name"
@@ -20,7 +20,7 @@
   <div class="flex justify-center">
     <button type="submit"
             class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow">
-      <%= categoryId ? 'Edit' : 'Create' %> Item
+      <%= categoryId ? 'Edit' : 'Create' %> Category
     </button>
   </div>
 </form>

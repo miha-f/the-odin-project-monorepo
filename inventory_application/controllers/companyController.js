@@ -56,43 +56,58 @@ const Company = () => {
     });
 
     const createForm = asyncHandler(async (req, res) => {
-        res.render('companiesNew', { formData: {}, formErrors: {} });
+        res.render('companiesNew', { companyId: undefined, formData: {}, formErrors: {} });
     });
 
-    const create = [
-        validateForm,
-        asyncHandler(async (req, res) => {
-            const { companyName } = req.body;
-
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                const formData = {
-                    companyName: companyName,
-                };
-                const formErrors = {};
-                errors.errors.forEach(err => {
-                    if (!formErrors[err.path])
-                        formErrors[err.path] = [];
-                    formErrors[err.path].push(err.msg);
-                });
-                res.render('companiesNew', { formData: formData, formErrors: formErrors });
-                return;
-            }
-
-            const company = await CompanyModel.create(companyName);
-            if (!company) {
-                throw new DbError("Couldn't create company");
-            }
-
-            res.redirect(`companies/${company.id}`);
-        })];
-
-
-    const update = asyncHandler(async (req, res) => {
+    const editForm = asyncHandler(async (req, res) => {
         const { companyId } = req.params;
-        const company = await CompanyModel.update(companyId);
-        res.send(company);
+        const company = await CompanyModel.findById(companyId);
+        if (!company) {
+            throw new NotFoundError("company not found");
+        }
+        const formData = {
+            companyName: company.name,
+        };
+        res.render('companiesNew', { companyId: companyId, formData: formData, formErrors: {} });
     });
+
+    const createOrUpdate = (isEdit = false) => {
+        return [
+            validateForm,
+            asyncHandler(async (req, res) => {
+                console.log("A");
+                const companyId = isEdit ? req.params.companyId : undefined;
+                console.log("B");
+                const { companyName } = req.body;
+                console.log("C");
+                const errors = validationResult(req);
+                console.log("D");
+                if (!errors.isEmpty()) {
+                    const formData = {
+                        companyName: companyName,
+                    };
+                    const formErrors = {};
+                    errors.errors.forEach(err => {
+                        if (!formErrors[err.path])
+                            formErrors[err.path] = [];
+                        formErrors[err.path].push(err.msg);
+                    });
+                    res.render('companiesNew', { companyId: companyId, formData: formData, formErrors: formErrors });
+                    return;
+                }
+
+                let company = undefined;
+                if (!isEdit)
+                    company = await CompanyModel.create(companyName);
+                else
+                    company = await CompanyModel.update(companyId, companyName);
+
+                if (!company) {
+                    throw new DbError("Couldn't create company");
+                }
+                res.redirect(`/companies/${company.id}`);
+            })];
+    }
 
     const remove = asyncHandler(async (req, res) => {
         const { companyId } = req.params;
@@ -100,7 +115,7 @@ const Company = () => {
         res.send(company);
     });
 
-    return { getAll, getById, createForm, create, update, remove };
+    return { getAll, getById, createForm, editForm, createOrUpdate, remove };
 };
 
 module.exports = Company();

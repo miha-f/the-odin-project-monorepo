@@ -1,8 +1,8 @@
-<form action="/companies" method="POST" class="max-w-4xl mx-auto p-6 space-y-6">
-  <h1 class="text-4xl font-bold text-text">Create New Category</h1>
+<form action=<%= companyId ? ('/companies/' + companyId + '/update') : '/companies' %> method="POST" class="max-w-4xl mx-auto p-6 space-y-6">
+  <h1 class="text-4xl font-bold text-text"><%= companyId ? 'Edit' : 'Create' %> Company</h1>
   <div class="flex flex-col sm:flex-row items-center gap-4">
     <div class="w-full">
-      <label for="companyName" class="block text-sm font-medium text-text">Item Name</label>
+      <label for="companyName" class="block text-sm font-medium text-text">Company Name</label>
       <input type="text" id="companyName" name="companyName" required
              value="<%= formData ? formData.companyName : '' %>"
              placeholder="Enter item name"
@@ -20,7 +20,7 @@
   <div class="flex justify-center">
     <button type="submit"
             class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow">
-      Create Item
+      <%= companyId ? 'Edit' : 'Create' %> Company
     </button>
   </div>
 </form>
