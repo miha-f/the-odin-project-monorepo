@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { Category: CategoryModel } = require("../models/models.js");
 const { body, validationResult } = require("express-validator");
+const NotFoundError = require("../errors/notFoundError.js");
 
 const alphaNumErr = "must only contain letters or numbers."
 const notEmptyErr = "must not be empty."
@@ -56,42 +57,54 @@ const Category = () => {
     });
 
     const createForm = asyncHandler(async (req, res) => {
-        res.render('categoriesNew', { formData: {}, formErrors: {} });
+        res.render('categoriesNew', { categoryId: undefined, formData: {}, formErrors: {} });
     });
 
-    const create = [
-        validateForm,
-        asyncHandler(async (req, res) => {
-            const { categoryName } = req.body;
-
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                const formData = {
-                    categoryName: categoryName,
-                };
-                const formErrors = {};
-                errors.errors.forEach(err => {
-                    if (!formErrors[err.path])
-                        formErrors[err.path] = [];
-                    formErrors[err.path].push(err.msg);
-                });
-                res.render('categoriesNew', { formData: formData, formErrors: formErrors });
-                return;
-            }
-
-            const category = await CategoryModel.create(categoryName);
-            if (!category) {
-                throw new DbError("Couldn't create category");
-            }
-
-            res.redirect(`categories/${category.id}`);
-        })];
-
-    const update = asyncHandler(async (req, res) => {
+    const editForm = asyncHandler(async (req, res) => {
         const { categoryId } = req.params;
-        const category = await CategoryModel.update(categoryId);
-        res.send(category);
+        const category = await CategoryModel.findById(categoryId);
+        if (!category) {
+            throw new NotFoundError("Category not found");
+        }
+        const formData = {
+            categoryName: category.name,
+        };
+        res.render('categoriesNew', { categoryId: categoryId, formData: formData, formErrors: {} });
     });
+
+    const createOrUpdate = (isEdit = false) => {
+        return [
+            validateForm,
+            asyncHandler(async (req, res) => {
+                const categoryId = isEdit ? req.params.categoryId : undefined;
+                const { categoryName } = req.body;
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                    const formData = {
+                        categoryName: categoryName,
+                    };
+                    const formErrors = {};
+                    errors.errors.forEach(err => {
+                        if (!formErrors[err.path])
+                            formErrors[err.path] = [];
+                        formErrors[err.path].push(err.msg);
+                    });
+                    res.render('categoriesNew', { categoryId: categoryId, formData: formData, formErrors: formErrors });
+                    return;
+                }
+
+                let category = undefined;
+                if (!isEdit)
+                    category = await CategoryModel.create(categoryName);
+                else
+                    category = await CategoryModel.update(categoryId, categoryName);
+
+                if (!category) {
+                    throw new DbError("Couldn't create category");
+                }
+                res.redirect(`/categories/${category.id}`);
+            })];
+    }
 
     const remove = asyncHandler(async (req, res) => {
         const { categoryId } = req.params;
@@ -99,7 +112,7 @@ const Category = () => {
         res.send(category);
     });
 
-    return { getAll, getById, createForm, create, update, remove };
+    return { getAll, getById, createForm, editForm, createOrUpdate, remove };
 };
 
 module.exports = Category();

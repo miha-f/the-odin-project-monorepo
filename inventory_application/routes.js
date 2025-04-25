@@ -23,8 +23,9 @@ const categoryRouter = Router();
 categoryRouter.get("/", Category.getAll);
 categoryRouter.get("/new", Category.createForm);
 categoryRouter.get("/:categoryId", Category.getById);
-categoryRouter.post("/", Category.create);
-categoryRouter.patch("/:categoryId", Category.update);
+categoryRouter.get("/:categoryId/edit", Category.editForm);
+categoryRouter.post("/:categoryId/update", Category.createOrUpdate(true));
+categoryRouter.post("/", Category.createOrUpdate(false));
 categoryRouter.delete("/:categoryId", Category.remove);
 
 const stockRouter = Router();

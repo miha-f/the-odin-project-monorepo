@@ -1,5 +1,5 @@
-<form action="/categories" method="POST" class="max-w-4xl mx-auto p-6 space-y-6">
-  <h1 class="text-4xl font-bold text-text">Create New Category</h1>
+<form action=<%= categoryId ? ('/categories/' + categoryId + '/update') : '/categories' %> method="POST" class="max-w-4xl mx-auto p-6 space-y-6">
+  <h1 class="text-4xl font-bold text-text"><%= categoryId ? 'Edit' : 'Create' %> Category</h1>
   <div class="flex flex-col sm:flex-row items-center gap-4">
     <div class="w-full">
       <label for="categoryName" class="block text-sm font-medium text-text">Item Name</label>
@@ -20,7 +20,7 @@
   <div class="flex justify-center">
     <button type="submit"
             class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow">
-      Create Item
+      <%= categoryId ? 'Edit' : 'Create' %> Item
     </button>
   </div>
 </form>
