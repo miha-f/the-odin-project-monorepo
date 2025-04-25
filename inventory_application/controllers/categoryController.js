@@ -1,5 +1,15 @@
 const asyncHandler = require("express-async-handler");
 const { Category: CategoryModel } = require("../models/models.js");
+const { body, validationResult } = require("express-validator");
+
+const alphaNumErr = "must only contain letters or numbers."
+const notEmptyErr = "must not be empty."
+
+const validateForm = [
+    body("categoryName").trim()
+        .notEmpty().withMessage(`Category name ${notEmptyErr}`)
+        .isAlphanumeric().withMessage(`Category name ${alphaNumErr}`),
+];
 
 const Category = () => {
 
@@ -46,14 +56,36 @@ const Category = () => {
     });
 
     const createForm = asyncHandler(async (req, res) => {
-        res.send("create item");
+        res.render('categoriesNew', { formData: {}, formErrors: {} });
     });
 
-    const create = asyncHandler(async (req, res) => {
-        const { categoryId } = req.params;
-        const category = await CategoryModel.create(categoryId);
-        res.send(category);
-    });
+    const create = [
+        validateForm,
+        asyncHandler(async (req, res) => {
+            const { categoryName } = req.body;
+
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                const formData = {
+                    categoryName: categoryName,
+                };
+                const formErrors = {};
+                errors.errors.forEach(err => {
+                    if (!formErrors[err.path])
+                        formErrors[err.path] = [];
+                    formErrors[err.path].push(err.msg);
+                });
+                res.render('categoriesNew', { formData: formData, formErrors: formErrors });
+                return;
+            }
+
+            const category = await CategoryModel.create(categoryName);
+            if (!category) {
+                throw new DbError("Couldn't create category");
+            }
+
+            res.redirect(`categories/${category.id}`);
+        })];
 
     const update = asyncHandler(async (req, res) => {
         const { categoryId } = req.params;

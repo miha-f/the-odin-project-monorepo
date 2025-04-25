@@ -1,5 +1,15 @@
 const asyncHandler = require("express-async-handler");
 const { Company: CompanyModel } = require("../models/models.js");
+const { body, validationResult } = require("express-validator");
+
+const alphaNumErr = "must only contain letters or numbers."
+const notEmptyErr = "must not be empty."
+
+const validateForm = [
+    body("companyName").trim()
+        .notEmpty().withMessage(`Company name ${notEmptyErr}`)
+        .isAlphanumeric().withMessage(`Company name ${alphaNumErr}`),
+];
 
 const Company = () => {
 
@@ -46,14 +56,37 @@ const Company = () => {
     });
 
     const createForm = asyncHandler(async (req, res) => {
-        res.send("create item");
+        res.render('companiesNew', { formData: {}, formErrors: {} });
     });
 
-    const create = asyncHandler(async (req, res) => {
-        const { companyId } = req.params;
-        const company = await CompanyModel.create(companyId);
-        res.send(company);
-    });
+    const create = [
+        validateForm,
+        asyncHandler(async (req, res) => {
+            const { companyName } = req.body;
+
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                const formData = {
+                    companyName: companyName,
+                };
+                const formErrors = {};
+                errors.errors.forEach(err => {
+                    if (!formErrors[err.path])
+                        formErrors[err.path] = [];
+                    formErrors[err.path].push(err.msg);
+                });
+                res.render('companiesNew', { formData: formData, formErrors: formErrors });
+                return;
+            }
+
+            const company = await CompanyModel.create(companyName);
+            if (!company) {
+                throw new DbError("Couldn't create company");
+            }
+
+            res.redirect(`companies/${company.id}`);
+        })];
+
 
     const update = asyncHandler(async (req, res) => {
         const { companyId } = req.params;
