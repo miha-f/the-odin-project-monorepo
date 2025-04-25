@@ -23,6 +23,19 @@ class Item {
         return res.rows[0];
     }
 
+    static async findByIdDetailed(id) {
+        let query = `select s.price, s.quantity, i.updated_at, i.created_at, i.name as item_name, 
+                    i.id as item_id, i.description, i.image_url, c.name as company_name, 
+                    c.id as company_id, c2.name as category_name, c2.id as category_id 
+                from stocks s 
+                left join items i on s.item_id = i.id 
+                left join companies c on i.company_id = c.id 
+                left join categories c2 on i.category_id = c2.id
+                where i.id = $1`;
+        const res = await pool.query(query, [id]);
+        return res.rows[0];
+    }
+
     static async create(name, description, imageUrl, categoryId, companyId) {
         const query = 'INSERT INTO items (name, description, image_url, category_id, company_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
         const res = await pool.query(query, [name, description, imageUrl, categoryId, companyId]);
@@ -55,6 +68,12 @@ class Item {
 };
 
 class Company {
+    static async getAllCount() {
+        let query = 'SELECT COUNT(*) FROM companies';
+        const res = await pool.query(query);
+        return res.rows[0];
+    }
+
     static async getAll(limit = undefined, offset = undefined) {
         let query = 'SELECT * FROM companies';
         if (limit)
@@ -99,6 +118,12 @@ class Company {
 };
 
 class Category {
+    static async getAllCount() {
+        let query = 'SELECT COUNT(*) FROM categories';
+        const res = await pool.query(query);
+        return res.rows[0];
+    }
+
     static async getAll(limit = undefined, offset = undefined) {
         let query = 'SELECT * FROM categories';
         if (limit)
@@ -143,6 +168,11 @@ class Category {
 };
 
 class Stock {
+    static async getAllCount() {
+        let query = 'SELECT COUNT(*) FROM stocks';
+        const res = await pool.query(query);
+        return res.rows[0];
+    }
 
     static async getAllDetailed(limit = undefined, offset = undefined) {
         let query = `select s.price, s.quantity, s.updated_at, i.name as item_name, 
@@ -176,9 +206,9 @@ class Stock {
         return res.rows[0];
     }
 
-    static async create(name, itemId, quantity, price) {
-        const query = 'INSERT INTO stocks (name, item_id, quantity, price) VALUES ($1, $2, $3, $4) RETURNING *';
-        const res = await pool.query(query, [name, itemId, quantity, price]);
+    static async create(itemId, quantity, price) {
+        const query = 'INSERT INTO stocks (item_id, quantity, price) VALUES ($1, $2, $3) RETURNING *';
+        const res = await pool.query(query, [itemId, quantity, price]);
         return res.rows[0];
     }
 

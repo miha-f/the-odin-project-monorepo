@@ -1,0 +1,56 @@
+<div class="max-w-4xl mx-auto p-6 space-y-6">
+    <h1 class="text-4xl font-bold text-text">Item</h1>
+    <div class="flex items-center space-x-4">
+        <img src="<%= item.image_url %>" alt="Item Image" class="w-24 h-24 object-cover rounded shadow" />
+        <div>
+            <h1 class="text-2xl font-bold text-text"><%= item.item_name %></h1>
+            <div class="grid grid-rows-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2">
+                    <p class="text-sm text-text-muted">Updated on: </p>
+                    <p class="text-sm text-text-muted"><%= item.updatedAtFormatted%></p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2">
+                    <p class="text-sm text-text-muted">Created on: </p>
+                    <p class="text-sm text-text-muted"><%= item.createdAtFormatted%></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-bg-alt p-4 rounded shadow">
+        <div>
+        <p class="text-xs text-text-muted">Category</p>
+        <a href="/categories/<%= item.category_id %>" class="text-text hover:underline">
+            <%= item.category_name %>
+        </a>
+        </div>
+        <div>
+        <p class="text-xs text-text-muted">Company</p>
+        <a href="/companies/<%= item.company_id %>" class="text-text hover:underline">
+            <%= item.company_name %>
+        </a>
+        </div>
+        <div>
+        <p class="text-xs text-text-muted">Quantity</p>
+        <p class="text-text"><%= item.quantity %></p>
+        </div>
+        <div>
+        <p class="text-xs text-text-muted">Price</p>
+        <p class="text-success font-semibold">$<%= item.price %></p>
+        </div>
+    </div>
+
+    <% if (item.description) { %>
+        <div class="bg-bg-alt p-4 rounded shadow">
+        <h2 class="text-lg font-semibold text-text mb-2">Description</h2>
+        <p class="text-text-muted whitespace-pre-line leading-relaxed"><%= item.description %></p>
+        </div>
+    <% } %>
+
+    <div class="flex justify-center space-x-2">
+        <a href="/items/<%= item.item_id %>/edit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Edit</a>
+        <form action="/items/<%= item.item_id %>/delete" method="POST" onsubmit="return confirm('Are you sure?')">
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+        </form>
+    </div>
+</div>

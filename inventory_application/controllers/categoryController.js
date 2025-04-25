@@ -24,8 +24,29 @@ const Category = () => {
 
     const getById = asyncHandler(async (req, res) => {
         const { categoryId } = req.params;
-        const category = await CategoryModel.findById(categoryId);
-        res.send(category);
+        const categoryDb = await CategoryModel.findById(categoryId);
+        if (!categoryDb) {
+            throw new NotFoundError("Category not found");
+        }
+        const category = {
+            ...categoryDb,
+            updatedAtFormatted: new Date(categoryDb.updated_at).toLocaleDateString('en-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            }),
+            createdAtFormatted: new Date(categoryDb.created_at).toLocaleDateString('en-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            }),
+        };
+
+        res.render("category", { category: category });
+    });
+
+    const createForm = asyncHandler(async (req, res) => {
+        res.send("create item");
     });
 
     const create = asyncHandler(async (req, res) => {
@@ -46,7 +67,7 @@ const Category = () => {
         res.send(category);
     });
 
-    return { getAll, getById, create, update, remove };
+    return { getAll, getById, createForm, create, update, remove };
 };
 
 module.exports = Category();

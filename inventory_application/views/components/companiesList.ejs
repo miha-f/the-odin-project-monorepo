@@ -1,19 +1,19 @@
-<h1 class="text-4xl font-bold text-text">Categories</h1>
+<h1 class="text-4xl font-bold text-text">Companies</h1>
 <div class="overflow-x-auto p-4">
-    <% categories.forEach(category => { %>
+    <% companies.forEach(company => { %>
         <div class="space-y-4 lg:space-y-0 border-b">
             <div class="grid grid-cols-2 gap-2 items-center p-2 
                 bg-bg-alt rounded shadow hover:bg-overlay transition">
                 <div class="text-text font-medium"> 
                     <p class="text-text-muted text-xs">Name</p>
-                    <a href="/categories/<%= category.id %>"
+                    <a href="/companies/<%= company.id %>"
                     class="hover:underline">
-                        <%= category.name %> 
+                        <%= company.name %> 
                     </a>
                 </div>
                 <div class="text-muted text-sm">
                     <p class="text-text-muted text-xs">Updated</p>
-                    <%= category.formattedDate %>
+                    <%= company.formattedDate %>
                 </div>
             </div> 
         </div>

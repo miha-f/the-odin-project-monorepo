@@ -1,5 +1,7 @@
-const Pagination = (elementsPerPage, totalElements) => {
+const Pagination = (page, elementsPerPage, totalElements) => {
     let currentPage = 0;
+
+    const offset = (page - 1) * ITEMS_PER_PAGE;
 
     const getElementsPerPage = () => elementsPerPage;
     const getTotalElements = () => totalElements;

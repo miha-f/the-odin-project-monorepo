@@ -1,3 +1,4 @@
+<h1 class="text-4xl font-bold text-text">Stock items</h1>
 <div class="overflow-x-auto p-4">
     <% stocks.forEach(stock => { %>
         <div class="space-y-4 lg:space-y-0 border-b">
@@ -9,19 +10,22 @@
                 <div class="lg:col-span-6 grid grid-cols-2 lg:grid-cols-6 gap-2">
                     <div class="text-text font-medium"> 
                         <p class="text-text-muted text-xs">Name</p>
-                        <a href="/items/<%= stock.item_id %>">
+                        <a href="/items/<%= stock.item_id %>"
+                        class="hover:underline">
                             <%= stock.item_name %> 
                         </a>
                     </div>
                     <div class="text-muted">
                         <p class="text-text-muted text-xs">Category</p>
-                        <a href="/categories/<%= stock.category_id %>">
+                        <a href="/categories/<%= stock.category_id %>"
+                        class="hover:underline">
                             <%= stock.category_name %>
                         </a>
                     </div>
                     <div class="text-muted">
                         <p class="text-text-muted text-xs">Company</p>
-                        <a href="/companies/<%= stock.company_id %>">
+                        <a href="/companies/<%= stock.company_id %>"
+                        class="hover:underline">
                             <%= stock.company_name %>
                         </a>
                     </div>

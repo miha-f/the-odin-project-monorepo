@@ -1,0 +1,113 @@
+<form action="/stocks" method="POST" class="max-w-4xl mx-auto p-6 space-y-6">
+  <h1 class="text-4xl font-bold text-text">Create New Item</h1>
+  <div class="flex flex-col sm:flex-row items-center gap-4">
+    <div class="w-full">
+      <label for="itemName" class="block text-sm font-medium text-text">Item Name</label>
+      <input type="text" id="itemName" name="itemName" required
+             value="<%= formData ? formData.itemName : '' %>"
+             placeholder="Enter item name"
+             class="mt-1 block w-full border rounded px-3 py-2 text-sm" />
+        <% if (formErrors?.itemName) { %>
+        <ul class="text-error text-sm">
+            <% formErrors.itemName.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-bg-alt p-4 rounded shadow">
+    <div>
+      <label for="categoryId" class="block text-sm font-medium">Category</label>
+      <select name="categoryId" id="categoryId" required
+              class="mt-1 block w-full border rounded px-3 py-2 text-sm">
+        <% categories.forEach(category => { %>
+          <option value="<%= category.id %>"
+            <%= formData && formData.categoryId === category.id ? 'selected' : '' %>>
+            <%= category.name %>
+          </option>
+        <% }) %>
+      </select>
+        <% if (formErrors?.categoryId) { %>
+        <ul class="text-error text-sm">
+            <% formErrors.categoryId.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </div>
+
+    <div>
+      <label for="companyId" class="block text-sm font-medium">Company</label>
+      <select name="companyId" id="companyId" required
+              class="mt-1 block w-full border rounded px-3 py-2 text-sm">
+        <% companies.forEach(company => { %>
+          <option value="<%= company.id %>"
+            <%= formData && formData.companyId === company.id ? 'selected' : '' %>>
+            <%= company.name %>
+          </option>
+        <% }) %>
+      </select>
+        <% if (formErrors?.companyId) { %>
+        <ul class="text-error text-sm">
+            <% formErrors.companyId.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </div>
+
+    <div>
+      <label for="quantity" class="block text-sm font-medium">Quantity</label>
+      <input type="number" id="quantity" name="quantity" required
+             value="<%= formData ? formData.quantity : '' %>"
+             placeholder="e.g. 100" min="0"
+             class="mt-1 block w-full border rounded px-3 py-2 text-sm" />
+        <% if (formErrors?.quantity) { %>
+        <ul class="text-error text-sm">
+            <% formErrors.quantity.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </div>
+
+    <div>
+      <label for="price" class="block text-sm font-medium">Price ($)</label>
+      <input type="number" id="price" name="price" required step="0.01" min="0"
+             value="<%= formData ? formData.price : '' %>"
+             placeholder="e.g. 19.99"
+             class="mt-1 block w-full border rounded px-3 py-2 text-sm text-success font-semibold" />
+        <% if (formErrors?.price) { %>
+        <ul class="text-error text-sm">
+            <% formErrors.price.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </div>
+  </div>
+
+  <div class="bg-bg-alt p-4 rounded shadow">
+    <label for="description" class="text-lg font-semibold text-text mb-2 block">Description</label>
+    <textarea id="description" name="description" rows="4" required
+              placeholder="Enter item description..."
+              value="<%= formData ? formData.description : '' %>"
+              class="w-full border rounded px-3 py-2 text-sm text-text-muted"></textarea>
+    <% if (formErrors?.description) { %>
+      <ul class="text-error text-sm">
+        <% formErrors.description.forEach(msg => { %>
+          <li><%= msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+
+  <div class="flex justify-center">
+    <button type="submit"
+            class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow">
+      Create Item
+    </button>
+  </div>
+</form>
