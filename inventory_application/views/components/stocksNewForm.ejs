@@ -1,5 +1,5 @@
-<form action="/stocks" method="POST" class="max-w-4xl mx-auto p-6 space-y-6">
-  <h1 class="text-4xl font-bold text-text">Create New Item</h1>
+<form action=<%= itemId ? ('/stocks/' + itemId + '/update') : '/stocks' %> method="POST" class="max-w-4xl mx-auto p-6 space-y-6">
+  <h1 class="text-4xl font-bold text-text"><%= itemId ? 'Edit' : 'Create' %> Item</h1>
   <div class="flex flex-col sm:flex-row items-center gap-4">
     <div class="w-full">
       <label for="itemName" class="block text-sm font-medium text-text">Item Name</label>
@@ -93,8 +93,9 @@
     <label for="description" class="text-lg font-semibold text-text mb-2 block">Description</label>
     <textarea id="description" name="description" rows="4" required
               placeholder="Enter item description..."
-              value="<%= formData ? formData.description : '' %>"
-              class="w-full border rounded px-3 py-2 text-sm text-text-muted"></textarea>
+              class="w-full border rounded px-3 py-2 text-sm text-text-muted">
+<%= formData ? formData.description : '' %>"
+              </textarea>
     <% if (formErrors?.description) { %>
       <ul class="text-error text-sm">
         <% formErrors.description.forEach(msg => { %>
@@ -107,7 +108,7 @@
   <div class="flex justify-center">
     <button type="submit"
             class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow">
-      Create Item
+        <%= itemId ? 'Edit' : 'Create' %>
     </button>
   </div>
 </form>

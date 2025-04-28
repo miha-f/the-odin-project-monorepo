@@ -75,13 +75,9 @@ const Company = () => {
         return [
             validateForm,
             asyncHandler(async (req, res) => {
-                console.log("A");
                 const companyId = isEdit ? req.params.companyId : undefined;
-                console.log("B");
                 const { companyName } = req.body;
-                console.log("C");
                 const errors = validationResult(req);
-                console.log("D");
                 if (!errors.isEmpty()) {
                     const formData = {
                         companyName: companyName,

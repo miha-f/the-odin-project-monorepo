@@ -25,9 +25,10 @@ const stockRouter = Router();
 stockRouter.get("/", Stock.getAll);
 stockRouter.get("/new", Stock.createForm);
 stockRouter.get("/:itemId", Stock.getById);
-stockRouter.post("/", Stock.create);
-stockRouter.patch("/:stockId", Stock.update);
-stockRouter.delete("/:stockId", Stock.remove);
+stockRouter.get("/:itemId/edit", Stock.editForm);
+stockRouter.post("/:itemId/update", Stock.createOrUpdate(true));
+stockRouter.post("/", Stock.createOrUpdate(false));
+stockRouter.delete("/:itemId", Stock.remove);
 
 module.exports = {
     companyRouter,

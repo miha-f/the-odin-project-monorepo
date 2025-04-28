@@ -212,20 +212,18 @@ class Stock {
         return res.rows[0];
     }
 
-    static async update(id, name = null, itemId = null, quantity = null, price = null) {
+    static async update(id, quantity = null, price = null) {
         const query = `
             UPDATE stocks
             SET 
-                name = COALESCE($2, name),
-                item_id = COALESCE($3, item_id),
-                quantity = COALESCE($4, quantity),
-                price = COALESCE($5, price),
+                quantity = COALESCE($2, quantity),
+                price = COALESCE($3, price),
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = $1
             RETURNING *
         `;
 
-        const res = await pool.query(query, [id, name, itemId, quantity, price]);
+        const res = await pool.query(query, [id, quantity, price]);
         return res.rows[0];
     }
 
