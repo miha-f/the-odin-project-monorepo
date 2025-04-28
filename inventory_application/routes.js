@@ -28,7 +28,7 @@ stockRouter.get("/:itemId", Stock.getById);
 stockRouter.get("/:itemId/edit", Stock.editForm);
 stockRouter.post("/:itemId/update", Stock.createOrUpdate(true));
 stockRouter.post("/", Stock.createOrUpdate(false));
-stockRouter.delete("/:itemId", Stock.remove);
+stockRouter.post("/:itemId/delete", Stock.remove);
 
 module.exports = {
     companyRouter,
