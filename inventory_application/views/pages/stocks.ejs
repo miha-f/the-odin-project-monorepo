@@ -1,2 +1,4 @@
+<h1 class="text-4xl font-bold text-text">Stock items</h1>
+<%- include('../components/sort', {baseUrl: "/stocks", skipFirst: true, fields:["Name", "Category", "Company", "Quantity", "Price", "Updated"]}) %>
 <%- include('../components/stocksList', {stocks}) %>
 <%- include('../components/pagination', {page, delta: 2, totalPages}) %>

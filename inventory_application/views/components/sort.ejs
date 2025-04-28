@@ -1,0 +1,74 @@
+<div class="p-2">
+   <div class="hidden lg:grid grid-cols-7 col-start-1 gap-2 text-xs text-text-muted">
+    <% if(skipFirst) { %>
+      <div class="flex flex-row justify-start items-center">
+      </div>
+    <% } %>
+    <% fields.forEach(field => { %>
+      <div class="flex flex-row justify-start items-center">
+        <span><%= field %></span>
+        <div class="flex flex-col justify-center">
+          <a href=<%= (baseUrl + '/?asc=' + field) %> class="hover:text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                <path fill-rule="evenodd" d="M11.78 9.78a.75.75 0 0 1-1.06 0L8 7.06 5.28 9.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd" />
+            </svg>
+          </a>
+          <a href=<%= (baseUrl + '/?desc=' + field) %> class="hover:text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    <% }) %>
+  </div>     
+
+  <div class="lg:hidden flex justify-end relative">
+    <div class="inline-block text-left">
+      <button id="sortDropdownButton" type="button" 
+        class="inline-flex justify-center w-full rounded-md border border-gray-300 
+            shadow-sm px-4 py-2 bg-bg text-sm font-medium text-text-muted 
+            hover:bg-surface">
+        Sort By 
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+            <path fill-rule="evenodd" d="M2 3.75A.75.75 0 0 1 2.75 3h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 3.75ZM2 8a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 8Zm0 4.25a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <div id="sortDropdownMenu" 
+        class="origin-top-right absolute right-0 mt-2 w-56 
+            rounded-md shadow-lg bg-bg ring-1 ring-black ring-opacity-5 
+            focus:outline-none hidden">
+        <div class="py-1">
+        <% fields.forEach(field => { %>
+          <a href=<%= (baseUrl + '/?asc=' + field) %> class="flex justify-between px-4 py-2 text-sm text-text hover:bg-surface">
+            <p><%= field %></p>
+            <p>↑</p>
+          </a>
+          <a href=<%= (baseUrl + '/?desc=' + field) %> class="flex justify-between px-4 py-2 text-sm text-text hover:bg-surface">
+            <p><%= field %></p>
+            <p>↓</p>
+          </a>
+        <% }) %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const dropdownButton = document.getElementById('sortDropdownButton');
+    const dropdownMenu = document.getElementById('sortDropdownMenu');
+
+    dropdownButton.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    window.addEventListener('click', (e) => {
+        if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+</script>
+         
