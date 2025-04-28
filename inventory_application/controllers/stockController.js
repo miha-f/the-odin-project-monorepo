@@ -54,9 +54,26 @@ const Stock = () => {
     });
 
     const getById = asyncHandler(async (req, res) => {
-        const { stockId } = req.params;
-        const stock = await StockModel.findById(stockId);
-        res.send(stock);
+        const { itemId } = req.params;
+        const itemDb = await ItemModel.findByIdDetailed(itemId);
+        if (!itemDb) {
+            throw new NotFoundError("Item not found");
+        }
+        const item = {
+            ...itemDb,
+            updatedAtFormatted: new Date(itemDb.updated_at).toLocaleDateString('en-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            }),
+            createdAtFormatted: new Date(itemDb.created_at).toLocaleDateString('en-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            }),
+        };
+
+        res.render("item", { item: item });
     });
 
     const createForm = asyncHandler(async (req, res) => {
