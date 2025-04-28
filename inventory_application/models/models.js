@@ -174,7 +174,7 @@ class Stock {
         return res.rows[0];
     }
 
-    static async getAllDetailed(limit = undefined, offset = undefined) {
+    static async getAllDetailed(limit = undefined, offset = undefined, sortField = undefined, sortDirection = undefined) {
         let query = `select s.price, s.quantity, s.updated_at, i.name as item_name, 
                     i.id as item_id, i.description, i.image_url, c.name as company_name, 
                     c.id as company_id, c2.name as category_name, c2.id as category_id 
@@ -182,6 +182,8 @@ class Stock {
                 left join items i on s.item_id = i.id 
                 left join companies c on i.company_id = c.id 
                 left join categories c2 on i.category_id = c2.id`;
+        if (sortField && sortDirection)
+            query += sortDirection === "desc" ? ` ORDER BY ${sortField} DESC` : ` ORDER BY ${sortField}`;
         if (limit)
             query += ` LIMIT ${limit}`;
         if (offset)

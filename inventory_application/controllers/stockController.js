@@ -39,7 +39,11 @@ const Stock = () => {
         const totalItems = (await StockModel.getAllCount()).count;
         const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-        const stocksDb = await StockModel.getAllDetailed(ITEMS_PER_PAGE, offset);
+        let [sortField, sortDirection] = [undefined, undefined];
+        if (req.query.sort)
+            [sortField, sortDirection] = req.query.sort.split("@");
+
+        const stocksDb = await StockModel.getAllDetailed(ITEMS_PER_PAGE, offset, sortField, sortDirection);
         const stocks = stocksDb.map(stock => ({
             ...stock,
             formattedDate: new Date(stock.updated_at).toLocaleDateString('en-DE', {

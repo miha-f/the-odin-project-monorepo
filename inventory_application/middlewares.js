@@ -7,6 +7,17 @@ const renderLayout = (req, res, next) => {
     next();
 }
 
+const queryBuilder = (req, res, next) => {
+    function updateQuery(currentQuery, updates) {
+        return new URLSearchParams({ ...currentQuery, ...updates }).toString();
+    }
+
+    res.locals.updateQuery = (updates) => updateQuery(req.query, updates);
+    res.locals.query = req.query;
+    next();
+}
+
 module.exports = {
     renderLayout,
+    queryBuilder,
 };

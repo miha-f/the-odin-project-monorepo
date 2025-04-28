@@ -6,14 +6,14 @@
     <% } %>
     <% fields.forEach(field => { %>
       <div class="flex flex-row justify-start items-center">
-        <span><%= field %></span>
+        <span><%= field.ui %></span>
         <div class="flex flex-col justify-center">
-          <a href=<%= (baseUrl + '/?asc=' + field) %> class="hover:text-primary">
+          <a href="<%= baseUrl + '/?' + updateQuery({ sort: field.db + '@asc' }) %>" class="hover:text-primary">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
                 <path fill-rule="evenodd" d="M11.78 9.78a.75.75 0 0 1-1.06 0L8 7.06 5.28 9.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd" />
             </svg>
           </a>
-          <a href=<%= (baseUrl + '/?desc=' + field) %> class="hover:text-primary">
+          <a href="<%= baseUrl + '/?' + updateQuery({ sort: field.db + '@desc' }) %>" class="hover:text-primary">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
                 <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
             </svg>
@@ -41,12 +41,12 @@
             focus:outline-none hidden">
         <div class="py-1">
         <% fields.forEach(field => { %>
-          <a href=<%= (baseUrl + '/?asc=' + field) %> class="flex justify-between px-4 py-2 text-sm text-text hover:bg-surface">
-            <p><%= field %></p>
+          <a href="<%= baseUrl + '/?' + updateQuery({ sort: field.db + '@asc' }) %>" class="flex justify-between px-4 py-2 text-sm text-text hover:bg-surface">
+            <p><%= field.ui %></p>
             <p>↑</p>
           </a>
-          <a href=<%= (baseUrl + '/?desc=' + field) %> class="flex justify-between px-4 py-2 text-sm text-text hover:bg-surface">
-            <p><%= field %></p>
+          <a href="<%= baseUrl + '/?' + updateQuery({ sort: field.db + '@desc' }) %>" class="flex justify-between px-4 py-2 text-sm text-text hover:bg-surface">
+            <p><%= field.ui %></p>
             <p>↓</p>
           </a>
         <% }) %>
