@@ -1,2 +1,7 @@
+<h1 class="text-4xl font-bold text-text">Companies</h1>
+<%- include('../components/sort', {baseUrl: "/companies", skipFirst: false, fields:[
+    {ui:"Name", db:"name"}, 
+    {ui:"Updated",db:"updated_at"},  
+]}) %>
 <%- include('../components/companiesList', {companies}) %>
 <%- include('../components/pagination', {page, delta: 2, totalPages}) %>

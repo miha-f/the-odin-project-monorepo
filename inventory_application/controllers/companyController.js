@@ -19,7 +19,12 @@ const Company = () => {
         const offset = (page - 1) * ITEMS_PER_PAGE;
         const totalItems = (await CompanyModel.getAllCount()).count;
         const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-        const companiesDb = await CompanyModel.getAll(ITEMS_PER_PAGE, offset);
+
+        let [sortField, sortDirection] = [undefined, undefined];
+        if (req.query.sort)
+            [sortField, sortDirection] = req.query.sort.split("@");
+
+        const companiesDb = await CompanyModel.getAll(ITEMS_PER_PAGE, offset, sortField, sortDirection);
         const companies = companiesDb.map(company => ({
             ...company,
             formattedDate: new Date(company.updated_at).toLocaleDateString('en-DE', {

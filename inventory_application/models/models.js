@@ -74,8 +74,10 @@ class Company {
         return res.rows[0];
     }
 
-    static async getAll(limit = undefined, offset = undefined) {
+    static async getAll(limit = undefined, offset = undefined, sortField = undefined, sortDirection = undefined) {
         let query = 'SELECT * FROM companies';
+        if (sortField && sortDirection)
+            query += sortDirection === "desc" ? ` ORDER BY ${sortField} DESC` : ` ORDER BY ${sortField}`;
         if (limit)
             query += ` LIMIT ${limit}`;
         if (offset)
@@ -124,8 +126,10 @@ class Category {
         return res.rows[0];
     }
 
-    static async getAll(limit = undefined, offset = undefined) {
+    static async getAll(limit = undefined, offset = undefined, sortField = undefined, sortDirection = undefined) {
         let query = 'SELECT * FROM categories';
+        if (sortField && sortDirection)
+            query += sortDirection === "desc" ? ` ORDER BY ${sortField} DESC` : ` ORDER BY ${sortField}`;
         if (limit)
             query += ` LIMIT ${limit}`;
         if (offset)

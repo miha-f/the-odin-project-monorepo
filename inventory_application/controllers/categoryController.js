@@ -20,7 +20,12 @@ const Category = () => {
         const offset = (page - 1) * ITEMS_PER_PAGE;
         const totalItems = (await CategoryModel.getAllCount()).count;
         const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-        const categoriesDb = await CategoryModel.getAll(ITEMS_PER_PAGE, offset);
+
+        let [sortField, sortDirection] = [undefined, undefined];
+        if (req.query.sort)
+            [sortField, sortDirection] = req.query.sort.split("@");
+
+        const categoriesDb = await CategoryModel.getAll(ITEMS_PER_PAGE, offset, sortField, sortDirection);
         const categories = categoriesDb.map(category => ({
             ...category,
             formattedDate: new Date(category.updated_at).toLocaleDateString('en-DE', {

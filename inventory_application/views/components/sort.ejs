@@ -1,5 +1,5 @@
 <div class="p-2">
-   <div class="hidden lg:grid grid-cols-7 col-start-1 gap-2 text-xs text-text-muted">
+   <div class="hidden lg:grid grid-cols-<%= skipFirst ? fields.length + 1 : fields.length %> col-start-1 gap-2 text-xs text-text-muted">
     <% if(skipFirst) { %>
       <div class="flex flex-row justify-start items-center">
       </div>
