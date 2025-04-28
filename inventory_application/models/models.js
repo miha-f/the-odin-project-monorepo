@@ -175,9 +175,7 @@ class Stock {
     static async getAllCount(search = undefined) {
         let query = `select count(*)
                 from stocks s 
-                left join items i on s.item_id = i.id 
-                left join companies c on i.company_id = c.id 
-                left join categories c2 on i.category_id = c2.id`;
+                left join items i on s.item_id = i.id`;
         if (search)
             query += ` WHERE i."name" ILIKE '${search}%'`;
         const res = await pool.query(query);
