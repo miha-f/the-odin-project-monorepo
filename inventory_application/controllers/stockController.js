@@ -33,17 +33,19 @@ const validateForm = [
 const Stock = () => {
 
     const getAll = asyncHandler(async (req, res) => {
+        const search = req.query.search || undefined;
+
         const ITEMS_PER_PAGE = 10;
         const page = parseInt(req.query.page) || 1;
         const offset = (page - 1) * ITEMS_PER_PAGE;
-        const totalItems = (await StockModel.getAllCount()).count;
+        const totalItems = (await StockModel.getAllCount(search)).count;
         const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
         let [sortField, sortDirection] = [undefined, undefined];
         if (req.query.sort)
             [sortField, sortDirection] = req.query.sort.split("@");
 
-        const stocksDb = await StockModel.getAllDetailed(ITEMS_PER_PAGE, offset, sortField, sortDirection);
+        const stocksDb = await StockModel.getAllDetailed(search, ITEMS_PER_PAGE, offset, sortField, sortDirection);
         const stocks = stocksDb.map(stock => ({
             ...stock,
             formattedDate: new Date(stock.updated_at).toLocaleDateString('en-DE', {
@@ -53,7 +55,7 @@ const Stock = () => {
             })
         }));
 
-        res.render('stocks', { stocks: stocks, page: page, totalPages: totalPages });
+        res.render('stocks', { searchQuery: search, stocks: stocks, page: page, totalPages: totalPages });
     });
 
     const getById = asyncHandler(async (req, res) => {
