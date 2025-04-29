@@ -36,6 +36,7 @@
             </button>
 
             <div class="hidden md:flex md:items-center" aria-label="Menu navigation">
+
                 <!-- <button id="toggle-dark" class="block px-2 py-2 rounded hover:bg-overlay">Toggle Dark</button> -->
 
                 <label for="toggle-dark" class="inline-flex items-center cursor-pointer">
@@ -63,9 +64,14 @@
                         </div>
                     </div>
                 </label>
-                <!-- TODO(miha): If user is auth, we display its info -->
-                <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Register</a>
-                <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Log in</a>
+                <% if (locals.user) { %>
+                    <a href="#" class="block px-2 py-2 rounded hover:bg-overlay"><%= locals.user.username %></a>
+                    <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
+                <% } else { %>
+                    <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Register</a>
+                    <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Log in</a>
+                <% } %>
+
             </div>
         </nav>
     </header>
@@ -101,9 +107,13 @@
                 </div>
             </div>
         </label>
-        <!-- TODO(miha): If user is auth, we display its info -->
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Register</a>
-        <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Log in</a>
+        <% if (locals.user) { %>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay"><%= locals.user.username %></a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Logout</a>
+        <% } else { %>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Register</a>
+            <a href="#" class="block px-2 py-2 rounded hover:bg-overlay">Log in</a>
+        <% } %>
     </div>
 
     <div id="mobile-sidebar" class="

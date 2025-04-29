@@ -1,10 +1,12 @@
 require("dotenv").config();
-const { renderLayout, queryBuilder } = require("./middlewares.js");
+const { renderLayout, queryBuilder, auth } = require("./middlewares.js");
 const path = require('path');
 const express = require("express");
 const app = express();
 
 const { companyRouter, categoryRouter, stockRouter } = require("./routes.js");
+
+app.use(auth);
 
 // NOTE(miha): Setup EJS.
 app.set("views", path.join(__dirname, "views"));
