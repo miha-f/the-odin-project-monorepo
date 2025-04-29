@@ -1,5 +1,5 @@
 const { Pool } = require("pg");
 
 module.exports = new Pool({
-    connectionString: "postgresql://postgres:postgres@localhost:5432/posts"
+    connectionString: "postgresql://postgres:postgres@localhost:5432/members_only"
 });

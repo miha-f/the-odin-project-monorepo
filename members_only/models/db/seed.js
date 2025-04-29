@@ -1,4 +1,4 @@
-const { bcrypt } = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const pool = require("./db.js");
 const { faker } = require('@faker-js/faker');
 
@@ -10,7 +10,7 @@ const seedUsers = async (n = 5) => {
         // CARE(miha): DON'T USE IN PRODUCTION
         const passwordHash = await bcrypt.hash("password", 10);
         return {
-            username: faker.internet.userName(),
+            username: faker.internet.username(),
             email: faker.internet.email(),
             role: faker.helpers.arrayElement(USER_ROLES),
             password_hash: passwordHash,
@@ -21,7 +21,8 @@ const seedUsers = async (n = 5) => {
 
     const users = [];
     for (let i = 1; i <= n; i++) {
-        users.push({ ...seedUser(), id: i });
+        const user = await seedUser();
+        users.push({ ...user, id: i });
     }
 
     for (const { username, email, role, password_hash, created_at, updated_at } of users) {
@@ -35,6 +36,7 @@ const seedUsers = async (n = 5) => {
 };
 
 const seedPosts = async (users, n = 5) => {
+
     function seedPost(users) {
         const user = faker.helpers.arrayElement(users);
         return {
@@ -48,10 +50,11 @@ const seedPosts = async (users, n = 5) => {
 
     const posts = [];
     for (let i = 1; i <= n; i++) {
-        posts.push({ ...seedPost() });
+        const post = seedPost(users);
+        posts.push({ ...post });
     }
 
-    for (const { title, text, user_id, created_at, updated_at } of users) {
+    for (const { title, text, user_id, created_at, updated_at } of posts) {
         await pool.query(
             "INSERT INTO posts (title, text, user_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)",
             [title, text, user_id, created_at, updated_at]
