@@ -8,7 +8,7 @@ const postsController = (() => {
         const { page, totalPages, offset, itemsPerPage } = await pagination(req.query.page, postsModel.getAllCount);
         const postsDb = await postsModel.getAllWithUserInfo(itemsPerPage, offset);
         const posts = formatDate(postsDb);
-        res.render("posts", { posts: posts });
+        res.render("posts", { posts: posts, page: page, totalPages: totalPages });
     });
 
     const getById = (id) => {
