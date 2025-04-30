@@ -1,6 +1,15 @@
-const postsController = () => {
-    const getAll = () => {
-    };
+const asyncHandler = require("express-async-handler");
+const postsModel = require("../models/postsModel.js");
+const pagination = require("../helpers/pagination.js");
+const formatDate = require("../helpers/formatDate.js");
+
+const postsController = (() => {
+    const getAll = asyncHandler(async (req, res) => {
+        const { page, totalPages, offset, itemsPerPage } = await pagination(req.query.page, postsModel.getAllCount);
+        const postsDb = await postsModel.getAllWithUserInfo(itemsPerPage, offset);
+        const posts = formatDate(postsDb);
+        res.render("posts", { posts: posts });
+    });
 
     const getById = (id) => {
     };
@@ -33,6 +42,6 @@ const postsController = () => {
         updateById,
         updateByIdPost,
     };
-};
+})();
 
-modules.export = postsController;
+module.exports = postsController;
