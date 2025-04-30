@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Members only</title>
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-background">
+    <header>
+        <nav class="bg-surface p-4 
+                flex flex-col justify-start
+                xs:flex-row xs:justify-between xs:items-center
+                ">
+            <div>
+                <a href="/" class="text-3xl text-text">#Members only</a>
+            </div>
+
+            <div>
+            <% if(!locals.user) { %>
+                <a href="#" class="text-text underline mr-2">Register</a>
+                <a href="#" class="text-text underline">Login</a>
+            <% } else { %>
+                <a href="#" class="text-text underline mr-2"><%= user.username %></a>
+                <a href="#" class="text-text underline">Logout</a>
+            <% } %>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <%- include(view) %>
+    </main>
+</body>
+
+</html>

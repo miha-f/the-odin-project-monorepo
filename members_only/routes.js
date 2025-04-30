@@ -1,37 +1,20 @@
 const { Router } = require("express");
-const Company = require("./controllers/companyController.js");
-const Category = require("./controllers/categoryController.js");
-const Stock = require("./controllers/stockController.js");
 
-const companyRouter = Router();
-companyRouter.get("/", Company.getAll);
-companyRouter.get("/new", Company.createForm);
-companyRouter.get("/:companyId", Company.getById);
-companyRouter.get("/:companyId/edit", Company.editForm);
-companyRouter.post("/:companyId/update", Company.createOrUpdate(true));
-companyRouter.post("/", Company.createOrUpdate(false));
-companyRouter.delete("/:companyId", Company.remove);
+const usersRouter = Router();
+usersRouter.get("/", (req, res) => { res.send("ok"); });
+usersRouter.get("/:userId", (req, res) => { res.send("ok"); });
+usersRouter.get("/login", (req, res) => { res.send("ok"); });
+usersRouter.get("/login", (req, res) => { res.send("ok"); });
+usersRouter.get("/update", (req, res) => { res.send("ok"); });
+usersRouter.get("/update", (req, res) => { res.send("ok"); });
+usersRouter.get("/register", (req, res) => { res.send("ok"); });
+usersRouter.get("/register", (req, res) => { res.send("ok"); });
+usersRouter.get("/logout", (req, res) => { res.send("ok"); });
 
-const categoryRouter = Router();
-categoryRouter.get("/", Category.getAll);
-categoryRouter.get("/new", Category.createForm);
-categoryRouter.get("/:categoryId", Category.getById);
-categoryRouter.get("/:categoryId/edit", Category.editForm);
-categoryRouter.post("/:categoryId/update", Category.createOrUpdate(true));
-categoryRouter.post("/", Category.createOrUpdate(false));
-categoryRouter.delete("/:categoryId", Category.remove);
-
-const stockRouter = Router();
-stockRouter.get("/", Stock.getAll);
-stockRouter.get("/new", Stock.createForm);
-stockRouter.get("/:itemId", Stock.getById);
-stockRouter.get("/:itemId/edit", Stock.editForm);
-stockRouter.post("/:itemId/update", Stock.createOrUpdate(true));
-stockRouter.post("/", Stock.createOrUpdate(false));
-stockRouter.post("/:itemId/delete", Stock.remove);
+const postsRouter = Router();
+postsRouter.get("/", (req, res) => { res.send("ok"); });
 
 module.exports = {
-    companyRouter,
-    categoryRouter,
-    stockRouter,
+    usersRouter,
+    postsRouter,
 };
