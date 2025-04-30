@@ -1,0 +1,39 @@
+<div class="max-w-screen-xl mx-auto px-4 py-8">
+    <form class="space-y-4" action="/posts/create" method="POST">
+        <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value="<%= formData ? formData.title: '' %>"
+            class="w-full p-2 border border-gray-300 rounded"
+        />
+        <% if (formErrors?.title) { %>
+        <ul class="text-accent text-sm">
+            <% formErrors.title.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+
+        <textarea
+            name="text"
+            placeholder="Text"
+            class="w-full h-32 p-2 border border-gray-300 rounded"
+        ><%= formData ? formData.text: '' %></textarea>
+        <% if (formErrors?.text) { %>
+        <ul class="text-accent text-sm">
+            <% formErrors.text.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+
+        <button
+            type="submit"
+            class="px-4 py-2 bg-primary text-background rounded hover:underline"
+        >
+            Submit
+        </button>
+    </form>
+</div>
+

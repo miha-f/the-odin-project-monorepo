@@ -1,0 +1,18 @@
+<div class="flex flex-col items-center p-4">
+    <h1 class="text-3xl font-bold">
+        <%= post.title %>
+    </h1>
+    <div class="max-w-lg">
+        <div class="flex flex-row justify-between">
+            <p class="font-light text-sm p-2"> 
+                <%= post.formattedDate %> 
+            </p>
+            <p class="font-light text-sm p-2 underline"> 
+                <a href="/users/<%= post.user_id %>">
+                    <%= post.username %>
+                </a>
+            </p>
+        </div>
+        <p class="mt-2 whitespace-pre-line text-md font-normal"><%= post.text %></p>
+    </div>
+</div>

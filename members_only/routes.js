@@ -1,5 +1,7 @@
 const { Router } = require("express");
 
+const postsController = require("./controllers/postsController.js");
+
 const usersRouter = Router();
 usersRouter.get("/", (req, res) => { res.send("ok"); });
 usersRouter.get("/:userId", (req, res) => { res.send("ok"); });
@@ -12,7 +14,11 @@ usersRouter.get("/register", (req, res) => { res.send("ok"); });
 usersRouter.get("/logout", (req, res) => { res.send("ok"); });
 
 const postsRouter = Router();
-postsRouter.get("/", (req, res) => { res.send("ok"); });
+postsRouter.get("/", postsController.getAll);
+postsRouter.get("/create", postsController.create);
+postsRouter.post("/create", postsController.createOrUpdateByIdPost(false));
+postsRouter.post("/update", postsController.createOrUpdateByIdPost(true));
+postsRouter.get("/:postId", postsController.getById);
 
 module.exports = {
     usersRouter,

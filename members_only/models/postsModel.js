@@ -1,6 +1,6 @@
 const pool = require("./db/db.js");
 
-const postsModel = () => {
+const postsModel = (() => {
 
     const getAllCount = async () => {
         let query = 'SELECT COUNT(*) FROM posts';
@@ -19,7 +19,9 @@ const postsModel = () => {
     };
 
     const getAllWithUserInfo = async (limit = undefined, offset = undefined) => {
-        let query = `SELECT * FROM posts p
+        let query = `SELECT 
+                p.id, p.title, p.text, p.updated_at, u.id as user_id, u.username, u.email, u.role
+                FROM posts p
                 LEFT JOIN users u ON p.user_id = u.id
             `;
         if (limit)
@@ -34,6 +36,17 @@ const postsModel = () => {
         let query = 'SELECT * FROM posts WHERE id = $1';
         const res = await pool.query(query, [id]);
         return res.rows;
+    };
+
+    const getByIdWithUserInfo = async (id) => {
+        let query = `SELECT 
+                p.id, p.title, p.text, p.updated_at, u.id as user_id, u.username, u.email, u.role
+                FROM posts p
+                LEFT JOIN users u ON p.user_id = u.id
+                WHERE p.id = $1
+            `;
+        const res = await pool.query(query, [id]);
+        return res.rows[0];
     };
 
     const create = async ({ title, text, user_id }) => {
@@ -70,10 +83,11 @@ const postsModel = () => {
         getAll,
         getAllWithUserInfo,
         getById,
+        getByIdWithUserInfo,
         create,
         removeById,
         updateById,
     };
-};
+})();
 
-modules.export = postsModel;
+module.exports = postsModel;

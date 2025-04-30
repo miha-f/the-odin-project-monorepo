@@ -30,9 +30,8 @@ app.use((err, req, res, next) => {
     }
 });
 
-
 app.get("/", (req, res) => {
-    res.render("index");
+    res.redirect("/posts");
 });
 
 const PORT = process.env.PORT || 3000;
