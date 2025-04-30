@@ -1,7 +1,7 @@
 const formatDate = (list, fieldName = "formattedDate", dateName = "updated_at") => {
-    const listWithFormattedDate = list.map(stock => ({
-        ...list,
-        [fieldName]: new Date(list[dateName]).toLocaleDateString('en-DE', {
+    const listWithFormattedDate = list.map(el => ({
+        ...el,
+        [fieldName]: new Date(el[dateName]).toLocaleDateString('en-DE', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -10,4 +10,4 @@ const formatDate = (list, fieldName = "formattedDate", dateName = "updated_at") 
     return listWithFormattedDate;
 };
 
-modules.export = formatDate;
+module.exports = formatDate;

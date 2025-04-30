@@ -4,7 +4,7 @@ const pagination = async (currentPage, getAllCountFunc, itemsPerPage = 10) => {
     const totalItems = (await getAllCountFunc()).count;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    return { page, totalPages, offset };
+    return { page, totalPages, offset, itemsPerPage };
 };
 
-modules.export = pagination;
+module.exports = pagination;
