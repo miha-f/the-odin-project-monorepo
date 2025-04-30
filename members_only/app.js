@@ -4,9 +4,7 @@ const path = require('path');
 const express = require("express");
 const app = express();
 
-const { companyRouter, categoryRouter, stockRouter } = require("./routes.js");
-
-app.use(auth);
+const { usersRouter, postsRouter } = require("./routes.js");
 
 // NOTE(miha): Setup EJS.
 app.set("views", path.join(__dirname, "views"));
@@ -20,16 +18,10 @@ app.use(queryBuilder);
 // NOTE(miha): Middleware for accepting form data
 app.use(express.urlencoded({ extended: true }));
 
-// NOTE(miha): Register function to the EJS
-app.locals.getCurrentYear = () => {
-    return new Date().getFullYear();
-};
-
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use("/companies", companyRouter);
-app.use("/categories", categoryRouter);
-app.use("/stocks", stockRouter);
+app.use("/users", usersRouter);
+app.use("/posts", postsRouter);
 
 app.use((err, req, res, next) => {
     switch (err.statusCode || 500) {
@@ -40,10 +32,10 @@ app.use((err, req, res, next) => {
 
 
 app.get("/", (req, res) => {
-    res.redirect('/stocks');
+    res.render("index");
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`My first Express app - listening on port ${PORT}!`);
+    console.log(`Express server, listening on port ${PORT}!`);
 });
