@@ -35,7 +35,7 @@ const postsModel = (() => {
     const getById = async (id) => {
         let query = 'SELECT * FROM posts WHERE id = $1';
         const res = await pool.query(query, [id]);
-        return res.rows;
+        return res.rows[0];
     };
 
     const getByIdWithUserInfo = async (id) => {

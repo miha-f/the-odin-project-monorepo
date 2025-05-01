@@ -3,43 +3,25 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --color-primary: var(--color-blue-600);
-    --color-secondary: var(--color-purple-600);
-    --color-accent: var(--color-amber-500);
-    --color-bg: #ffffff;
-    --color-bg-alt: var(--color-gray-50);
-    --color-surface: var(--color-gray-100);
-    --color-border: var(--color-gray-200);
-    --color-text: var(--color-gray-900);
-    --color-text-muted: var(--color-gray-500);
-    --color-heading: var(--color-gray-800);
-    --color-link: var(--color-blue-600);
-    --color-link-hover: var(--color-blue-700);
-    --color-success: var(--color-green-500);
-    --color-error: var(--color-red-500);
-    --color-warning: var(--color-amber-500);
-    --color-info: var(--color-blue-500);
-    --color-overlay: rgba(0, 0, 0, 0.4);
+    --breakpoint-xs: 400px;
+}
+
+@theme {
+    --color-primary: #221ac7;
+    --color-secondary: #c4b9f8;
+    --color-accent: #262267;
+    --color-text: #040316;
+    --color-background: #eeeef6;
+    --color-surface: #e7e7ee;
 }
 
 @layer base {
     @variant dark {
-        --color-primary: var(--color-slate-900);
-        --color-secondary: var(--color-purple-900);
-        --color-accent: var(--color-amber-400);
-        --color-bg: var(--color-slate-800);
-        --color-bg-alt: var(--color-slate-900);
-        --color-surface: var(--color-slate-700);
-        --color-border: var(--color-slate-600);
-        --color-text: var(--color-slate-100);
-        --color-text-muted: var(--color-slate-400);
-        --color-heading: var(--color-slate-200);
-        --color-link: var(--color-blue-400);
-        --color-link-hover: var(--color-blue-500);
-        --color-success: var(--color-green-400);
-        --color-error: var(--color-red-400);
-        --color-warning: var(--color-amber-400);
-        --color-info: var(--color-blue-400);
-        --color-overlay: rgba(255, 255, 255, 0.1);
+        --color-primary: #4138e5;
+        --color-secondary: #110746;
+        --color-accent: #9b98dd;
+        --color-text: #eae9fc;
+        --color-background: #090911;
+        --color-surface: #111118;
     }
 }

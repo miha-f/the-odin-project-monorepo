@@ -70,9 +70,19 @@ const postsController = (() => {
     };
 
     const removeByIdPost = asyncHandler(async (req, res) => {
+        const { postId } = req.params;
+        await postsModel.removeById(postId);
+        res.redirect("/posts");
     });
 
     const updateById = asyncHandler(async (req, res) => {
+        const { postId } = req.params;
+        const post = await postsModel.getById(postId);
+        const formData = {
+            title: post.title,
+            text: post.text,
+        };
+        res.render("postForm", { postId: postId, formData: formData, formErrors: {} });
     });
 
     return {

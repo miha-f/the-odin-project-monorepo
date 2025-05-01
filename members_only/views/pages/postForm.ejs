@@ -1,10 +1,14 @@
 <div class="max-w-screen-xl mx-auto px-4 py-8">
-    <form class="space-y-4" action="/posts/create" method="POST">
+    <form 
+        class="space-y-4" 
+        action=<%= postId ? ('/posts/update/' + postId) : '/posts/create' %>
+        method="POST"
+    >
         <input
             type="text"
             name="title"
             placeholder="Title"
-            value="<%= formData ? formData.title: '' %>"
+            value="<%= formData ? formData.title : '' %>"
             class="w-full p-2 border border-gray-300 rounded"
         />
         <% if (formErrors?.title) { %>
@@ -32,7 +36,7 @@
             type="submit"
             class="px-4 py-2 bg-primary text-background rounded hover:underline"
         >
-            Submit
+            <%= postId ? 'Update' : 'Create' %>
         </button>
     </form>
 </div>
