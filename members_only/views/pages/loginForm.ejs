@@ -1,0 +1,49 @@
+<div class="max-w-screen-xl mx-auto px-4 py-8">
+    <form 
+        class="space-y-4" 
+        action=<%= userId ? ('/posts/' + postId + '/update') : '/posts/create' %>
+        method="POST"
+    >
+    
+        <label for="email" class="text-sm font-light">Email</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+            value="<%= formData ? formData.title : '' %>"
+            class="w-full p-2 border border-gray-300 rounded"
+        />
+        <% if (formErrors?.title) { %>
+        <ul class="text-accent text-sm">
+            <% formErrors.title.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+
+        <label for="Password" class="text-sm font-light">Password</label>
+        <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Password"
+            value="<%= formData ? formData.title : '' %>"
+            class="w-full p-2 border border-gray-300 rounded"
+        />
+        <% if (formErrors?.title) { %>
+        <ul class="text-accent text-sm">
+            <% formErrors.title.forEach(msg => { %>
+            <li><%= msg %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+
+        <button
+            type="submit"
+            class="px-4 py-2 bg-primary text-background rounded hover:underline"
+        >
+            <%= userId ? 'Update' : 'Login' %>
+        </button>
+    </form>
+</div>
