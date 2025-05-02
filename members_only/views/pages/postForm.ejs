@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto px-4 py-8">
     <form 
         class="space-y-4" 
-        action=<%= postId ? ('/posts/update/' + postId) : '/posts/create' %>
+        action=<%= postId ? ('/posts/' + postId + '/update') : '/posts/create' %>
         method="POST"
     >
         <input

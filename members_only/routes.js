@@ -17,8 +17,8 @@ postsRouter.get("/", postsController.getAll);
 postsRouter.get("/create", postsController.create);
 postsRouter.get("/update/:postId", postsController.updateById);
 postsRouter.post("/create", postsController.createOrUpdateByIdPost(false));
-postsRouter.post("/update/:postId", postsController.createOrUpdateByIdPost(true));
-postsRouter.post("/remove/:postId", postsController.removeByIdPost);
+postsRouter.post("/:postId/update", postsController.createOrUpdateByIdPost(true));
+postsRouter.post("/:postId/remove", postsController.removeByIdPost);
 postsRouter.get("/:postId", postsController.getById);
 
 module.exports = {
