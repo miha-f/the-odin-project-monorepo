@@ -1,17 +1,16 @@
 const { Router } = require("express");
 
+const usersController = require("./controllers/usersController.js");
 const postsController = require("./controllers/postsController.js");
 
 const usersRouter = Router();
-usersRouter.get("/", (req, res) => { res.send("ok"); });
-usersRouter.get("/:userId", (req, res) => { res.send("ok"); });
-usersRouter.get("/login", (req, res) => { res.send("ok"); });
-usersRouter.get("/login", (req, res) => { res.send("ok"); });
-usersRouter.get("/update", (req, res) => { res.send("ok"); });
-usersRouter.get("/update", (req, res) => { res.send("ok"); });
-usersRouter.get("/register", (req, res) => { res.send("ok"); });
-usersRouter.get("/register", (req, res) => { res.send("ok"); });
-usersRouter.get("/logout", (req, res) => { res.send("ok"); });
+usersRouter.get("/", usersController.getAll);
+usersRouter.get("/login", usersController.login);
+usersRouter.post("/login", usersController.loginPost);
+usersRouter.get("/register", usersController.register);
+usersRouter.post("/register", usersController.registerPost);
+usersRouter.post("/logout", usersController.logoutPost);
+usersRouter.get("/:userId", usersController.getById);
 
 const postsRouter = Router();
 postsRouter.get("/", postsController.getAll);
