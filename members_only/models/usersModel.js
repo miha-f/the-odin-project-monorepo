@@ -18,10 +18,31 @@ const usersModel = (() => {
         return res.rows;
     };
 
+    const getByEmail = async (email) => {
+        let query = `SELECT id, username, email, role, updated_at 
+                     FROM users WHERE email = $1`;
+        const res = await pool.query(query, [email]);
+        return res.rows[0];
+    };
+
+    const getByEmailWithPasswordHash = async (email) => {
+        let query = `SELECT id, username, email, role, updated_at, password_hash
+                     FROM users WHERE email = $1`;
+        const res = await pool.query(query, [email]);
+        return res.rows[0];
+    };
+
     const getById = async (id) => {
         let query = `SELECT id, username, email, role, updated_at 
                      FROM users WHERE id = $1`;
         const res = await pool.query(query, [id]);
+        return res.rows[0];
+    };
+
+    const getByUsername = async (username) => {
+        let query = `SELECT id, username, email, role, updated_at 
+                     FROM users WHERE username = $1`;
+        const res = await pool.query(query, [username]);
         return res.rows[0];
     };
 
@@ -68,6 +89,9 @@ const usersModel = (() => {
         create,
         removeById,
         updateById,
+        getByEmailWithPasswordHash,
+        getByUsername,
+        getByEmail,
     };
 })();
 

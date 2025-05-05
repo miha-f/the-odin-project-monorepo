@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto px-4 py-8">
     <form 
         class="space-y-4" 
-        action=<%= userId ? ('/posts/' + postId + '/update') : '/posts/create' %>
+        action="/users/login"
         method="POST"
     >
     
@@ -11,12 +11,12 @@
             id="email"
             name="email"
             placeholder="Email"
-            value="<%= formData ? formData.title : '' %>"
+            value="<%= formData ? formData.email: '' %>"
             class="w-full p-2 border border-gray-300 rounded"
         />
-        <% if (formErrors?.title) { %>
+        <% if (formErrors?.email) { %>
         <ul class="text-accent text-sm">
-            <% formErrors.title.forEach(msg => { %>
+            <% formErrors.email.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
@@ -26,14 +26,15 @@
         <input
             type="password"
             name="password"
+            min=5
             id="password"
             placeholder="Password"
-            value="<%= formData ? formData.title : '' %>"
+            value="<%= formData ? formData.password: '' %>"
             class="w-full p-2 border border-gray-300 rounded"
         />
-        <% if (formErrors?.title) { %>
+        <% if (formErrors?.password) { %>
         <ul class="text-accent text-sm">
-            <% formErrors.title.forEach(msg => { %>
+            <% formErrors.password.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>

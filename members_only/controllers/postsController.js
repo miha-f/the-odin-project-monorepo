@@ -37,7 +37,6 @@ const postsController = (() => {
         return [
             validateForm,
             asyncHandler(async (req, res) => {
-                console.log("a");
                 const postId = isEdit ? req.params.postId : undefined;
                 const { title, text } = req.body;
                 const errors = validationResult(req);

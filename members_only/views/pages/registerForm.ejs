@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto px-4 py-8">
     <form 
         class="space-y-4" 
-        action=<%= userId ? ('/posts/' + postId + '/update') : '/posts/create' %>
+        action=<%= userId ? ('/users/' + userId + '/update') : '/users/register' %>
         method="POST"
     >
 
@@ -11,12 +11,12 @@
             id="username"
             name="username"
             placeholder="Username"
-            value="<%= formData ? formData.title : '' %>"
+            value="<%= formData ? formData.username : '' %>"
             class="w-full p-2 border border-gray-300 rounded"
         />
-        <% if (formErrors?.title) { %>
+        <% if (formErrors?.username) { %>
         <ul class="text-accent text-sm">
-            <% formErrors.title.forEach(msg => { %>
+            <% formErrors.username.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
@@ -28,12 +28,12 @@
             id="email"
             name="email"
             placeholder="Email"
-            value="<%= formData ? formData.title : '' %>"
+            value="<%= formData ? formData.email : '' %>"
             class="w-full p-2 border border-gray-300 rounded"
         />
-        <% if (formErrors?.title) { %>
+        <% if (formErrors?.email) { %>
         <ul class="text-accent text-sm">
-            <% formErrors.title.forEach(msg => { %>
+            <% formErrors.email.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
@@ -45,12 +45,12 @@
             type="password"
             name="password1"
             placeholder="Password"
-            value="<%= formData ? formData.title : '' %>"
+            value="<%= formData ? formData.password1 : '' %>"
             class="w-full p-2 border border-gray-300 rounded"
         />
-        <% if (formErrors?.title) { %>
+        <% if (formErrors?.password1) { %>
         <ul class="text-accent text-sm">
-            <% formErrors.title.forEach(msg => { %>
+            <% formErrors.password1.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
@@ -60,12 +60,12 @@
             type="password"
             name="password2"
             placeholder="Confirm password"
-            value="<%= formData ? formData.title : '' %>"
+            value="<%= formData ? formData.password2 : '' %>"
             class="w-full p-2 border border-gray-300 rounded"
         />
-        <% if (formErrors?.title) { %>
+        <% if (formErrors?.password2) { %>
         <ul class="text-accent text-sm">
-            <% formErrors.title.forEach(msg => { %>
+            <% formErrors.password2.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
