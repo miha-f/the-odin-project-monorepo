@@ -5,32 +5,32 @@
         method="POST"
     >
 
-        <label for="title" class="text-sm font-light">Title</label>
+        <label for="title" class="text-text text-sm font-light">Title</label>
         <input
             type="text"
             name="title"
             id="title"
             placeholder="Title"
             value="<%= formData ? formData.title : '' %>"
-            class="w-full p-2 border border-gray-300 rounded"
+            class="text-text w-full p-2 border border-gray-300 rounded"
         />
         <% if (formErrors?.title) { %>
-        <ul class="text-accent text-sm">
+        <ul class="text-text text-accent text-sm">
             <% formErrors.title.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
         <% } %>
 
-        <label for="text" class="text-sm font-light">Text</label>
+        <label for="text" class="text-text text-sm font-light">Text</label>
         <textarea
             name="text"
             id="text"
             placeholder="Text"
-            class="w-full h-32 p-2 border border-gray-300 rounded"
+            class="text-text w-full h-32 p-2 border border-gray-300 rounded"
         ><%= formData ? formData.text: '' %></textarea>
         <% if (formErrors?.text) { %>
-        <ul class="text-accent text-sm">
+        <ul class="text-text text-accent text-sm">
             <% formErrors.text.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
@@ -39,7 +39,7 @@
 
         <button
             type="submit"
-            class="px-4 py-2 bg-primary text-background rounded hover:underline"
+            class="text-white px-4 py-2 bg-primary rounded hover:underline"
         >
             <%= postId ? 'Update' : 'Create' %>
         </button>

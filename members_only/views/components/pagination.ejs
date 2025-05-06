@@ -1,8 +1,8 @@
 <div class="flex justify-center p-4">
     <% if (page > 1) { %>
-        <div class=""><a href="?<%= updateQuery({ page: 1 }) %>">First</a></div>
-        <div class="">
-            <a href="?<%= updateQuery({ page: page - 1 }) %>">
+        <div class="text-text"><a href="?<%= updateQuery({ page: 1 }) %>">First</a></div>
+        <div>
+            <a class="text-text" href="?<%= updateQuery({ page: page - 1 }) %>">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                 </svg>
@@ -15,19 +15,19 @@
         const end = Math.min(totalPages, page + delta);
         for (let i = start; i <= end; i++) {
     %>
-        <div class="px-2 <%= i === page ? 'underline' : '' %>">
+        <div class="text-text px-2 <%= i === page ? 'underline' : '' %>">
             <a href="?<%= updateQuery({ page: i }) %>"><%= i %></a>
         </div>
     <% } %>
 
     <% if (page < totalPages) { %>
-        <div class="">
-            <a href="?<%= updateQuery({ page: page + 1 }) %>">
+        <div>
+            <a class="text-text" href="?<%= updateQuery({ page: page + 1 }) %>">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                 </svg>
             </a>
         </div>
-        <div class=""><a href="?<%= updateQuery({ page: totalPages }) %>">Last</a></div>
+        <div class="text-text"><a href="?<%= updateQuery({ page: totalPages }) %>">Last</a></div>
     <% } %>
 </div>

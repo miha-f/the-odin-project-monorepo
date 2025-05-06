@@ -1,13 +1,13 @@
 <div class="flex flex-col items-center p-4">
-    <h1 class="text-3xl font-bold">
+    <h1 class="text-text text-3xl font-bold">
         <%= post.title %>
     </h1>
     <div class="max-w-lg">
         <div class="flex flex-row justify-between">
-            <p class="font-light text-sm p-2"> 
+            <p class="text-text font-light text-sm p-2"> 
                 <%= post.formattedDate %> 
             </p>
-            <p class="font-light text-sm p-2 underline"> 
+            <p class="text-text font-light text-sm p-2 underline"> 
                 <% if(role !== 'user') { %>
                     <a href="/users/<%= post.user_id %>">
                         <%= post.username %>
@@ -15,7 +15,7 @@
                 <% } %>
             </p>
         </div>
-        <p class="mt-2 whitespace-pre-line text-md font-normal"><%= post.text %></p>
+        <p class="text-text mt-2 whitespace-pre-line text-md font-normal"><%= post.text %></p>
         <div class="flex flex-row gap-2 py-2">
             <% if(role === 'admin' || (currentUser && post.user_id === currentUser.id)) { %>
                 <form 
@@ -24,7 +24,7 @@
                 >
                     <button
                         type="submit"
-                        class="px-4 py-2 bg-primary text-background rounded hover:underline"
+                        class="text-white px-4 py-2 bg-primary rounded hover:underline"
                     >
                     Delete post
                     </button>
@@ -34,7 +34,7 @@
                 <a href="/posts/<%= post.id %>/update">
                     <button
                         type="submit"
-                        class="px-4 py-2 bg-primary text-background rounded hover:underline"
+                        class="text-white px-4 py-2 bg-primary rounded hover:underline"
                     >
                     Update post
                     </button>

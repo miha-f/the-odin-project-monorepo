@@ -41,6 +41,52 @@
     <main>
         <%- include(view) %>
     </main>
+
+    <label for="toggle-dark" class="flex justify-center cursor-pointer">
+        <div class="px-2 py-2 block">
+            <div class="relative">
+                <input id="toggle-dark" type="checkbox" class="sr-only">
+                <div class="block w-14 h-8 bg-gray-300 rounded-full dark:bg-gray-600"></div>
+                <div class="dot absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ease-in-out
+            flex items-center justify-center
+            dark:translate-x-6">
+                    <!-- Light Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 block dark:hidden"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                    <!-- Dark Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 hidden dark:block"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </label>
+
+    <script>
+        const btn = document.getElementById('toggle-dark');
+        const body = document.querySelector('body');
+
+        btn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (btn.checked)
+                localStorage.theme = 'dark';
+            else
+                localStorage.theme = 'light';
+        });
+
+        const html = document.documentElement;
+        if (localStorage.theme === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            btn.checked = true;
+        }
+    </script>
+
 </body>
 
 </html>

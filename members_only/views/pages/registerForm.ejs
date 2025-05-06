@@ -5,51 +5,51 @@
         method="POST"
     >
 
-        <label for="username" class="text-sm font-light">Username</label>
+        <label for="username" class="text-text text-sm font-light">Username</label>
         <input
             type="text"
             id="username"
             name="username"
             placeholder="Username"
             value="<%= formData ? formData.username : '' %>"
-            class="w-full p-2 border border-gray-300 rounded"
+            class="text-text w-full p-2 border border-gray-300 rounded"
         />
         <% if (formErrors?.username) { %>
-        <ul class="text-accent text-sm">
+        <ul class="text-text text-accent text-sm">
             <% formErrors.username.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
         <% } %>
     
-        <label for="email" class="text-sm font-light">Email</label>
+        <label for="email" class="text-text text-sm font-light">Email</label>
         <input
             type="email"
             id="email"
             name="email"
             placeholder="Email"
             value="<%= formData ? formData.email : '' %>"
-            class="w-full p-2 border border-gray-300 rounded"
+            class="text-text w-full p-2 border border-gray-300 rounded"
         />
         <% if (formErrors?.email) { %>
-        <ul class="text-accent text-sm">
+        <ul class="text-text text-accent text-sm">
             <% formErrors.email.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
         </ul>
         <% } %>
 
-        <label for="password1" class="text-sm font-light">Password</label>
+        <label for="password1" class="text-text text-sm font-light">Password</label>
         <input
             id="password1"
             type="password"
             name="password1"
             placeholder="Password"
             value="<%= formData ? formData.password1 : '' %>"
-            class="w-full p-2 border border-gray-300 rounded"
+            class="text-text w-full p-2 border border-gray-300 rounded"
         />
         <% if (formErrors?.password1) { %>
-        <ul class="text-accent text-sm">
+        <ul class="text-text text-accent text-sm">
             <% formErrors.password1.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
@@ -61,10 +61,10 @@
             name="password2"
             placeholder="Confirm password"
             value="<%= formData ? formData.password2 : '' %>"
-            class="w-full p-2 border border-gray-300 rounded"
+            class="text-text w-full p-2 border border-gray-300 rounded"
         />
         <% if (formErrors?.password2) { %>
-        <ul class="text-accent text-sm">
+        <ul class="text-text text-accent text-sm">
             <% formErrors.password2.forEach(msg => { %>
             <li><%= msg %></li>
             <% }) %>
@@ -72,24 +72,24 @@
         <% } %>
 
         <fieldset class="space-y-2">
-            <legend class="font-light text-sm">Select Role:</legend>
-            <label class="inline-flex items-center space-x-2">
+            <legend class="text-text font-light text-sm">Select Role:</legend>
+            <label class="inline-flex items-center space-x-2 mr-4">
                 <input type="radio" name="role" value="user" class="form-radio" checked>
-                <span>User</span>
+                <span class="text-text">User</span>
             </label>
-            <label class="inline-flex items-center space-x-2">
+            <label class="inline-flex items-center space-x-2 mr-4">
                 <input type="radio" name="role" value="member" class="form-radio">
-                <span>Member</span>
+                <span class="text-text">Member</span>
             </label>
             <label class="inline-flex items-center space-x-2">
                 <input type="radio" name="role" value="admin" class="form-radio">
-                <span>Admin</span>
+                <span class="text-text">Admin</span>
             </label>
         </fieldset>
 
         <button
             type="submit"
-            class="px-4 py-2 bg-primary text-background rounded hover:underline"
+            class="text-white px-4 py-2 bg-primary rounded hover:underline"
         >
             Register
         </button>
