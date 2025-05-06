@@ -31,3 +31,9 @@ You can see Github repo for code and project `README.md`  or you can preview the
 | Homepage             | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/homepage) | [Live](https://miha-f.github.io/the-odin-project-monorepo/homepage) |
 | CV Application       | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/cv_application) | [Live](https://miha-f.github.io/the-odin-project-monorepo/cv_application/dist) |
 | Memory Card          | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/memory_game) | [Live](https://miha-f.github.io/the-odin-project-monorepo/memory_game/dist) |
+| Shopping Cart | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/shopping_cart) | *(No live preview)*  |
+| NodeJS Basic Info Site | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/nodejs_basic_info_site) | *(No live preview)*  |
+| NodeJS Forms And Data Handling | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/nodejs_forms_and_data_handling) | *(No live preview)*  |
+| Mini Message Board | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/mini_message_board) | *(No live preview)*  |
+| Inventory Application | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/inventory_application) | *(No live preview)*  |
+| Members Only | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/members_only) | *(No live preview)*  |
