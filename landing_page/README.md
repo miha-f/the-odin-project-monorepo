@@ -3,6 +3,8 @@
 Goal: We want to replicate layout of the landing page shown in the image 01.png.
 02.png describes what fonts, colors our project should use.
 
+Tech: HTML, CSS
+
 To expand my knowledge I also used Bootstrap and Tailwindcss libraries.
 
 In folder html_css we find implementation using HTML+CSS.
