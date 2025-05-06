@@ -70,13 +70,24 @@ const postsController = (() => {
 
     const removeByIdPost = asyncHandler(async (req, res) => {
         const { postId } = req.params;
+        if (!res.locals.currentUser)
+            return res.redirect(`/posts/${postId}`);
+
+        const post = await postsModel.getById(postId);
+        if (!(post.user_id === res.locals.currentUser.id || res.locals.role === 'admin'))
+            return res.redirect(`/posts/${postId}`);
+
         await postsModel.removeById(postId);
-        res.redirect("/posts");
+        res.redirect("/");
     });
 
     const updateById = asyncHandler(async (req, res) => {
         const { postId } = req.params;
+        if (!res.locals.currentUser)
+            res.redirect(`/posts/${postId}`);
         const post = await postsModel.getById(postId);
+        if (post.user_id !== res.locals.currentUser.id)
+            res.redirect(`/posts/${postId}`);
         const formData = {
             title: post.title,
             text: post.text,

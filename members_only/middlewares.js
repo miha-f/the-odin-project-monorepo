@@ -17,7 +17,31 @@ const queryBuilder = (req, res, next) => {
     next();
 }
 
+const addUserToLocals = (req, res, next) => {
+    res.locals.currentUser = req.user;
+    res.locals.role = req.user?.role ?? 'user';
+    next();
+};
+
+const auth = (req, res, next) => {
+    if (req.isAuthenticated && req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/users/login');
+}
+
+const memberOrAdmin = (req, res, next) => {
+    const role = req.user?.role;
+    if (role === 'member' || role === 'admin') {
+        return next();
+    }
+    res.redirect('/users/login');
+}
+
 module.exports = {
     renderLayout,
     queryBuilder,
+    addUserToLocals,
+    auth,
+    memberOrAdmin,
 };

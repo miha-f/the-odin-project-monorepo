@@ -25,7 +25,7 @@
                 <a href="/users/login" class="text-text underline">Login</a>
             <% } else { %>
                 <a href="/posts/create" class="text-text underline mr-2">Create post</a>
-                <a href="#" class="text-text underline mr-2"><%= currentUser.email %></a>
+                <a href="/users/<%= currentUser.id %>" class="text-text underline mr-2"><%= currentUser.email %></a>
                 <form action="/users/logout" method="POST" class="inline">
                     <a href="#" 
                        onclick="this.closest('form').submit(); return false;" 

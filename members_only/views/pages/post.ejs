@@ -16,19 +16,30 @@
             </p>
         </div>
         <p class="mt-2 whitespace-pre-line text-md font-normal"><%= post.text %></p>
-        <% if(role === 'admin' || post.user_id === currentUser.id) { %>
-            <form 
-                method=""
-                action=""
-                class="py-2"
-            >
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-primary text-background rounded hover:underline"
+        <div class="flex flex-row gap-2 py-2">
+            <% if(role === 'admin' || (currentUser && post.user_id === currentUser.id)) { %>
+                <form 
+                    method="POST"
+                    action="/posts/<%= post.id %>/remove"
                 >
-                Delete post
-                </button>
-            </form>
-        <% } %>
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-primary text-background rounded hover:underline"
+                    >
+                    Delete post
+                    </button>
+                </form>
+            <% } %>
+            <% if(currentUser && post.user_id === currentUser.id) { %>
+                <a href="/posts/<%= post.id %>/update">
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-primary text-background rounded hover:underline"
+                    >
+                    Update post
+                    </button>
+                </a>
+            <% } %>
+        </div>
     </div>
 </div>

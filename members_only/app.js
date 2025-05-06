@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { renderLayout, queryBuilder, auth } = require("./middlewares.js");
+const { renderLayout, queryBuilder, addUserToLocals } = require("./middlewares.js");
 const path = require('path');
 const bcrypt = require("bcryptjs");
 const express = require("express");
@@ -59,11 +59,7 @@ passport.deserializeUser(async (email, done) => {
     }
 });
 
-app.use((req, res, next) => {
-    res.locals.currentUser = req.user;
-    res.locals.role = req.user?.role ?? 'user';
-    next();
-});
+app.use(addUserToLocals);
 
 // NOTE(miha): Middleware for layout render
 app.use(renderLayout);

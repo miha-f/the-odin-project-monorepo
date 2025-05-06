@@ -18,6 +18,22 @@ const postsModel = (() => {
         return res.rows;
     };
 
+    const getAllByUserId = async (userId, limit = undefined, offset = undefined) => {
+        let query = 'SELECT * FROM posts WHERE user_id = $1';
+        if (limit)
+            query += ` LIMIT ${limit}`;
+        if (offset)
+            query += ` OFFSET ${offset}`;
+        const res = await pool.query(query, [userId]);
+        return res.rows;
+    };
+
+    const getAllByUserIdCount = async (userId) => {
+        let query = 'SELECT COUNT(*) FROM posts WHERE user_id = $1';
+        const res = await pool.query(query, [userId]);
+        return res.rows[0];
+    };
+
     const getAllWithUserInfo = async (limit = undefined, offset = undefined) => {
         let query = `SELECT 
                 p.id, p.title, p.text, p.updated_at, u.id as user_id, u.username, u.email, u.role
@@ -87,6 +103,8 @@ const postsModel = (() => {
         create,
         removeById,
         updateById,
+        getAllByUserId,
+        getAllByUserIdCount,
     };
 })();
 

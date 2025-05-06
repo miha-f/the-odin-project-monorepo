@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const usersModel = require("../models/usersModel.js");
+const pagination = require("../helpers/pagination.js");
+const postsModel = require("../models/postsModel.js");
 const formatDate = require("../helpers/formatDate.js");
 const bcrypt = require("bcryptjs");
 const getFormErrorsMap = require("../helpers/formErrors.js");
@@ -51,12 +53,13 @@ const validateRegisterForm = [
 
 const usersController = (() => {
 
-    const getAll = asyncHandler(async (req, res) => {
-        res.send("not yet implemented");
-    });
-
     const getById = asyncHandler(async (req, res) => {
-        res.send("not yet implemented");
+        const { userId } = req.params;
+        const paginationCallback = () => postsModel.getAllByUserIdCount(userId);
+        const { page, totalPages, offset, itemsPerPage } = await pagination(req.query.page, paginationCallback);
+        const userPostsDb = await postsModel.getAllByUserId(userId, itemsPerPage, offset);
+        const userPosts = formatDate(userPostsDb);
+        res.render("user", { userPosts: userPosts, page: page, totalPages: totalPages });
     });
 
     const login = asyncHandler(async (req, res) => {
@@ -143,7 +146,6 @@ const usersController = (() => {
     });
 
     return {
-        getAll,
         getById,
         login,
         loginPost,
