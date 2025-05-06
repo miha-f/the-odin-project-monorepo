@@ -13,3 +13,17 @@ In folder bootstrap we find implementation using bootstrap CSS.
 
 In folder tailwind we find implementation using tailwind CSS.
 [Live preview (Tailwindcss)](https://miha-f.github.io/the-odin-project-monorepo/landing_page/tailwind)
+
+## Images
+
+### Given layout
+![image](./01.png)
+
+### HTML+CSS implementation
+![image](https://github.com/user-attachments/assets/61e71ec3-6146-4ac4-b6f4-c2836769c9fa)
+
+### Bootstrap implementation
+![image](https://github.com/user-attachments/assets/8fe780ab-c344-4db4-89b4-dcb68b0118a5)
+
+### TailwindCSS implementation
+![image](https://github.com/user-attachments/assets/36c82a9c-e1e8-4a66-9f81-48900ccb0f52)
