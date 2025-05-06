@@ -33,9 +33,11 @@
                 sm:w-1/3
             ">
                 <p class="font-light text-sm mr-2"> <%= post.formattedDate %> </p>
-                <p class="font-light text-sm underline">
-                    <a href="/users/<%= post.user_id %>"><%= post.username %></a>
-                </p>
+                <% if(role !== 'user') { %>
+                    <p class="font-light text-sm underline">
+                        <a href="/users/<%= post.user_id %>"><%= post.username %></a>
+                    </p>
+                <% } %>
             </div>
         </div>
         <div 

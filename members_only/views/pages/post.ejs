@@ -8,11 +8,27 @@
                 <%= post.formattedDate %> 
             </p>
             <p class="font-light text-sm p-2 underline"> 
-                <a href="/users/<%= post.user_id %>">
-                    <%= post.username %>
-                </a>
+                <% if(role !== 'user') { %>
+                    <a href="/users/<%= post.user_id %>">
+                        <%= post.username %>
+                    </a>
+                <% } %>
             </p>
         </div>
         <p class="mt-2 whitespace-pre-line text-md font-normal"><%= post.text %></p>
+        <% if(role === 'admin' || post.user_id === currentUser.id) { %>
+            <form 
+                method=""
+                action=""
+                class="py-2"
+            >
+                <button
+                    type="submit"
+                    class="px-4 py-2 bg-primary text-background rounded hover:underline"
+                >
+                Delete post
+                </button>
+            </form>
+        <% } %>
     </div>
 </div>
