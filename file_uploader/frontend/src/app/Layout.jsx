@@ -55,7 +55,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     shadow-lg z-40 
                     transform transition-transform duration-300 ease-in-out
                     ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-                    sm:translate-x-0 sm:static sm:block sm:h-screen`}
+                    sm:translate-x-0 sm:static sm:block`}
             >
                 {/* Close button */}
                 <div className="flex justify-end p-4 sm:hidden">
@@ -65,14 +65,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Content */}
-                <nav className="flex flex-col h-screen justify-between space-y-4 p-4 text-text font-semibold">
+                <nav className="flex flex-col h-[calc(100vh-4rem)] justify-between space-y-4 p-4 text-text font-semibold">
                     <div className="flex flex-col">
                         <a href="/" className="hover:underline">Add new</a>
                         <a href="/upload" className="hover:underline">My drive</a>
                         <a href="/account" className="hover:underline">Recent</a>
                         <a href="/account" className="hover:underline">Shared with me</a>
                     </div>
-                    <div className="h-20">
+                    <div className="">
                         <p>ligh/dark theme</p>
                     </div>
                 </nav>
