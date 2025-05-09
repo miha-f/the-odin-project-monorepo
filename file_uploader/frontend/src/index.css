@@ -17,6 +17,7 @@
     --color-primary: #2d0dfd;
     --color-secondary: #a9a5d4;
     --color-accent: #7672cb;
+    --color-surface: #e9e9f7;
 
     --color-success: #22c55e;
     --color-error: #ef4444;
@@ -38,6 +39,7 @@
         --color-primary: #2202f2;
         --color-secondary: #2f2b5a;
         --color-accent: #39348d;
+        --color-surface: #090817;
 
         --color-success: #4ade80;
         --color-error: #f87171;

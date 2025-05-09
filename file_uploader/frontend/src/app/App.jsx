@@ -1,9 +1,11 @@
-import { Button } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 
 const App = () => {
     return (
-        <Button className="shadow-lag">Radix + Tailwind!</Button>
+        <>
+            <p>folder List with sorting and pagination (or inf scroll).
+                THis will be under features/, need to have breadcrumb for folder nav</p>
+        </>
     );
 }
 
