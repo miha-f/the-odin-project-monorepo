@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-import App from './App'
-import Layout from './Layout'
 import AuthLayout from './AuthLayout'
+import FileDisplayPage from './pages/FileDisplay'
+import Layout from './Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
 
@@ -9,7 +9,7 @@ export const router = createBrowserRouter([
     {
         element: <Layout />,
         children: [
-            { path: '/', element: <App /> },
+            { path: '/', element: <FileDisplayPage /> },
         ],
     },
     {
