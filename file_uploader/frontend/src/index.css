@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+    --breakpoint-xs: 400px;
+}
+
+@theme {
+    --color-linearPrimarySecondary: linear-gradient(#2d0dfd, #a9a5d4);
+    --color-linearPrimaryAccent: linear-gradient(#2d0dfd, #7672cb);
+    --color-linearSecondaryAccent: linear-gradient(#a9a5d4, #7672cb);
+    --color-radialPrimarySecondary: radial-gradient(#2d0dfd, #a9a5d4);
+    --color-radialPrimaryAccent: radial-gradient(#2d0dfd, #7672cb);
+    --color-radialSecondaryAccent: radial-gradient(#a9a5d4, #7672cb);
+
+    --color-text: #01000f;
+    --color-background: #f1f0ff;
+    --color-primary: #2d0dfd;
+    --color-secondary: #a9a5d4;
+    --color-accent: #7672cb;
+
+    --color-success: #22c55e;
+    --color-error: #ef4444;
+    --color-warning: #facc15;
+    --color-info: #3b82f6;
+}
+
+@layer base {
+    @variant dark {
+        --color-linearPrimarySecondary: linear-gradient(#2d0dfd, #a9a5d4);
+        --color-linearPrimaryAccent: linear-gradient(#2d0dfd, #7672cb);
+        --color-linearSecondaryAccent: linear-gradient(#a9a5d4, #7672cb);
+        --color-radialPrimarySecondary: radial-gradient(#2d0dfd, #a9a5d4);
+        --color-radialPrimaryAccent: radial-gradient(#2d0dfd, #7672cb);
+        --color-radialSecondaryAccent: radial-gradient(#a9a5d4, #7672cb);
+
+        --color-text: #f1f0ff;
+        --color-background: #01000f;
+        --color-primary: #2202f2;
+        --color-secondary: #2f2b5a;
+        --color-accent: #39348d;
+
+        --color-success: #4ade80;
+        --color-error: #f87171;
+        --color-warning: #fde047;
+        --color-info: #60a5fa;
+    }
+}
