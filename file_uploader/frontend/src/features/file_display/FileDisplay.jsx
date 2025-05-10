@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FileIcon, ArchiveIcon } from '@radix-ui/react-icons';
 import Breadcrumb from "./Breadcrumb";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilePdf, faFileAudio, faFileVideo, faFileWord, faFilePowerpoint, faFile } from '@fortawesome/free-solid-svg-icons';
 
 const pathStackGlobal = [
     { name: '', id: crypto.randomUUID() },
@@ -9,12 +11,30 @@ const pathStackGlobal = [
 ];
 
 const mockFiles = [
-    { id: 1, name: 'Photos', type: 'folder', size: '-', modified: '2025-05-01' },
-    { id: 2, name: 'Resume.pdf', type: 'file', size: '150KB', modified: '2025-04-20' },
-    { id: 3, name: 'Presentation.pptx', type: 'file', size: '2.1MB', modified: '2025-04-18' },
-    { id: 4, name: 'Work', type: 'folder', size: '-', modified: '2025-03-28' },
-    { id: 5, name: 'invoice-2025.pdf', type: 'file', size: '95KB', modified: '2025-05-05' },
+    { id: 1, ext: '', name: 'Photos', type: 'folder', size: '-', modified: '2025-05-01' },
+    { id: 2, ext: 'pdf', name: 'Resume.pdf', type: 'file', size: '150KB', modified: '2025-04-20' },
+    { id: 3, ext: 'mp3', name: 'Presentation.pptx', type: 'file', size: '2.1MB', modified: '2025-04-18' },
+    { id: 4, ext: '', name: 'Work', type: 'folder', size: '-', modified: '2025-03-28' },
+    { id: 5, ext: 'word', name: 'invoice-2025.pdf', type: 'file', size: '95KB', modified: '2025-05-05' },
 ];
+
+const getFileIcon = (fileType) => {
+    switch (fileType) {
+        case 'pdf':
+            return <FontAwesomeIcon icon={faFilePdf} />;
+        case 'mp4':
+            return <FontAwesomeIcon icon={faFileVideo} />;
+        case 'mp3':
+            return <FontAwesomeIcon icon={faFileAudio} />;
+        case 'word':
+            return <FontAwesomeIcon icon={faFileWord} />;
+        case 'pptx':
+            return <FontAwesomeIcon icon={faFilePowerpoint} />;
+        default:
+            return <FontAwesomeIcon icon={faFile} />;
+    }
+};
+
 
 
 const FileDisplay = () => {
@@ -41,7 +61,7 @@ const FileDisplay = () => {
                             {mockFiles.map((file) => (
                                 <tr key={file.id} className="bg-surface rounded shadow-sm">
                                     <td className="px-4 py-2 flex items-center gap-2">
-                                        {file.type === 'folder' ? <ArchiveIcon /> : <FileIcon />}
+                                        {file.type === 'folder' ? <ArchiveIcon /> : getFileIcon(file.ext)}
                                         {file.name}
                                     </td>
                                     <td className="px-4 py-2 capitalize">{file.type}</td>
@@ -61,7 +81,7 @@ const FileDisplay = () => {
                             className="flex items-center justify-between p-4 bg-surface rounded shadow-sm"
                         >
                             <div className="flex items-center gap-3">
-                                {file.type === 'folder' ? <ArchiveIcon /> : <FileIcon />}
+                                {file.type === 'folder' ? <ArchiveIcon /> : getFileIcon(file.ext)}
                                 <div>
                                     <p className="font-medium">{file.name}</p>
                                     <p className="text-xs text-text">{file.modified}</p>
