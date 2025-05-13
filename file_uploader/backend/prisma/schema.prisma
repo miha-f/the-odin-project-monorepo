@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccessLevel {
+  VIEW
+  EDIT
+  OWNER
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+
+  rootFolderId String   @unique
+  rootFolder   Folder   @relation("UserRootFolder", fields: [rootFolderId], references: [id])
+
+  folders      Folder[] @relation("UserFolders")
+  files        File[]
+  sharedAccess SharedFolder[]
+  sessions     Session[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Folder {
+  id       String   @id @default(uuid())
+  name     String
+
+  parentId String?
+  parent   Folder?   @relation("FolderHierarchy", fields: [parentId], references: [id])
+  subfolders Folder[] @relation("FolderHierarchy")
+
+  files    File[]
+
+  ownerId  String
+  owner    User     @relation("UserFolders", fields: [ownerId], references: [id])
+
+  rootOwner  User?   @relation("UserRootFolder")
+  sharedWithUsers SharedFolder[]
+  shareLinks      FolderShareLink[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  sizeKb    Int
+  mimeType  String
+  path      String
+
+  folderId  String
+  folder    Folder   @relation(fields: [folderId], references: [id])
+
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SharedFolder {
+  id        String      @id @default(uuid())
+  folderId  String
+  folder    Folder      @relation(fields: [folderId], references: [id])
+
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+
+  access    AccessLevel
+
+  @@unique([folderId, userId])
+}
+
+model FolderShareLink {
+  id         String      @id @default(uuid())
+  folderId   String
+  folder     Folder      @relation(fields: [folderId], references: [id])
+  token      String      @unique
+  access     AccessLevel
+  expiresAt  DateTime?
+
+  createdAt  DateTime @default(now())
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+}
