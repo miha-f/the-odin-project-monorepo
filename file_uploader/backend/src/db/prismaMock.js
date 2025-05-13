@@ -28,6 +28,37 @@ const files = [
     },
 ];
 
+const folders = [
+    {
+        uuid: 'folder-1',
+        name: 'Folder 1',
+        parentId: '',
+        type: 'application/pdf',
+        size: 100_000,
+        ownerUuid: 'user-1',
+        folderUuid: 'folder-1',
+        createdAt: new Date('2024-01-01'),
+    },
+    {
+        uuid: 'file-2',
+        name: 'Vacation.jpg',
+        type: 'image/jpeg',
+        size: 200_000,
+        ownerUuid: 'user-1',
+        folderUuid: 'folder-1',
+        createdAt: new Date('2024-02-01'),
+    },
+    {
+        uuid: 'file-3',
+        name: 'Notes.txt',
+        type: 'text/plain',
+        size: 5_000,
+        ownerUuid: 'user-2',
+        folderUuid: 'folder-2',
+        createdAt: new Date('2024-03-01'),
+    },
+];
+
 const prismaMock = {
     file: {
         findMany: async () => files,
