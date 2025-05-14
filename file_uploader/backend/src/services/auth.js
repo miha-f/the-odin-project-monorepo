@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import prisma from '../db/prisma.js';
 import { createUserService } from './user.js';
 import { createFolderService } from './folder.js';
 
@@ -14,14 +15,16 @@ export const createAuthService = () => ({
 
     create: async (username, password) => {
         const existing = await UserService.getByUsername(username);
-        if (existing) return { error: "User exists" };
-
-        // TODO(miha): This needs to be an transaction.
+        if (existing)
+            return { error: "User exists" };
 
         const passwordHash = await bcrypt.hash(password, 10);
-        let user = await UserService.create({ username: username, passwordHash: passwordHash });
-        const rootFolder = await FolderService.create({ name: 'root', ownerId: user.id });
-        user = await UserService.update(user.id, { rootFolderId: rootFolder.id });
+        const { user, rootFolder } = await prisma.$transaction(async (tx) => {
+            let user = await UserService.create({ username: username, passwordHash: passwordHash }, tx);
+            const rootFolder = await FolderService.create({ name: 'root', ownerId: user.id }, tx);
+            user = await UserService.update(user.id, { rootFolderId: rootFolder.id }, tx);
+            return { user, rootFolder };
+        });
 
         return { user, rootFolder };
     },
