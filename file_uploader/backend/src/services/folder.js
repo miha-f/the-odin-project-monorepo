@@ -1,26 +1,26 @@
 import prisma from '../db/prisma.js';
 
-export const createFileService = () => ({
-    getAll: async (client = prisma) => await prisma.file.findMany(),
+export const createFolderService = () => ({
+    getAll: async (client = prisma) => await prisma.folder.findMany(),
 
     getByUuid: async (uuid, client = prisma) =>
-        await client.file.findUnique({
+        await client.folder.findUnique({
             where: { uuid },
         }),
 
     create: async (data, client = prisma) =>
-        await client.file.create({
+        await client.folder.create({
             data,
         }),
 
     update: async (uuid, data, client = prisma) =>
-        await client.file.update({
+        await client.folder.update({
             where: { uuid },
             data,
         }),
 
     delete: async (uuid, client = prisma) =>
-        await client.file.delete({
+        await client.folder.delete({
             where: { uuid },
         }),
 });
