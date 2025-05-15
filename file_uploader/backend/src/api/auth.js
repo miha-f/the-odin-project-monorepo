@@ -1,10 +1,8 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import asyncHandler from 'express-async-handler';
 import { createAuthService } from '../services/auth.js';
 import { createUserService } from '../services/user.js';
-import { createFolderService } from '../services/folder.js';
 import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
@@ -56,8 +54,9 @@ router.post('/register', [
             return res.status(400).json({ validationErrors: validationErrors });
 
         const { username, password } = req.body;
-        const { user, rootFolder, error } = await AuthService.create(username, password);
-        if (error) return res.status(400).json({ error: "Username already exists" });
+        const { user, rootFolder, error } = await AuthService.register(username, password);
+        if (error && error == "User exists") return res.status(400).json({ error: "Username already exists" });
+        if (error) return res.status(500).json({ error: "Internal server error" });
 
         res.json({ data: { user: user, rootFolder: rootFolder } });
     })
