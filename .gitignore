@@ -3,3 +3,5 @@ nodejs_basic_info_site/express/node_modules
 nodejs_forms_and_data_handling/node_modules
 inventory_application/node_modules
 members_only/node_modules
+file_uploader/backend/src/generated/prisma
+file_uploader/backend/users_store
