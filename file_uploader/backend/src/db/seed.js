@@ -30,7 +30,10 @@ const seedUsers = async (n = 5) => {
             where: { id: user.id },
             data: {
                 rootFolderId: rootFolder.id
-            }
+            },
+            include: {
+                rootFolder: true,
+            },
         });
 
         users.push(user);
@@ -43,24 +46,29 @@ const seedFolders = async (users, n = 5) => {
     const folders = [];
     const userToFolders = new Map();
 
-    for (const user of users) {
-        userToFolders[user.id] = [];
-        userToFolders[user.id].push(user.rootFolderId);
-    }
+    for (const user of users)
+        userToFolders.set(user.id, [user.rootFolderId]);
 
     for (let i = 1; i <= n; i++) {
         const user = faker.helpers.arrayElement(users);
-        const parentFolderId = faker.helpers.arrayElement(userToFolders[user.id]);
+        const folderIds = userToFolders.get(user.id);
+        if (!folderIds || folderIds.length === 0) continue;
+        const parentFolderId = faker.helpers.arrayElement(folderIds);
 
         const folder = await prisma.folder.create({
             data: {
                 name: faker.hacker.noun(),
                 ownerId: user.id,
                 parentId: parentFolderId,
-            }
+            },
+            include: {
+                parent: true,
+                subfolders: true,
+            },
         });
 
         folders.push(folder);
+        userToFolders.get(user.id).push(folder.id);
     }
 
     return folders;
@@ -79,7 +87,7 @@ const seedFiles = async (folders, n = 5) => {
                 ownerId: folder.ownerId,
                 sizeKb: faker.number.int({ max: 2_000_000_000 }),
                 mimeType: 'text/plain',
-                path: faker.system.filePath(), // TODO(miha): Will need to actually create this on our system....
+                // path: faker.system.filePath(), // TODO(miha): Will need to actually create this on our system....
             }
         });
 
