@@ -29,7 +29,7 @@ const FileService = createFileService();
 // /root -> gives us root folder (and links to sub folder)
 // /root/My Files
 
-router.get('/root/*', asyncHandler(async (req, res) => {
+router.get('/root*', asyncHandler(async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
 
     const userId = req.user.id;
