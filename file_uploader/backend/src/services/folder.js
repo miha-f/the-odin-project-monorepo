@@ -47,7 +47,6 @@ const dbGetPathByUuid = async (uuid, client = prisma) => {
     path.push(folder.ownerId);
     path.push(""); // NOTE(Miha): So we get slash in the front of full path.
     path = path.reverse();
-    console.log(path.join("/"));
     return { result: path.join("/") };
 };
 

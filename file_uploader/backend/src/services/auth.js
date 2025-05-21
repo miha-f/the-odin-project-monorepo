@@ -18,7 +18,9 @@ export const createAuthService = () => ({
             prisma.$transaction(async (tx) => {
                 const passwordHash = await bcrypt.hash(password, 10);
                 let user = await UserService.create({ username: username, passwordHash: passwordHash }, tx);
-                const rootFolder = await FolderService.db.create({ name: 'root', ownerId: user.id }, tx);
+                const { error: rootFolderError, result: rootFolder } = await FolderService.db.create('root', undefined, user.id, tx);
+                if (rootFolderError)
+                    throw new Error("Failure with creating root folder");
                 user = await UserService.update(user.id, { rootFolderId: rootFolder.id }, tx);
                 return { user, rootFolder };
             }));
