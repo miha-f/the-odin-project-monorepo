@@ -1,23 +1,60 @@
 import { Form } from 'radix-ui';
+import { register } from '../../api/auth';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext';
 
-const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordRepeat, setPasswordRepeat] = useState('');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log({ email, password, passwordRepeat });
-    };
-
+const RegisterForm = () => {
     // TODO(miha): there is much more we can do with form (server side validation errors),
     // check: https://www.radix-ui.com/primitives/docs/components/form
+
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const [serverErrors, setServerErrors] = useState({
+        username: false,
+        password: false,
+        passwordRepeat: false,
+    });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const form = Object.fromEntries(new FormData(e.currentTarget));
+
+        const { data: _, error } = await register({
+            username: form.username,
+            password: form.password,
+            passwordRepeat: form.passwordRepeat,
+        });
+
+        // TODO(miha): Show this error to user
+        // TODO(miha): Set serverside errors
+        // TODO(miha): Need to map this errors
+        if (error && error.validationErrors) {
+            return
+        }
+
+        // TODO(miha): Unknown error, say something went wrong at the top of form
+        // or somehing
+        if (error) {
+            return
+        }
+
+        const [loginData, loginError] = await login({
+            username: form.username,
+            password: form.password,
+        });
+        // TODO(miha): write to context
+
+        navigate("/");
+    };
 
     return (
         <Form.Root
             onSubmit={handleSubmit}
-            className="mb-2 bg-background"
+
+            className="mb-2"
         >
             <Form.Field name="username" className="mb-2">
                 <div className="flex flex-col items-baseline justify-between">
@@ -58,4 +95,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;

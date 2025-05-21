@@ -1,13 +1,43 @@
 import { Form } from 'radix-ui';
-import { useState } from 'react';
+import { login as apiLogin } from '../../api/auth';
+import { useAuth } from './contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({ email, password });
+
+        const form = Object.fromEntries(new FormData(e.currentTarget));
+
+        const { data, error } = await apiLogin({
+            username: form.username,
+            password: form.password,
+        });
+
+        // TODO(miha): Show this error to user
+        // TODO(miha): Set serverside errors
+        // TODO(miha): Need to map this errors
+        if (error && error.validationErrors) {
+            return
+        }
+
+        // TODO(miha): Unknown error, say something went wrong at the top of form
+        // or somehing
+        if (error) {
+            return
+        }
+
+        const [loginData, loginError] = await login({
+            username: form.username,
+            password: form.password,
+        });
+
+        // TODO(miha): write to context
+
+        navigate("/");
     };
 
     // TODO(miha): there is much more we can do with form (server side validation errors),
