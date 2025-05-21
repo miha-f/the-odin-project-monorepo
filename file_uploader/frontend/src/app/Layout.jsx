@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HamburgerMenuIcon, Cross1Icon } from '@radix-ui/react-icons';
 import { Outlet } from "react-router-dom";
+import { useAuth } from "../features/auth/contexts/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = ({ onToggleSidebar }) => {
+const Navbar = ({ onToggleSidebar, user, onLogoutClick }) => {
     return (
         <nav className="
             flex border-b w-full shadow-md bg-primary text-background p-2
@@ -31,8 +33,9 @@ const Navbar = ({ onToggleSidebar }) => {
             </div>
 
             {/* Right */}
-            <div className="flex flex-col sm:flex-row gap-2">
-                <p>User</p>
+            <div className="flex flex-col sm:flex-row sm:gap-2">
+                <p>{user.user.username}</p>
+                <p className="underline" onClick={onLogoutClick}>Logout</p>
             </div>
         </nav>
     );
@@ -83,10 +86,27 @@ const Sidebar = ({ isOpen, onClose }) => {
 
 const Layout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { user, loading, logout } = useAuth();
+    const navigate = useNavigate();
+
+    // NOTE(miha): Need to have navigate in useEffect, otherwise we are
+    // calling state update in render phase
+    useEffect(() => {
+        if (!loading && !user) {
+            navigate('/login');
+        }
+    }, [loading, user, navigate]);
+
+    if (loading) return <p>Loading...</p>;
+    if (!user) return null;
 
     return (
         <div className="">
-            <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+            <Navbar
+                user={user}
+                onLogoutClick={logout}
+                onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            />
             <div className="flex flex-row">
                 <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
                 <main className="container mx-auto p-4">

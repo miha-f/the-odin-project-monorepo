@@ -9,6 +9,7 @@ export const router = createBrowserRouter([
     {
         element: <Layout />,
         children: [
+            { path: '/folders/*', element: <FileDisplayPage /> },
             { path: '/', element: <FileDisplayPage /> },
         ],
     },
