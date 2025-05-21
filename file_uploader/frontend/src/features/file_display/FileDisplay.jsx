@@ -2,48 +2,82 @@ import { useState } from "react";
 import { FileIcon, ArchiveIcon } from '@radix-ui/react-icons';
 import Breadcrumb from "./Breadcrumb";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilePdf, faFileAudio, faFileVideo, faFileWord, faFilePowerpoint, faFile } from '@fortawesome/free-solid-svg-icons';
+import {
+    faFile,
+    faFilePdf,
+    faFileVideo,
+    faFileAudio,
+    faFileWord,
+    faFileExcel,
+    faFilePowerpoint,
+    faFileImage,
+    faFileCode,
+    faFileLines,
+    faFileZipper,
+} from '@fortawesome/free-solid-svg-icons';
+import { useEffect } from "react";
+import { getRoot, getFolder } from "../../api/folders";
+import { Link, useLocation } from "react-router-dom";
 
-const pathStackGlobal = [
-    { name: '', id: crypto.randomUUID() },
-    { name: 'home', id: crypto.randomUUID() },
-    { name: 'my', id: crypto.randomUUID() },
-];
+const getFileIcon = (mimeType) => {
+    if (!mimeType) return <FontAwesomeIcon icon={faFile} />;
 
-const mockFiles = [
-    { id: 1, ext: '', name: 'Photos', type: 'folder', size: '-', modified: '2025-05-01' },
-    { id: 2, ext: 'pdf', name: 'Resume.pdf', type: 'file', size: '150KB', modified: '2025-04-20' },
-    { id: 3, ext: 'mp3', name: 'Presentation.pptx', type: 'file', size: '2.1MB', modified: '2025-04-18' },
-    { id: 4, ext: '', name: 'Work', type: 'folder', size: '-', modified: '2025-03-28' },
-    { id: 5, ext: 'word', name: 'invoice-2025.pdf', type: 'file', size: '95KB', modified: '2025-05-05' },
-];
+    if (mimeType.startsWith('image/')) return <FontAwesomeIcon icon={faFileImage} />;
+    if (mimeType.startsWith('video/')) return <FontAwesomeIcon icon={faFileVideo} />;
+    if (mimeType.startsWith('audio/')) return <FontAwesomeIcon icon={faFileAudio} />;
+    if (mimeType.startsWith('text/')) return <FontAwesomeIcon icon={faFileLines} />;
 
-const getFileIcon = (fileType) => {
-    switch (fileType) {
-        case 'pdf':
+    switch (mimeType) {
+        case 'application/pdf':
             return <FontAwesomeIcon icon={faFilePdf} />;
-        case 'mp4':
-            return <FontAwesomeIcon icon={faFileVideo} />;
-        case 'mp3':
-            return <FontAwesomeIcon icon={faFileAudio} />;
-        case 'word':
+        case 'application/msword':
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
             return <FontAwesomeIcon icon={faFileWord} />;
-        case 'pptx':
+        case 'application/vnd.ms-powerpoint':
+        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
             return <FontAwesomeIcon icon={faFilePowerpoint} />;
+        case 'application/vnd.ms-excel':
+        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            return <FontAwesomeIcon icon={faFileExcel} />;
+        case 'application/zip':
+        case 'application/x-zip-compressed':
+        case 'application/x-rar-compressed':
+        case 'application/x-7z-compressed':
+        case 'application/x-tar':
+            return <FontAwesomeIcon icon={faFileZipper} />;
+        case 'application/json':
+        case 'application/javascript':
+        case 'text/html':
+        case 'text/css':
+        case 'text/javascript':
+            return <FontAwesomeIcon icon={faFileCode} />;
         default:
             return <FontAwesomeIcon icon={faFile} />;
     }
 };
 
-
-
 const FileDisplay = () => {
-    // TODO(miha): What about name 'folderPathStack'
-    const [pathStack, setPathStack] = useState(pathStackGlobal);
+    const [pathStack, setPathStack] = useState([]);
+    const [files, setFiles] = useState([]);
+    const [folders, setFolders] = useState([]);
+
+    const location = useLocation();
+
+    useEffect(() => {
+        const init = async () => {
+            const { data, error } = await getFolder(location.pathname);
+            setFiles(data.folder.files);
+            setFolders(data.folder.subfolders);
+        };
+        init();
+    }, [location.pathname]);
+
+    if (!folders) return null;
+    if (!files) return null;
 
     return (
         <>
-            <Breadcrumb pathStack={pathStack} />
+            <Breadcrumb />
 
             <div className="w-full">
                 {/* Desktop Table */}
@@ -58,15 +92,41 @@ const FileDisplay = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {mockFiles.map((file) => (
+                            {folders.map((folder) => (
+                                <tr key={folder.id} className="bg-surface rounded shadow-sm">
+                                    <td className="px-4 py-2 flex items-center gap-2">
+                                        <ArchiveIcon />
+                                        <Link to={`${folder.name}`} className="hover:underline">
+                                            {folder.name}
+                                        </Link>
+                                    </td>
+                                    <td className="px-4 py-2 capitalize">Folder</td>
+                                    <td className="px-4 py-2">-</td>
+                                    <td className="px-4 py-2">{new Date(folder.updatedAt).toLocaleString()}</td>
+                                </tr>
+                            ))}
+                            {folders.map((folder) => (
+                                <tr key={folder.id} className="bg-surface rounded shadow-sm">
+                                    <td className="px-4 py-2 flex items-center gap-2">
+                                        <ArchiveIcon />
+                                        <Link to={`${folder.name}`} className="hover:underline">
+                                            {folder.name}
+                                        </Link>
+                                    </td>
+                                    <td className="px-4 py-2 capitalize">Folder</td>
+                                    <td className="px-4 py-2">-</td>
+                                    <td className="px-4 py-2">{new Date(folder.updatedAt).toLocaleString()}</td>
+                                </tr>
+                            ))}
+                            {files.map((file) => (
                                 <tr key={file.id} className="bg-surface rounded shadow-sm">
                                     <td className="px-4 py-2 flex items-center gap-2">
-                                        {file.type === 'folder' ? <ArchiveIcon /> : getFileIcon(file.ext)}
+                                        {getFileIcon(file.mimeType)}
                                         {file.name}
                                     </td>
-                                    <td className="px-4 py-2 capitalize">{file.type}</td>
-                                    <td className="px-4 py-2">{file.size}</td>
-                                    <td className="px-4 py-2">{file.modified}</td>
+                                    <td className="px-4 py-2 capitalize">File</td>
+                                    <td className="px-4 py-2">{file.sizeKb}</td>
+                                    <td className="px-4 py-2">{new Date(file.updatedAt).toLocaleString()}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -75,21 +135,39 @@ const FileDisplay = () => {
 
                 {/* Mobile Cards */}
                 <div className="sm:hidden space-y-4 pt-4">
-                    {mockFiles.map((file) => (
+                    {folders.map((folder) => (
+                        <div
+                            key={folder.id}
+                            className="flex items-center justify-between p-4 bg-surface rounded shadow-sm"
+                        >
+                            <div className="flex items-center gap-3">
+                                <ArchiveIcon />
+                                <div>
+                                    <p className="font-medium">{folder.name}</p>
+                                    <p className="text-xs text-text">{new Date(folder.updatedAt).toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <div className="text-right text-sm">
+                                <p className="capitalize">Folder</p>
+                                <p className="text-xs text-text">-</p>
+                            </div>
+                        </div>
+                    ))}
+                    {files.map((file) => (
                         <div
                             key={file.id}
                             className="flex items-center justify-between p-4 bg-surface rounded shadow-sm"
                         >
                             <div className="flex items-center gap-3">
-                                {file.type === 'folder' ? <ArchiveIcon /> : getFileIcon(file.ext)}
+                                {getFileIcon(file.mimeType)}
                                 <div>
                                     <p className="font-medium">{file.name}</p>
-                                    <p className="text-xs text-text">{file.modified}</p>
+                                    <p className="text-xs text-text">{new Date(file.updatedAt).toLocaleString()}</p>
                                 </div>
                             </div>
                             <div className="text-right text-sm">
-                                <p className="capitalize">{file.type}</p>
-                                <p className="text-xs text-text">{file.size}</p>
+                                <p className="capitalize">File</p>
+                                <p className="text-xs text-text">{file.sizeKb}</p>
                             </div>
                         </div>
                     ))}
