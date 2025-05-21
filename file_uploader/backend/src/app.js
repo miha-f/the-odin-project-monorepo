@@ -7,6 +7,7 @@ import passport from 'passport';
 import prisma from './db/prisma.js';
 import session from 'express-session';
 import userApi from './api/user.js';
+import cors from 'cors';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { createUserService } from './services/user.js';
 import { Strategy as LocalStrategy } from 'passport-local';
@@ -65,6 +66,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => res.send("ok"));
