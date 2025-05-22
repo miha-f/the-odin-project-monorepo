@@ -3,6 +3,8 @@ import { HamburgerMenuIcon, Cross1Icon } from '@radix-ui/react-icons';
 import { Outlet } from "react-router-dom";
 import { useAuth } from "../features/auth/contexts/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import UploadModal from '../features/file_upload/components/UploadModal';
+import { FileProvider } from '../contexts/FileContext';
 
 const Navbar = ({ onToggleSidebar, user, onLogoutClick }) => {
     return (
@@ -42,6 +44,8 @@ const Navbar = ({ onToggleSidebar, user, onLogoutClick }) => {
 };
 
 const Sidebar = ({ isOpen, onClose }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <>
             {/* What is not in the sidbar opacity (site gets "darkened") */}
@@ -70,7 +74,12 @@ const Sidebar = ({ isOpen, onClose }) => {
                 {/* Content */}
                 <nav className="flex flex-col h-[calc(100vh-4rem)] justify-between space-y-4 p-4 text-text font-semibold">
                     <div className="flex flex-col">
-                        <a href="/" className="hover:underline">Add new</a>
+                        <a onClick={() => setIsModalOpen(true)} className="hover:underline">Add new</a>
+                        <UploadModal
+                            isOpen={isModalOpen}
+                            onClose={() => setIsModalOpen(false)}
+                            onUploadComplete={""}
+                        />
                         <a href="/upload" className="hover:underline">My drive</a>
                         <a href="/account" className="hover:underline">Recent</a>
                         <a href="/account" className="hover:underline">Shared with me</a>
@@ -101,19 +110,21 @@ const Layout = () => {
     if (!user) return null;
 
     return (
-        <div className="">
-            <Navbar
-                user={user}
-                onLogoutClick={logout}
-                onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-            />
-            <div className="flex flex-row">
-                <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-                <main className="container mx-auto p-4">
-                    <Outlet />
-                </main>
+        <FileProvider>
+            <div className="">
+                <Navbar
+                    user={user}
+                    onLogoutClick={logout}
+                    onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+                />
+                <div className="flex flex-row">
+                    <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+                    <main className="container mx-auto p-4">
+                        <Outlet />
+                    </main>
+                </div>
             </div>
-        </div>
+        </FileProvider>
     );
 };
 
