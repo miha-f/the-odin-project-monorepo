@@ -80,30 +80,34 @@ const FileDisplay = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {folders.map((folder) => (
-                                <tr key={folder.id} className="bg-surface rounded shadow-sm">
-                                    <td className="px-4 py-2 flex items-center gap-2">
-                                        <ArchiveIcon />
-                                        <Link to={`${folder.name}`} className="hover:underline">
-                                            {folder.name}
-                                        </Link>
-                                    </td>
-                                    <td className="px-4 py-2 capitalize">Folder</td>
-                                    <td className="px-4 py-2">-</td>
-                                    <td className="px-4 py-2">{new Date(folder.updatedAt).toLocaleString()}</td>
-                                </tr>
-                            ))}
-                            {files.map((file) => (
-                                <tr key={file.id} className="bg-surface rounded shadow-sm">
-                                    <td className="px-4 py-2 flex items-center gap-2">
-                                        {getFileIcon(file.mimeType)}
-                                        {file.name}
-                                    </td>
-                                    <td className="px-4 py-2 capitalize">File</td>
-                                    <td className="px-4 py-2">{file.sizeKb}</td>
-                                    <td className="px-4 py-2">{new Date(file.updatedAt).toLocaleString()}</td>
-                                </tr>
-                            ))}
+                            {[...folders]
+                                .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+                                .map((folder) => (
+                                    <tr key={folder.id} className="bg-surface rounded shadow-sm">
+                                        <td className="px-4 py-2 flex items-center gap-2">
+                                            <ArchiveIcon />
+                                            <Link to={`${folder.name}`} className="hover:underline">
+                                                {folder.name}
+                                            </Link>
+                                        </td>
+                                        <td className="px-4 py-2 capitalize">Folder</td>
+                                        <td className="px-4 py-2">-</td>
+                                        <td className="px-4 py-2">{new Date(folder.updatedAt).toLocaleString()}</td>
+                                    </tr>
+                                ))}
+                            {[...files]
+                                .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+                                .map((file) => (
+                                    <tr key={file.id} className="bg-surface rounded shadow-sm">
+                                        <td className="px-4 py-2 flex items-center gap-2">
+                                            {getFileIcon(file.mimeType)}
+                                            {file.name}
+                                        </td>
+                                        <td className="px-4 py-2 capitalize">File</td>
+                                        <td className="px-4 py-2">{file.sizeKb}</td>
+                                        <td className="px-4 py-2">{new Date(file.updatedAt).toLocaleString()}</td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>
