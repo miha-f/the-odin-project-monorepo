@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { FileIcon, ArchiveIcon } from '@radix-ui/react-icons';
 import Breadcrumb from "./Breadcrumb";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,6 +18,7 @@ import {
 import { useEffect } from "react";
 import { getRoot, getFolder } from "../../api/folders";
 import { Link, useLocation } from "react-router-dom";
+import { useFileContext } from "../../contexts/FileContext";
 
 const getFileIcon = (mimeType) => {
     if (!mimeType) return <FontAwesomeIcon icon={faFile} />;
@@ -57,20 +58,7 @@ const getFileIcon = (mimeType) => {
 };
 
 const FileDisplay = () => {
-    const [pathStack, setPathStack] = useState([]);
-    const [files, setFiles] = useState([]);
-    const [folders, setFolders] = useState([]);
-
-    const location = useLocation();
-
-    useEffect(() => {
-        const init = async () => {
-            const { data, error } = await getFolder(location.pathname);
-            setFiles(data.folder.files);
-            setFolders(data.folder.subfolders);
-        };
-        init();
-    }, [location.pathname]);
+    const { files, folders } = useFileContext();
 
     if (!folders) return null;
     if (!files) return null;
@@ -92,19 +80,6 @@ const FileDisplay = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {folders.map((folder) => (
-                                <tr key={folder.id} className="bg-surface rounded shadow-sm">
-                                    <td className="px-4 py-2 flex items-center gap-2">
-                                        <ArchiveIcon />
-                                        <Link to={`${folder.name}`} className="hover:underline">
-                                            {folder.name}
-                                        </Link>
-                                    </td>
-                                    <td className="px-4 py-2 capitalize">Folder</td>
-                                    <td className="px-4 py-2">-</td>
-                                    <td className="px-4 py-2">{new Date(folder.updatedAt).toLocaleString()}</td>
-                                </tr>
-                            ))}
                             {folders.map((folder) => (
                                 <tr key={folder.id} className="bg-surface rounded shadow-sm">
                                     <td className="px-4 py-2 flex items-center gap-2">

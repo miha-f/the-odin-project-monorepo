@@ -4,13 +4,10 @@ import { useEffect } from 'react';
 import { useAuth } from "../../features/auth/contexts/AuthContext";
 
 const FileDisplayPage = () => {
-
     const { user, loading, logout } = useAuth();
-
 
     if (loading) return <p>Loading...</p>
     if (!user) return <p>not logged in...</p>
-    console.log(user);
 
     return (
         <>
