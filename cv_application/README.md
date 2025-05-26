@@ -1,12 +1,20 @@
-# React + Vite
+# CV application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Goal: Implement "CV builder" app in React. Controll your inputs.
+  
+Tech: React, Vite
 
-Currently, two official plugins are available:
+[Live preview](https://miha-f.github.io/the-odin-project-monorepo/cv_application/dist/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Run project
+```bash
+npm install
+# run dev
+npm run dev
+# or build app
+npm run build
+```
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Image
+![image](https://github.com/user-attachments/assets/b6b780cf-34ef-49a2-a5c7-522e99fdfeb9)
