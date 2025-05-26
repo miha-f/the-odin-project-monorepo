@@ -28,12 +28,12 @@ You can see Github repo for code and project `README.md`  or you can preview the
 | Knights Travails     | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/knights_travails) | [Live](https://miha-f.github.io/the-odin-project-monorepo/knights_travails) |JS |
 | Testing Practice     | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/testing_practice) | *(No live preview)* |JS |
 | Battleship           | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/battleship) | [Live](https://miha-f.github.io/the-odin-project-monorepo/battleship/dist) | HTML, CSS, JS |
-| Homepage             | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/homepage) | [Live](https://miha-f.github.io/the-odin-project-monorepo/homepage) | TODO |
-| CV Application       | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/cv_application) | [Live](https://miha-f.github.io/the-odin-project-monorepo/cv_application/dist) |TODO |
-| Memory Card          | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/memory_game) | [Live](https://miha-f.github.io/the-odin-project-monorepo/memory_game/dist) |TODO |
-| Shopping Cart | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/shopping_cart) | *(No live preview)*  |TODO |
-| NodeJS Basic Info Site | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/nodejs_basic_info_site) | *(No live preview)*  |TODO |
-| NodeJS Forms And Data Handling | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/nodejs_forms_and_data_handling) | *(No live preview)*  |TODO |
-| Mini Message Board | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/mini_message_board) | *(No live preview)*  |TODO |
-| Inventory Application | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/inventory_application) | *(No live preview)*  |TODO |
-| Members Only | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/members_only) | *(No live preview)*  |TODO |
+| Homepage             | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/homepage) | [Live](https://miha-f.github.io/the-odin-project-monorepo/homepage) | HTML, CSS |
+| CV Application       | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/cv_application) | [Live](https://miha-f.github.io/the-odin-project-monorepo/cv_application/dist) | React |
+| Memory Card          | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/memory_game) | [Live](https://miha-f.github.io/the-odin-project-monorepo/memory_game/dist) | React |
+| Shopping Cart | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/shopping_cart) | *(No live preview)*  | React |
+| NodeJS Basic Info Site | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/nodejs_basic_info_site) | *(No live preview)*  | Node, Express |
+| NodeJS Forms And Data Handling | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/nodejs_forms_and_data_handling) | *(No live preview)*  | Express |
+| Mini Message Board | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/mini_message_board) | *(No live preview)*  | Express, ejs |
+| Inventory Application | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/inventory_application) | *(No live preview)*  | Express, ejs |
+| Members Only | [GitHub](https://github.com/miha-f/the-odin-project-monorepo/tree/main/members_only) | *(No live preview)*  | Express, ejs |
