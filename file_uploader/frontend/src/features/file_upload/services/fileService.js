@@ -14,7 +14,7 @@ const upload = async (formData) => {
     });
 };
 
-export const uploadFiles = async (files) => {
+export const uploadFiles = async (path, files) => {
     const formData = new FormData();
 
     files.forEach(({ file, name }) => {
@@ -22,7 +22,7 @@ export const uploadFiles = async (files) => {
         formData.append('files', renamedFile);
     });
 
-    return axios.post(`${API_URL}/folders/root/upload`, formData, {
+    return axios.post(`${API_URL}/folders/${path}/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
     });

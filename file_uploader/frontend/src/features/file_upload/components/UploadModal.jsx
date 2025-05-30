@@ -9,7 +9,7 @@ const UploadModal = ({ isOpen, onClose }) => {
     const [uploading, setUploading] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
-    const { fetchFiles } = useFileContext();
+    const { fetchFiles, currentPath } = useFileContext();
 
     const handleFileOnChange = (e) => {
         addFiles(e.target.files);
@@ -41,7 +41,7 @@ const UploadModal = ({ isOpen, onClose }) => {
     const handleSubmit = async () => {
         setUploading(true);
         try {
-            await uploadFiles(files);
+            await uploadFiles(currentPath, files);
             await fetchFiles();
             reset();
             onClose();
