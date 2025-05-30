@@ -13,7 +13,7 @@ const Breadcrumbs = () => {
         });
 
     return (
-        <nav className="text-sm text-gray-500 flex items-center space-x-2">
+        <nav className="text-lg text-gray-500 flex items-center space-x-2">
             {segments.map(({ label, path }, i) => (
                 <div key={path} className="flex items-center space-x-2">
                     <span>/</span>
