@@ -2,40 +2,22 @@ process.env.NODE_ENV = 'development';
 import prisma from './prisma.js';
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcryptjs';
+import path from 'path';
+import fs from 'fs/promises';
+
+import { createUserService } from '../services/user.js';
+import { createFolderService } from '../services/folder.js';
+import { createAuthService } from '../services/auth.js';
+
+const UserService = createUserService();
+const FolderService = createFolderService();
+const AuthService = createAuthService();
 
 const seedUsers = async (n = 5) => {
     const users = [];
 
     for (let i = 1; i <= n; i++) {
-        const passwordHash = await bcrypt.hash("password", 10);
-
-        let user = await prisma.user.create({
-            data: {
-                username: faker.internet.username(),
-                passwordHash: passwordHash,
-            }
-        });
-
-        const rootFolder = await prisma.folder.create({
-            data: {
-                name: 'root',
-                ownerId: user.id,
-                rootOwner: {
-                    connect: { id: user.id }
-                }
-            }
-        });
-
-        user = await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                rootFolderId: rootFolder.id
-            },
-            include: {
-                rootFolder: true,
-            },
-        });
-
+        const { user, rootFolder: _, error } = await AuthService.register(faker.internet.username(), "password");
         users.push(user);
     }
 
@@ -43,6 +25,13 @@ const seedUsers = async (n = 5) => {
 };
 
 const seedFolders = async (users, n = 5) => {
+    const generateFolderName = () => {
+        const adjective = faker.word.adjective();
+        const noun = faker.word.noun();
+        const suffix = faker.string.alphanumeric(4);
+        return `${adjective}-${noun}-${suffix}`;
+    }
+
     const folders = [];
     const userToFolders = new Map();
 
@@ -52,22 +41,9 @@ const seedFolders = async (users, n = 5) => {
     for (let i = 1; i <= n; i++) {
         const user = faker.helpers.arrayElement(users);
         const folderIds = userToFolders.get(user.id);
-        if (!folderIds || folderIds.length === 0) continue;
         const parentFolderId = faker.helpers.arrayElement(folderIds);
-
-        const folder = await prisma.folder.create({
-            data: {
-                name: faker.hacker.noun(),
-                ownerId: user.id,
-                parentId: parentFolderId,
-            },
-            include: {
-                parent: true,
-                subfolders: true,
-            },
-        });
-
-        folders.push(folder);
+        const { folder, path, error } = await FolderService.create(parentFolderId, user.id, generateFolderName());
+        folders.push({ ...folder, path: path });
         userToFolders.get(user.id).push(folder.id);
     }
 
@@ -77,19 +53,90 @@ const seedFolders = async (users, n = 5) => {
 const seedFiles = async (folders, n = 5) => {
     const files = [];
 
+    const getMockFiles = async () => {
+        const MOCK_FILES_DIR = path.resolve('./src/db/mock_files');
+        const filenames = await fs.readdir(MOCK_FILES_DIR);
+        const files = [];
+
+        for (const name of filenames) {
+            const filePath = path.join(MOCK_FILES_DIR, name);
+            const stat = await fs.stat(filePath);
+            if (stat.isFile()) {
+                files.push({
+                    name,
+                    size: stat.size,
+                    path: filePath,
+                });
+            }
+        }
+
+        return files;
+    }
+
+    const extensionToMimeType = (extension) => {
+        switch (extension) {
+            case ".avi": return 'video/avi';
+            case ".mov": return 'video/avi';
+            case ".mp4": return 'video/mp4';
+            case ".wmv": return 'video/x-ms-wmv';
+            case ".webm": return 'video/webm';
+
+            case ".mp3": return 'audio/mpeg3';
+            case ".ogg": return 'audio/ogg'; // CARE(miha): Don't really know if there is audio/ogg mime type, but for our app/purposes it works.
+            case ".wav": return 'audio/wav';
+
+            case ".doc": return 'application/doc';
+            case ".docx": return 'application/doc';
+            case ".xls": return 'application/excel';
+            case ".xlsx": return 'application/excel';
+            case ".ppt": return 'application/powerpoint';
+            case ".pdf": return 'application/pdf';
+            case ".odt": return 'application/odt';
+            case ".ods": return 'application/ods';
+            case ".odp": return 'application/odp';
+            case ".rtf": return 'application/rtf';
+
+            case ".jpg": return 'image/jpeg';
+            case ".jpeg": return 'image/jpeg';
+            case ".png": return 'image/png';
+            case ".gif": return 'image/gif';
+            case ".tiff": return 'image/tiff';
+            case ".ico": return 'image/x-icon';
+            case ".svg": return 'image/svg+xml';
+            case ".webp": return 'image/webp';
+
+            case ".csv": return 'text/csv';
+            case ".json": return 'application/json';
+            case ".xml": return 'text/xml';
+            case ".html": return 'text/html';
+            case ".zip": return 'application/zip';
+
+            default: return 'text/plain';
+        }
+    }
+
+    const mockFiles = await getMockFiles();
+
     for (let i = 1; i <= n; i++) {
         const folder = faker.helpers.arrayElement(folders);
+        const mockFile = faker.helpers.arrayElement(mockFiles);
+        const mockFileExtension = path.extname(mockFile.path);
+        const name = `${faker.system.commonFileName("removeMe").replace(/\.removeMe$/, '')}${mockFileExtension}`;
+        const mimeType = extensionToMimeType(mockFileExtension);
 
         const file = await prisma.file.create({
             data: {
-                name: faker.system.commonFileName(),
+                name: name,
                 folderId: folder.id,
                 ownerId: folder.ownerId,
-                sizeKb: faker.number.int({ max: 2_000_000_000 }),
-                mimeType: 'text/plain',
-                // path: faker.system.filePath(), // TODO(miha): Will need to actually create this on our system....
+                sizeKb: mockFile.size,
+                mimeType: mimeType,
             }
         });
+
+        const src = mockFile.path;
+        const dest = path.join(folder.path, name);
+        await fs.copyFile(src, dest);
 
         files.push(file);
     }
@@ -99,8 +146,11 @@ const seedFiles = async (folders, n = 5) => {
 
 async function main() {
     const N = 100;
+    console.log("seeding users");
     const users = await seedUsers(N);
+    console.log("seeding folders");
     const folders = await seedFolders(users, N * 10);
+    console.log("seeding files");
     const files = await seedFiles(folders, N * 10 * 10);
 
     console.log('✅ Seeding complete!');
