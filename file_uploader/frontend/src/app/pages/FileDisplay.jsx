@@ -1,17 +1,19 @@
 import FileDisplay from "../../features/file_display/FileDisplay";
-import { getMe } from '../../api/auth';
-import { useEffect } from 'react';
+import Toolbar from "../../features/file_display/Toolbar";
+import Breadcrumb from "../../features/file_display/Breadcrumb";
 import { useAuth } from "../../features/auth/contexts/AuthContext";
 
 const FileDisplayPage = () => {
-    const { user, loading, logout } = useAuth();
+    const { user, loading } = useAuth();
 
     if (loading) return <p>Loading...</p>
     if (!user) return <p>not logged in...</p>
 
     return (
         <>
-            <div className="overflow-auto h-[calc(100vh-96px)]">
+            <div className="overflow-auto h-[calc(100vh-96px)] flex flex-col gap-2">
+                <Toolbar />
+                <Breadcrumb />
                 <FileDisplay />
             </div>
         </>
