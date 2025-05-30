@@ -45,7 +45,8 @@ const dbGetPathByUuid = async (uuid, client = prisma) => {
     }
     path.push(folder.name);
     path.push(folder.ownerId);
-    path.push(""); // NOTE(Miha): So we get slash in the front of full path.
+    // path.push(""); // NOTE(Miha): So we get slash in the front of full path.
+    path.push(process.env.USERS_STORE_DIR);
     path = path.reverse();
     return { result: path.join("/") };
 };
@@ -86,9 +87,10 @@ const dbDelete = async (uuid, client = prisma) => {
     return { result: result };
 }
 
-const fsCreate = async (folderPath, recursive = false) => {
-    console.log("fsCreate: ", folderPath, typeof folderPath);
-    const localPath = path.join(process.env.USERS_STORE_DIR, folderPath);
+// TODO(miha): It is a little funky that somewhere we need to append USERS_STORE_DIR
+//   somewhere we don't want to append it...
+const fsCreate = async (folderPath, recursive = false, appendCommonStoreDir = true) => {
+    const localPath = appendCommonStoreDir ? path.join(process.env.USERS_STORE_DIR, folderPath) : path.join(folderPath);
     const [error, result] = await withCatch(() => fs.mkdir(localPath, { recursive: recursive }));
     if (error)
         return { error: "Filesystem error" };
@@ -138,7 +140,7 @@ export const createFolderService = () => ({
             return { error: "Database error" };
 
         const { result: fsPath } = await dbGetPathByUuid(dbResult.id);
-        const { error: fsError, result: _ } = await fsCreate(fsPath, true);
+        const { error: fsError, result: _ } = await fsCreate(fsPath, true, false);
 
         if (fsError) {
             const [_, dbResult] = await dbDelete(dbResult.id);
@@ -148,8 +150,71 @@ export const createFolderService = () => ({
         return { folder: dbResult, path: fsPath }
     },
 
-    update: async () => { },
-    delete: async () => { },
+    // TODO(miha): Delete from FS...
+    update: async (uuid, data) => {
+        const { error, result } = await dbUpdate(uuid, data);
+    },
+
+
+    // TODO(miha): We don't delete from FS here...
+    //     await fs.rm(folderPath, { recursive: true, force: true });
+    delete: async (uuid) => {
+
+        const levelOrder = async () => {
+            const queue = [];
+            const levels = [];
+            const filesToRemove = [];
+
+            queue.push([uuid, 0]);
+
+            while (queue.length) {
+                const [currentFolderId, level] = queue.shift();
+                levels.push([currentFolderId, level]);
+                // TODO(miha): Handle error case
+                const { result: currentFolder, error } = await dbGetByUuid(currentFolderId);
+
+                const currentFiles = currentFolder.files.map((file) => file.id);
+                filesToRemove.push(...currentFiles);
+
+                for (const subfolder of currentFolder.subfolders)
+                    queue.push([subfolder.id, level + 1]);
+            }
+
+            return [levels, filesToRemove];
+        };
+
+        const [foldersWithLevels, filesToRemove] = await levelOrder();
+        // NOTE(miha): Need to sort folders by its level (depth) in decreasing order.
+        //   This way we remove leaf folder first and we won't get foreign key
+        //   exists errors.
+        const sortedFolders = foldersWithLevels.sort((a, b) => b[1] - a[1]);
+        const sortedFolderIds = sortedFolders.map(([id]) => id);
+        // NOTE(miha): Need to get path before we delete record from DB.
+        // TODO(miha): Handle error
+        const { result: rootFolderPath, error: _ } = await dbGetPathByUuid(uuid);
+
+        // TODO(miha): Handle transaction fail
+        const [transactionError, transactionResult] = await withCatch(() =>
+            prisma.$transaction(async (tx) => {
+                await tx.file.deleteMany({
+                    where: {
+                        id: {
+                            in: filesToRemove,
+                        },
+                    },
+                });
+                await tx.folder.deleteMany({
+                    where: {
+                        id: {
+                            in: sortedFolderIds,
+                        },
+                    },
+                });
+                return "ok";
+            }));
+
+        await fs.rm(rootFolderPath, { recursive: true, force: true });
+    },
     browsePath: async (userId, pathParts) => {
         const { error: rootFolderError, result: rootFolder } = await dbGetRootFolderByUserId(userId);
         if (rootFolderError)
