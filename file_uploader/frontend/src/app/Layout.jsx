@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { HamburgerMenuIcon, Cross1Icon } from '@radix-ui/react-icons';
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "../features/auth/contexts/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import UploadModal from '../features/file_upload/components/UploadModal';
-import { FileProvider } from '../contexts/FileContext';
+import { FileProvider, useFileContext } from '../contexts/FileContext';
+import { create } from "../api/folders";
+import { Search } from "@/features/search/Search";
 
 const Navbar = ({ onToggleSidebar, user, onLogoutClick }) => {
     return (
@@ -31,7 +33,7 @@ const Navbar = ({ onToggleSidebar, user, onLogoutClick }) => {
 
             {/* Middle */}
             <div className="flex flex-col sm:flex-row">
-                <p>Search</p>
+                <Search />
             </div>
 
             {/* Right */}
@@ -45,6 +47,7 @@ const Navbar = ({ onToggleSidebar, user, onLogoutClick }) => {
 
 const Sidebar = ({ isOpen, onClose }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { fetchFiles } = useFileContext();
 
     return (
         <>
@@ -78,11 +81,17 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <UploadModal
                             isOpen={isModalOpen}
                             onClose={() => setIsModalOpen(false)}
-                            onUploadComplete={""}
                         />
-                        <a href="/upload" className="hover:underline">My drive</a>
-                        <a href="/account" className="hover:underline">Recent</a>
-                        <a href="/account" className="hover:underline">Shared with me</a>
+                        <p
+                            onClick={async () => {
+                                await create("newFolder");
+                                await fetchFiles();
+                            }}
+                            className="hover:underline"
+                        >New folder</p>
+                        <Link to={"/folders/root"} className="hover:underline">My drive</Link>
+                        <Link to={"/"} className="hover:underline">Recent</Link>
+                        <Link to={"/"} className="hover:underline">Shared with me</Link>
                     </div>
                     <div className="">
                         <p>ligh/dark theme</p>
