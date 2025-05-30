@@ -2,6 +2,7 @@ import authApi from './api/auth.js';
 import bcrypt from 'bcryptjs';
 import express from 'express';
 import fileApi from './api/file.js';
+import searchApi from './api/search.js';
 import folderApi from './api/folder.js';
 import passport from 'passport';
 import prisma from './db/prisma.js';
@@ -75,6 +76,7 @@ app.use('/files', fileApi);
 app.use('/folders', folderApi);
 app.use('/users', userApi);
 app.use('/auth', authApi);
+app.use('/search', searchApi);
 
 
 
