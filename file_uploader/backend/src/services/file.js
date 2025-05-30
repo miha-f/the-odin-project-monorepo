@@ -1,5 +1,10 @@
 import prisma from '../db/prisma.js';
 import withCatch from '../helpers/withCatch.js';
+import path from 'path';
+import { createFolderService } from './folder.js';
+import fs from 'fs/promises';
+
+const FolderService = createFolderService();
 
 const dbGetAll = async (client = prisma) => {
     const [error, result] = await withCatch(() => client.file.findMany());
@@ -25,7 +30,6 @@ const dbCreate = async (filename, folderUuid, userUuid, size, mimeType, client =
             mimeType: mimeType,
             folderId: folderUuid,
             ownerId: userUuid,
-            path: "", // TODO(miha): Remov this when updating prisma schema
         },
     }));
     if (error)
@@ -70,10 +74,10 @@ const fsUpdate = async (oldPath, newPath) => {
 };
 
 const fsDelete = async (path, recursive = false, force = false) => {
-    // const [error, result] = await withCatch(() => fs.rm(path, { recursive: recursive, force: force }));
-    // if (error)
-    //     return { error: "Filesystem error" };
-    // return { result: result };
+    const [error, result] = await withCatch(() => fs.rm(path, { recursive: recursive, force: force }));
+    if (error)
+        return { error: "Filesystem error" };
+    return { result: result };
 };
 
 
@@ -91,12 +95,35 @@ export const createFileService = () => ({
         delete: fsDelete,
     },
 
-    create: async (data, client = prisma) => {
+    create: async (data) => {
+        throw new Error("Multer middlware should crate and upload under right directory");
     },
 
-    update: async (uuid, data, client = prisma) => {
+    // TODO(miha): Update from FS...
+    update: async (uuid, data) => {
+        const { error, result } = await dbUpdate(uuid, data);
     },
 
-    delete: async (uuid, client = prisma) => {
+    // TODO(miha): Delete from FS also
+    delete: async (uuid) => {
+        // TODO(miha): Handle error case
+        const { result: deletedFile, error: dbDeleteError } = await dbDelete(uuid);
+
+        // TODO(miha): Handle error
+        const { result: folderPath, error: getPathError } = await FolderService.db.getPathByUuid(deletedFile.folderId);
+        const fullPath = path.join(folderPath, deletedFile.name);
+
+        // TODO(miha): Handle error
+        const { error } = await fsDelete(fullPath);
+    },
+
+    download: async (uuid) => {
+        // TODO(miha): Handle error cases
+        const { result: file } = await dbGetByUuid(uuid);
+        const { result: folderPath } = await FolderService.db.getPathByUuid(file.folderId);
+
+        // TODO(miha): Check if if file exists locally.
+
+        return { path: folderPath, name: file.name };
     },
 });
