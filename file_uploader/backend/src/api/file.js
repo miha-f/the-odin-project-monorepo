@@ -8,16 +8,21 @@ const FileService = createFileService();
 
 // TODO(miha): File routes should be auth protected!
 
-// TODO(miha): This route doesn't make sense, we don't want to show
-// all files! We want to show all files of the user if we are the user 
-// (or files are shared with us).
-router.get('/', asyncHandler(async (_, res) => {
-    res.json(await FileService.getAll());
+router.get('/:uuid', asyncHandler(async (req, res) => {
+    const file = await FileService.db.getByUuid(req.params.uuid);
+    file ? res.json(file) : res.status(404).json({ error: 'Not found' });
 }));
 
-router.get('/:uuid', asyncHandler(async (req, res) => {
-    const file = await FileService.getByUuid(req.params.uuid);
-    file ? res.json(file) : res.status(404).json({ error: 'Not found' });
+router.get('/:uuid/download', asyncHandler(async (req, res) => {
+    const { uuid } = req.params;
+    const { path, name } = await FileService.download(uuid);
+
+    // TODO(miha): We hardoce path...
+    res.download(`${path}/${name}`, name, (err) => {
+        if (err) {
+            res.status(500).send('Error downloading file');
+        }
+    });
 }));
 
 router.post('/', asyncHandler(async (req, res) => {
