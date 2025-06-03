@@ -4,6 +4,7 @@ import express from 'express';
 import fileApi from './api/file.js';
 import searchApi from './api/search.js';
 import folderApi from './api/folder.js';
+import shareApi from './api/share.js';
 import passport from 'passport';
 import prisma from './db/prisma.js';
 import session from 'express-session';
@@ -66,19 +67,16 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.get('/', (req, res) => res.send("ok"));
 app.use('/files', fileApi);
 app.use('/folders', folderApi);
 app.use('/users', userApi);
 app.use('/auth', authApi);
 app.use('/search', searchApi);
-
-
-
+app.use('/share', shareApi);
 
 export default app;
