@@ -2,12 +2,16 @@ import asyncHandler from 'express-async-handler';
 import express from 'express';
 import { createFolderService } from '../services/folder.js';
 import { createFileService } from '../services/file.js';
+import { createShareService } from '../services/share.js';
 import { upload } from '../middleware.js';
+import { isAuthenticated } from '../middleware.js';
 
 const router = express.Router();
+router.use(isAuthenticated);
 
 const FolderService = createFolderService();
 const FileService = createFileService();
+const ShareService = createShareService();
 
 router.get('/root*', asyncHandler(async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
@@ -62,8 +66,9 @@ router.post('/root*/upload',
 
 // NOTE(miha): We get specific folder
 router.get('/id/:uuid', asyncHandler(async (req, res) => {
-    const file = await FolderService.db.getByUuid(req.params.uuid);
-    file ? res.json(file) : res.status(404).json({ error: 'Not found' });
+    const folder = await FolderService.db.getByUuid(req.params.uuid);
+    if (!req.user.rootFolderId !== folder.ownerId) return res.status(403).json({ error: "Forbidden" });
+    folder ? res.json(folder) : res.status(404).json({ error: 'Not found' });
 }));
 
 router.get('/id/:uuid/path', asyncHandler(async (req, res) => {
@@ -79,6 +84,14 @@ router.post('/', asyncHandler(async (req, res) => {
     if (error)
         return res.status(500).json({ error: 'Internal server error' });
     return res.status(201).json({ folder: folder, path: path });
+}));
+
+// NOTE(miha): Create share link.
+router.post('/id/:uuid/share', asyncHandler(async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    const folderId = req.params.uuid;
+    const token = await ShareService.create(folderId);
+    res.json({ link: token });
 }));
 
 // TODO(miha): How do we want to update folder? Only name or also user? Im thinking 
