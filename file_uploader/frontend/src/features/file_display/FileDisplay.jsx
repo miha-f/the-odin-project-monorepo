@@ -3,6 +3,7 @@ import { FileRow } from "./components/FileRow";
 import { FileListHeader } from "./components/FileListHeader";
 import { remove as removeFolder, update as updateFolder } from '@/api/folders';
 import { remove as removeFile, update as updateFile } from '@/api/files';
+import { createShareLink } from "./api/createShareLink";
 
 const FileDisplay = () => {
     const { files, folders, fetchFiles } = useFileContext();
@@ -30,9 +31,15 @@ const FileDisplay = () => {
         await fetchFiles();
     };
 
+    const handleShare = async (item) => {
+        await createShareLink(item.id);
+        await fetchFiles();
+    }
 
     if (!folders) return null;
     if (!files) return null;
+
+    console.log("folders: ", folders);
 
     return (
         <div className="w-full">
@@ -40,12 +47,12 @@ const FileDisplay = () => {
             {[...folders]
                 .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
                 .map((folder) => (
-                    <FileRow key={folder.id} item={folder} isFolder={true} onRename={handleRename} onDelete={handleDelete} />
+                    <FileRow key={folder.id} item={folder} isFolder={true} onRename={handleRename} onDelete={handleDelete} onShare={handleShare} />
                 ))}
             {[...files]
                 .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
                 .map((file) => (
-                    <FileRow key={file.id} item={file} isFolder={false} onRename={handleRename} onDelete={handleDelete} />
+                    <FileRow key={file.id} item={file} isFolder={false} onRename={handleRename} onDelete={handleDelete} onShare={handleShare} />
                 ))}
         </div>
     );

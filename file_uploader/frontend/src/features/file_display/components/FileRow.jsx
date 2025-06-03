@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { getFileIcon } from "../utils/getFileIcon";
 import { getHumanSize } from "../utils/getHumanSize";
 
-export const FileRow = ({ item, isFolder, onRename, onDelete }) => {
+export const FileRow = ({ item, isFolder, onRename, onDelete, onShare }) => {
     const [expanded, setExpanded] = useState(false);
     const [isRenaming, setIsRenaming] = useState(false);
     const [newName, setNewName] = useState(item.name);
@@ -101,6 +101,17 @@ export const FileRow = ({ item, isFolder, onRename, onDelete }) => {
                     <div className="px-4 pb-3 pt-1 flex gap-4 text-sm text-blue-600">
                         <button onClick={() => { setIsRenaming(true); setExpanded(false); }}>Rename</button>
                         <button onClick={() => onDelete(item)}>Delete</button>
+                        {isFolder && (
+                            item.shareLinks.length ? (
+                                <Link
+                                    to={`/share/${item.shareLinks[0].token}`}
+                                    className="hover:underline"
+                                >{item.shareLinks[0].token}</Link>
+                            ) : (
+                                <button onClick={() => onShare(item)}>Get share link</button>
+                            )
+                        )
+                        }
                     </div>
                 )
             }
