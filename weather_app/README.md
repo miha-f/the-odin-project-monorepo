@@ -1,6 +1,6 @@
 # Weather app
 
-Goal: Build a weather app. Get weather info from: [Weather API](https://www.visualcrossing.com/weather-api/)
+Goal: Build a weather app, get weather info from external API: [Weather API](https://www.visualcrossing.com/weather-api/)
 
 [Live preview (layout only)](https://miha-f.github.io/the-odin-project-monorepo/etch_a_sketch)
 
