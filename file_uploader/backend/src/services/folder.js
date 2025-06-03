@@ -23,7 +23,7 @@ const dbGetRootFolderByUserId = async (userId, client = prisma) => {
 const dbGetByUuid = async (uuid, client = prisma) => {
     const [error, result] = await withCatch(() => client.folder.findUnique({
         where: { id: uuid },
-        include: { parent: true, files: true, subfolders: true },
+        include: { parent: true, files: true, subfolders: { include: { shareLinks: true, } }, },
     }));
     if (error)
         return { error: "Database error" };
