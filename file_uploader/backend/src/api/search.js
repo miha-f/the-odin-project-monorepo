@@ -1,13 +1,15 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-
+import { isAuthenticated } from '../middleware.js';
 import { createSearchService } from '../services/search.js';
 import { createFolderService } from '../services/folder.js';
 
 const router = express.Router();
+router.use(isAuthenticated);
 
 const SearchService = createSearchService();
 const FolderService = createFolderService();
+
 router.get('/', asyncHandler(async (req, res) => {
     const { q } = req.query;
     // TODO(miha): Handle error

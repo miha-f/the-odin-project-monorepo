@@ -1,8 +1,10 @@
 import asyncHandler from 'express-async-handler';
 import express from 'express';
 import { createFileService } from '../services/file.js';
+import { isAuthenticated } from '../middleware.js';
 
 const router = express.Router();
+router.use(isAuthenticated);
 
 const FileService = createFileService();
 

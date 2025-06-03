@@ -1,8 +1,10 @@
 import asyncHandler from 'express-async-handler';
 import express from 'express';
 import { createUserService } from '../services/user.js';
+import { isAuthenticated } from '../middleware.js';
 
 const router = express.Router();
+router.use(isAuthenticated);
 
 const UserService = createUserService();
 

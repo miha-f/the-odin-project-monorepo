@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler';
 import { createAuthService } from '../services/auth.js';
 import { createUserService } from '../services/user.js';
 import { body, validationResult } from 'express-validator';
+import { isAuthenticated } from '../middleware.js';
 
 const router = express.Router();
 
@@ -41,7 +42,7 @@ const validateRegisterForm = [
         }),
 ];
 
-router.get('/me', asyncHandler(async (req, res) => {
+router.get('/me', isAuthenticated, asyncHandler(async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     res.json({ user: req.user });
 }));
@@ -90,7 +91,7 @@ router.post('/login', [
     })
 ]);
 
-router.post('/logout', asyncHandler(async (req, res) => {
+router.post('/logout', isAuthenticated, asyncHandler(async (req, res) => {
     req.logout(err => {
         if (err) return next(err);
         res.json({ data: "Logout" });
