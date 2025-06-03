@@ -19,26 +19,32 @@ test.set('lion', 'golden')
 // NOTE(miha): This causes hash map to grow
 test.set('moon', 'silver')
 
-console.log(test.has("moon"));
-console.log(test.has("sun"));
-console.log(test.get("moon"));
-console.log(test.get("sun"));
-console.log(test.remove("moon"));
-console.log(test.remove("moon"));
-console.log(test.get("moon"));
+console.log("map.entries: ", test.entries());
+console.log("map.has('moon'): ", test.has("moon"));
+console.log("map.has('sun'): ", test.has("sun"));
+console.log("map.get('moon'): ", test.get("moon"));
+console.log("map.get('sun'): ", test.get("sun"));
+console.log("map.remove('moon'): ", test.remove("moon"));
+console.log("map.remove('moon'): ", test.remove("moon"));
+console.log("map.get('moon'): ", test.get("moon"));
 
-console.log(test.keys());
-console.log(test.values());
-console.log(test.entries());
-console.log(test.length());
+console.log("map.keys: ", test.keys());
+console.log("map.values: ", test.values());
+console.log("map.entries: ", test.entries());
+console.log("map.length: ", test.length());
 
 console.log(test.clear());
 console.log(test.keys());
 console.log(test.values());
 console.log(test.entries());
 console.log(test.length());
+console.log("map.clear()");
+console.log("map.keys: ", test.keys());
+console.log("map.values: ", test.values());
+console.log("map.entries: ", test.entries());
+console.log("map.length: ", test.length());
 
-console.log("testing shapes");
+console.log("testing shapes (set)");
 
 const shapes = HashSet();
 shapes.set("triangle");
@@ -49,7 +55,7 @@ shapes.set("circle");
 shapes.set("polygon");
 shapes.set("hexagon");
 shapes.remove("triangle");
-console.log(shapes.keys());
-console.log(shapes.values());
-console.log(shapes.entries());
-console.log(shapes.length());
+console.log("shapes.keys(): ", shapes.keys());
+console.log("shapes.values(): ", shapes.values());
+console.log("shapes.entries(): ", shapes.entries());
+console.log("shapes.length(): ", shapes.length());

@@ -5,3 +5,12 @@ inventory_application/node_modules
 members_only/node_modules
 file_uploader/backend/src/generated/prisma
 file_uploader/backend/users_store
+file_uploader/backend/src/db/.DS_Store
+file_uploader/backend/.DS_Store
+file_uploader/backend/src/.DS_Store
+.DS_Store
+index.html
+log.txt
+members_only/'
+file_uploader/frontend/'
+file_uploader/frontend/src/errors
