@@ -5,6 +5,7 @@ import SearchPage from './pages/Search'
 import Layout from './Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import SharedFolderPage from '@/features/shared_folder/ShareFolderPage';
 
 export const router = createBrowserRouter([
     {
@@ -15,6 +16,7 @@ export const router = createBrowserRouter([
             { path: '/', element: <FileDisplayPage /> },
         ],
     },
+    { path: '/share/:token', element: <SharedFolderPage /> },
     {
         element: <AuthLayout />,
         children: [
