@@ -26,3 +26,12 @@ const multerStorageStrategy = multer.diskStorage({
 });
 
 export const upload = multer({ storage: multerStorageStrategy });
+
+export const isAuthenticated = (req, res, next) => {
+    if (!req.isAuthenticated())
+        return res.status(401).json({ error: "Unauthorized" });
+    next();
+};
+
+// TODO(miha): We need canAccessFolder function that checks if currently logged in user is
+//   folder owner or if the folder is shared with us!
