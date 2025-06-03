@@ -30,7 +30,7 @@ export const createAuthService = () => ({
 
         const { user, rootFolder } = transactionResult;
 
-        const rootFolderPath = path.join(process.env.USERS_STORE_DIR, user.id, rootFolder.name);
+        const rootFolderPath = path.join(user.id, rootFolder.name);
         const [fsError, _] = await withCatch(() => FolderService.fs.create(rootFolderPath, true));
 
         if (fsError) {
