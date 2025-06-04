@@ -16,7 +16,8 @@
         "resolveJsonModule": true,
         "allowImportingTsExtensions": true,
         "types": [
-            "node"
+            "node",
+            "vitest",
         ]
     },
     "include": [

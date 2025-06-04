@@ -1,21 +1,26 @@
-import { defineConfig } from 'vite';
-import path from 'path';
+import { defineConfig } from "vitest/config";
+import path from "path";
 
 export default defineConfig({
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src'),
+            "@": path.resolve(__dirname, "src"),
         },
     },
     build: {
-        outDir: 'dist',
-        target: 'node16',
+        outDir: "dist",
+        target: "node16",
         ssr: true,
         rollupOptions: {
-            input: 'src/index.ts',
+            input: "src/index.ts",
             output: {
-                format: 'es',
+                format: "es",
             },
         },
+    },
+    test: {
+        globals: true,
+        environment: "node",
+        silent: false,
     },
 });
