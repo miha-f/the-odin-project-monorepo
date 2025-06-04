@@ -5,30 +5,32 @@ import { DB } from "@/db/db";
 import { Blog } from "@/models/blog.model";
 
 type BlogErrorType = Promise<[Blog | null, AppError | null]>;
+type BlogArrayErrorType = Promise<[Blog[] | null, AppError | null]>;
 
 export const createBlogService = ({ db }: { db: DB }) => {
     const getById = async (id: number): BlogErrorType => {
         const [blog, error] = await tryCatch(() => db.blog.findUnique({ where: { id } }));
+        logger.debug({ blog, error }, "getById");
         if (error) return [null, internalError("Internal error")];
         if (!blog) return [null, notFound("Not found")];
         return [blog, null];
     };
 
-    const getAll = async () => {
+    const getAll = async (): BlogArrayErrorType => {
         const [blogs, error] = await tryCatch(() => db.blog.findMany());
         if (error) return [null, internalError("Internal error")];
         if (!blogs) return [null, notFound("Not found")];
         return [blogs, null];
     };
 
-    const create = async (data: Partial<Blog>) => {
+    const create = async (data: Partial<Blog>): BlogErrorType => {
         const [blogs, error] = await tryCatch(() => db.blog.create({ data: data }));
         if (error) return [null, internalError("Internal error")];
         if (!blogs) return [null, notFound("Not found")];
         return [blogs, null];
     };
 
-    const update = async (id: number, data: Partial<Blog>) => {
+    const update = async (id: number, data: Partial<Blog>): BlogErrorType => {
         const [blog, error] = await tryCatch(() => db.blog.update({ where: { id: id }, data: data }));
         if (error) return [null, internalError("Internal error")];
         if (!blog) return [null, notFound("Not found")];
@@ -36,7 +38,7 @@ export const createBlogService = ({ db }: { db: DB }) => {
     };
 
 
-    const remove = async (id: number) => {
+    const remove = async (id: number): BlogErrorType => {
         const [blog, error] = await tryCatch(() => db.blog.delete({ where: { id: id } }));
         if (error) return [null, internalError("Internal error")];
         if (!blog) return [null, notFound("Not found")];
