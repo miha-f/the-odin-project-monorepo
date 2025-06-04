@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
+import router from "@/routes";
 
-export const app = express();
+const app = express();
 
 app.use(cors());
 app.use(express.json());
@@ -9,3 +10,7 @@ app.use(express.json());
 app.get("/hello", (_req, res) => {
     res.send("Hello, world!");
 });
+
+app.use(router);
+
+export default app;
