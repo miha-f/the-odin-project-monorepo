@@ -1,5 +1,7 @@
 import pino from "pino";
 
+const LOG_FILE_PATH = process.env.LOG_FILE_PATH || "./logs/app.log";
+
 export const logger = pino({
     transport: {
         targets: [
@@ -15,7 +17,7 @@ export const logger = pino({
             {
                 target: 'pino-roll',
                 options: {
-                    file: './logs/app.log',
+                    file: LOG_FILE_PATH,
                     mkdir: true,
                     size: '10m',
                     limit: {
