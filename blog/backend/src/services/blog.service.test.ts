@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { createBlogService } from "./blog.service";
+import { createBlogService } from "@/services/blog.service";
 import mockDb from "@/db/mockDb";
-import { Blog } from "@/models/blog.model";
 
 const blogService = createBlogService({ db: mockDb });
 
