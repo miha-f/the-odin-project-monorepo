@@ -1,4 +1,4 @@
-import { Blog, User, Post } from "@/models";
+import { Blog, User, Post, Comment } from "@/models";
 
 export interface BlogModel {
     findUnique(args: { where: { id: number } }): Promise<Blog | null>;
@@ -24,8 +24,14 @@ export interface PostModel {
     delete(args: { where: { id: number } }): Promise<Post | null>;
 }
 
+export interface CommentModel {
+    findMany(args: { where: { postId: number } }): Promise<Comment[]>;
+    create(args: { data: Partial<Comment> }): Promise<Comment>;
+}
+
 export interface DB {
     blog: BlogModel;
     user: UserModel;
     post: PostModel;
+    comment: CommentModel;
 }

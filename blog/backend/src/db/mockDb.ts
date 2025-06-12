@@ -3,6 +3,7 @@ import { DB } from "@/db/db";
 import { Blog, isBlog } from "@/models/blog.model";
 import { User, isUserIn } from "@/models/user.model";
 import { Post, isPost } from "@/models/post.model";
+import { Comment, isComment } from "@/models/comment.model";
 
 // NOTE(miha): Code for generating blogs
 const NUMBER_OF_BLOGS = 10;
@@ -56,6 +57,7 @@ const NUMBER_OF_POSTS = 10;
 const createPost = (index: number): Post => ({
     id: index,
     authorId: faker.helpers.arrayElement(Array.from(users.keys())),
+    // TODO(miha): postId should increment from 0 or 1 for given post
     blogId: faker.number.int({ min: 0, max: NUMBER_OF_BLOGS }),
     title: faker.lorem.word({ length: { min: 3, max: 7 } }),
     content: faker.lorem.sentence({ min: 3, max: 20 }),
@@ -72,6 +74,29 @@ const createPartialPost = (index: number): Partial<Post> => ({
 });
 
 export const posts: Post[] = Array.from({ length: NUMBER_OF_POSTS }, (_, i) => createPost(i));
+
+// NOTE(miha): Code for generating comments
+const NUMBER_OF_COMMENTS = 10;
+
+const createComment = (index: number): Comment => ({
+    id: index,
+    authorId: faker.helpers.arrayElement(Array.from(users.keys())),
+    // TODO(miha): postId should increment from 0 or 1 for given post
+    postId: faker.number.int({ min: 0, max: NUMBER_OF_POSTS }),
+    content: faker.lorem.sentence({ min: 3, max: 20 }),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+});
+
+const createPartialComment = (index: number): Partial<Comment> => ({
+    id: index,
+    authorId: faker.helpers.arrayElement(Array.from(users.keys())),
+    postId: faker.number.int({ min: 0, max: NUMBER_OF_POSTS }),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+});
+
+export const comments: Comment[] = Array.from({ length: NUMBER_OF_COMMENTS }, (_, i) => createComment(i));
 
 export const mockDb: DB = {
     blog: {
@@ -166,6 +191,19 @@ export const mockDb: DB = {
             if (postIndex === -1) return null;
             const [deleted] = posts.splice(postIndex, 1);
             return deleted;
+        },
+    },
+    comment: {
+        findMany: async () => {
+            return comments;
+        },
+
+        create: async ({ data }) => {
+            const newcomment = { ...createPartialComment(comments.length), ...data };
+            if (!isComment(newcomment))
+                throw new Error("Can't create comment, missing one or more fields");
+            comments.push(newcomment);
+            return newcomment;
         },
     },
 };
