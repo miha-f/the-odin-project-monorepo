@@ -9,12 +9,12 @@ const blogService = createBlogService({ db: mockDb });
 
 // NOTE(miha): Get all blogs.
 router.get("/", async (_req, res) => {
-    let [blog, err] = await blogService.getAll();
+    let [blogs, err] = await blogService.getAll();
     if (err) {
         const { status, body } = handleAppError(err);
         res.status(status).json(body);
     }
-    res.status(200).json({ data: blog });
+    res.status(200).json({ data: blogs });
 });
 
 // NOTE(miha): Get specific blog with blogId (number).

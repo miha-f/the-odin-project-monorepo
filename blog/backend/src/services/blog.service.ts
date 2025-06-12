@@ -24,10 +24,10 @@ export const createBlogService = ({ db }: { db: DB }) => {
     };
 
     const create = async (data: Partial<Blog>): BlogErrorType => {
-        const [blogs, error] = await tryCatch(() => db.blog.create({ data: data }));
+        const [blog, error] = await tryCatch(() => db.blog.create({ data: data }));
         if (error) return [null, internalError("Internal error")];
-        if (!blogs) return [null, notFound("Not found")];
-        return [blogs, null];
+        if (!blog) return [null, notFound("Not found")];
+        return [blog, null];
     };
 
     const update = async (id: number, data: Partial<Blog>): BlogErrorType => {
