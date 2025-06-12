@@ -1,4 +1,4 @@
-type Uuid = string;
+import { Uuid } from "./common.ts"
 
 export interface Blog {
     id: number;

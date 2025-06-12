@@ -1,7 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { DB } from "@/db/db";
 import { Blog, isBlog } from "@/models/blog.model";
+import { User, isUserIn } from "@/models/user.model";
 
+// NOTE(miha): Code for generating blogs
 const NUMBER_OF_BLOGS = 10;
 
 const createBlog = (index: number): Blog => ({
@@ -20,9 +22,35 @@ const createPartialBlog = (index: number): Partial<Blog> => ({
     updatedAt: new Date(),
 });
 
-const blogs: Blog[] = Array.from({ length: NUMBER_OF_BLOGS }, (_, i) => createBlog(i));
+export const blogs: Blog[] = Array.from({ length: NUMBER_OF_BLOGS }, (_, i) => createBlog(i));
 
-const mockDb: DB = {
+
+// NOTE(miha): Code for generating users
+const NUMBER_OF_USERS = 10;
+
+const createUser = (uuid: string): User => ({
+    uuid: uuid,
+    username: faker.internet.username(),
+    passwordHash: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+});
+
+const createPartialUser = (): Partial<User> => ({
+    uuid: faker.string.uuid(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+});
+
+export const users: Map<string, User> = new Map(
+    Array.from({ length: NUMBER_OF_USERS }, () => {
+        const uuid = faker.string.uuid();
+        const user = createUser(uuid);
+        return [uuid, user] as [string, User];
+    })
+);
+
+export const mockDb: DB = {
     blog: {
         findMany: async () => {
             return blogs;
@@ -52,6 +80,38 @@ const mockDb: DB = {
             if (blogIndex === -1) return null;
             const [deleted] = blogs.splice(blogIndex, 1);
             return deleted;
+        },
+    },
+    user: {
+        findMany: async () => {
+            return Array.from(users.values());
+        },
+
+        findUnique: async ({ where }) => {
+            return users.get(where.uuid) || null;
+        },
+
+        create: async ({ data }) => {
+            const newUser = { ...createPartialUser(), ...data };
+            if (!isUserIn(newUser))
+                throw new Error("Can't create user, missing one or more fields");
+            users.set(newUser.uuid, newUser);
+            return newUser;
+        },
+
+        update: async ({ where, data }) => {
+            const user = users.get(where.uuid);
+            if (!user) return null;
+            const updatedUser = { ...user, ...data };
+            users.set(where.uuid, updatedUser);
+            return updatedUser;
+        },
+
+        delete: async ({ where }) => {
+            const user = users.get(where.uuid);
+            if (!user) return null;
+            users.delete(where.uuid);
+            return user;
         },
     },
 };

@@ -1,4 +1,4 @@
-import { Blog } from "@/models/blog.model";
+import { Blog, User } from "@/models";
 
 export interface BlogModel {
     findUnique(args: { where: { id: number } }): Promise<Blog | null>;
@@ -8,6 +8,16 @@ export interface BlogModel {
     delete(args: { where: { id: number } }): Promise<Blog | null>;
 }
 
+export interface UserModel {
+    findUnique(args: { where: { uuid: string } }): Promise<User | null>;
+    findMany(): Promise<User[]>;
+    create(args: { data: Partial<User> }): Promise<User>;
+    update(args: { where: { uuid: string }, data: Partial<User> }): Promise<User | null>;
+    delete(args: { where: { uuid: string } }): Promise<User | null>;
+}
+
+
 export interface DB {
     blog: BlogModel;
+    user: UserModel;
 }
