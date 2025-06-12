@@ -37,6 +37,8 @@ router.get("/:userUuid", async (req, res) => {
     res.status(200).json({ data: user });
 });
 
+// TODO(miha): Create this route: GET /users/:id/blogs -> get specific user blogs, if he has one
+
 // NOTE(miha): Create new user, {username: "", password: "", passwordRepeat: ""} are required.
 router.post("/", async (req, res) => {
     let [user, err] = await userService.create(req.body);
