@@ -36,7 +36,7 @@ router.get("/", async (_req, res) => {
 
 // NOTE(miha): Get specific post with postId (id).
 router.get("/:postId", async (req, res) => {
-    const postId = req.params.postId;
+    const postId = Number(req.params.postId);
     let [post, err] = await postService.getById(postId);
     if (err) {
         const { status, body } = handleAppError(err);
@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
 
 // NOTE(miha): Update post with postId (id), can pass empty body - no update.
 router.patch("/:postId", async (req, res) => {
-    const postId = req.params.postId;
+    const postId = Number(req.params.postId);
     let [post, err] = await postService.update(postId, req.body);
     if (err) {
         const { status, body } = handleAppError(err);
@@ -68,7 +68,7 @@ router.patch("/:postId", async (req, res) => {
 
 // NOTE(miha): Remove post with postId (id).
 router.delete("/:postId", async (req, res) => {
-    const postId = req.params.postId;
+    const postId = Number(req.params.postId);
     let [post, err] = await postService.remove(postId);
     if (err) {
         const { status, body } = handleAppError(err);
