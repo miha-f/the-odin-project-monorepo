@@ -11,18 +11,11 @@ import jwt from 'jsonwebtoken';
 // TODO(miha): Get from config
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
-type AuthErrorType = Promise<[Auth | null, AppError | null]>;
-type UserErrorType = Promise<[User | null, AppError | null]>;
 type TokenErrorType = Promise<[string | null, AppError | null]>;
 
 const userService = createUserService({ db: prismaDb });
 
 export const createAuthService = ({ db }: { db: DB }) => {
-    const getCurrentUser = async (): AuthErrorType => {
-        // decode JWT token
-        return [null, null]
-    };
-
     const login = async (username: string, password: string): TokenErrorType => {
         const [user, userErr] = await userService.getByUsername(username);
         if (userErr) return [null, internalError("error getting user from db")];
@@ -36,15 +29,8 @@ export const createAuthService = ({ db }: { db: DB }) => {
         return [token, null];
     };
 
-    const logout = async (): Promise<AppError | null> => {
-        return null
-    };
-
     return {
-        getCurrentUser,
-        validateUser,
         login,
-        logout,
     };
 };
 
