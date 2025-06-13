@@ -136,6 +136,7 @@ export const mockDb: DB = {
         },
 
         findUnique: async ({ where }) => {
+            // TODO(miha): Do search on users based on username
             return users.get(where.uuid) || null;
         },
 
@@ -206,6 +207,8 @@ export const mockDb: DB = {
             return newcomment;
         },
     },
+
+    $transaction: async (fn) => fn(mockDb),
 };
 
 export default mockDb;

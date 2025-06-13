@@ -23,8 +23,38 @@ export const createPostService = ({ db }: { db: DB }) => {
         return [posts, null];
     };
 
-    const create = async (data: Partial<Post>): PostErrorType => {
-        const [post, error] = await tryCatch(() => db.post.create({ data: data }));
+    const create = async (
+        authorId: string,
+        blogId: number,
+        title: string,
+        content: string,
+        images?: string[],
+    ): PostErrorType => {
+        // NOTE(miha): Need transaction so we can get id of the latest post of 
+        // the given user for given blog.
+        const [post, error] = await db.$transaction(async (tx) => {
+            const [lastPost, lastPostError] = await tryCatch(() => tx.post.findFirst({
+                where: { blogId },
+                orderBy: { id: 'desc' },
+                select: { id: true },
+            }));
+            if (lastPostError) return [null, internalError("Internal error")];
+
+            const nextPostId = lastPost ? lastPost.id + 1 : 1;
+
+            const [post, error] = await tryCatch(() => tx.post.create({
+                data: {
+                    id: nextPostId,
+                    authorId: authorId,
+                    blogId: blogId,
+                    title: title,
+                    content: content,
+                    images: images,
+                }
+            }));
+
+            return [post, error]
+        });
         if (error) return [null, internalError("Internal error")];
         if (!post) return [null, notFound("Not found")];
         return [post, null];

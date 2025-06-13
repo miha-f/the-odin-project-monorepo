@@ -13,3 +13,4 @@ export const internalError = (message: string, cause?: unknown): AppError => ({
     message,
     cause,
 });
+export const duplicateResource = (message: string): AppError => ({ type: "Conflict", message });
