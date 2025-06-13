@@ -6,6 +6,7 @@ export type AppError = {
     cause?: unknown;
 };
 
+export const unauthorized = (message: string): AppError => ({ type: "Unauthorized", message });
 export const notFound = (message: string): AppError => ({ type: "NotFound", message });
 export const badRequest = (message: string): AppError => ({ type: "BadRequest", message });
 export const internalError = (message: string, cause?: unknown): AppError => ({

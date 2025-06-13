@@ -72,6 +72,7 @@ export const createUserService = ({ db }: { db: DB }) => {
 
     return {
         getById,
+        getByUsername,
         getAll,
         create,
         update,

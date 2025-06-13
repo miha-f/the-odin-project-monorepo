@@ -1,20 +1,39 @@
-import { AppError, internalError, notFound } from "@/errors/errors";
+import { AppError, badRequest, internalError, notFound, unauthorized } from "@/errors/errors";
 import { logger } from "@/utils/logger";
 import { tryCatch } from "@/utils/tryCatch";
+import prismaDb from "@/db/prismaDb";
 import { DB } from "@/db/db";
 import { User } from "@/models/user.model";
+import { createUserService } from "@/services/user.service.ts";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+// TODO(miha): Get from config
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 type AuthErrorType = Promise<[Auth | null, AppError | null]>;
 type UserErrorType = Promise<[User | null, AppError | null]>;
+type TokenErrorType = Promise<[string | null, AppError | null]>;
 
-export const createBlogService = ({ db }: { db: DB }) => {
+const userService = createUserService({ db: prismaDb });
+
+export const createAuthService = ({ db }: { db: DB }) => {
     const getCurrentUser = async (): AuthErrorType => {
         // decode JWT token
         return [null, null]
     };
 
-    const login = async (): UserErrorType => {
-        return [null, null]
+    const login = async (username: string, password: string): TokenErrorType => {
+        const [user, userErr] = await userService.getByUsername(username);
+        if (userErr) return [null, internalError("error getting user from db")];
+        if (!user) return [null, badRequest("user not found")];
+
+        const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+        if (!passwordMatch) return [null, unauthorized("password missmatch")];
+
+        const token = jwt.sign({ sub: user.username }, JWT_SECRET, { expiresIn: '1h' });
+
+        return [token, null];
     };
 
     const logout = async (): Promise<AppError | null> => {
@@ -23,6 +42,7 @@ export const createBlogService = ({ db }: { db: DB }) => {
 
     return {
         getCurrentUser,
+        validateUser,
         login,
         logout,
     };
