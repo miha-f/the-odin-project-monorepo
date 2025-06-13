@@ -9,6 +9,7 @@
         "build": "tsc",
         "start": "node dist/index.ts",
         "db:init": "npx prisma db push --force-reset && vite-node src/db/seed.js",
+        "db:migrate": "npx prisma migrate dev",
         "db": "echo \"migrate\" && exit 1",
         "test": "vitest"
     },
@@ -42,6 +43,7 @@
         "@types/node": "^22.15.29",
         "@types/passport-jwt": "^4.0.1",
         "@types/supertest": "^6.0.3",
+        "p-limit": "^6.2.0",
         "prisma": "^6.8.2",
         "supertest": "^7.1.1",
         "tsx": "^4.19.4",

@@ -1,11 +1,11 @@
 import express from "express";
 import { createBlogService } from "@/services/blog.service";
-import mockDb from "@/db/mockDb";
+import prismaDb from "@/db/prismaDb";
 import { handleAppError } from "@/utils/handleAppError";
 
 const router = express.Router();
 
-const blogService = createBlogService({ db: mockDb });
+const blogService = createBlogService({ db: prismaDb });
 
 // NOTE(miha): Get all blogs.
 router.get("/", async (_req, res) => {
@@ -30,6 +30,7 @@ router.get("/:blogId", async (req, res) => {
 
 // NOTE(miha): Create new blog, {title: "", content: ""} are required.
 router.post("/", async (req, res) => {
+    // TODO(miha): Need to put under auth route, so we can get: req.user
     let [blog, err] = await blogService.create(req.body);
     if (err) {
         const { status, body } = handleAppError(err);
@@ -40,6 +41,7 @@ router.post("/", async (req, res) => {
 
 // NOTE(miha): Update blog with blogId (number), can pass empty body - no update.
 router.patch("/:blogId", async (req, res) => {
+    // TODO(miha): Need to put under auth route, so we can get: req.user
     const blogId = Number(req.params.blogId);
     let [blog, err] = await blogService.update(blogId, req.body);
     if (err) {
@@ -51,6 +53,7 @@ router.patch("/:blogId", async (req, res) => {
 
 // NOTE(miha): Remove blog with blogId (number).
 router.delete("/:blogId", async (req, res) => {
+    // TODO(miha): Need to put under auth route, so we can get: req.user
     const blogId = Number(req.params.blogId);
     let [blog, err] = await blogService.remove(blogId);
     if (err) {

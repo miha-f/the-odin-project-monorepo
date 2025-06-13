@@ -1,6 +1,6 @@
 import express from "express";
 import { createUserService } from "@/services/user.service";
-import mockDb from "@/db/mockDb";
+import prismaDb from "@/db/prismaDb";
 import { handleAppError } from "@/utils/handleAppError";
 
 /*
@@ -14,7 +14,7 @@ import { handleAppError } from "@/utils/handleAppError";
 
 const router = express.Router();
 
-const userService = createUserService({ db: mockDb });
+const userService = createUserService({ db: prismaDb });
 
 // NOTE(miha): Get all users.
 router.get("/", async (_req, res) => {

@@ -23,6 +23,25 @@ export const createPostService = ({ db }: { db: DB }) => {
         return [posts, null];
     };
 
+    const getAllByBlogId = async (blogId: number): PostArrayErrorType => {
+        const [posts, error] = await tryCatch(() => db.post.findMany(
+            { where: { blogId } },
+        ));
+        if (error) return [null, internalError("Internal error")];
+        if (!posts) return [null, notFound("Not found")];
+        return [posts, null];
+    };
+
+    const getByBlogIdAndPostId = async (blogId: number, postId: number): PostArrayErrorType => {
+        const [post, error] = await tryCatch(() => db.post.findMany(
+            { where: { blogId, id: postId } },
+        ));
+        console.log(post, error);
+        if (error) return [null, internalError("Internal error")];
+        if (!post) return [null, notFound("Not found")];
+        return [post, null];
+    };
+
     const create = async (
         authorId: string,
         blogId: number,
@@ -81,6 +100,8 @@ export const createPostService = ({ db }: { db: DB }) => {
         create,
         update,
         remove,
+        getAllByBlogId,
+        getByBlogIdAndPostId,
     };
 };
 

@@ -24,30 +24,14 @@ export const createBlogService = ({ db }: { db: DB }) => {
     };
 
     const create = async (authorId: string, title: string, content: string, image: string | undefined = undefined): BlogErrorType => {
-        // NOTE(miha): Need transaction so we can get id of the latest blog of 
-        // the given user.
-        const [blog, error] = await db.$transaction(async (tx) => {
-            const [lastBlog, lastBlogError] = await tryCatch(() => tx.blog.findFirst({
-                where: { authorId },
-                orderBy: { id: 'desc' },
-                select: { id: true },
-            }));
-            if (lastBlogError) return [null, internalError("Internal error")];
-
-            const nextBlogId = lastBlog ? lastBlog.id + 1 : 1;
-
-            const [blog, error] = await tryCatch(() => tx.blog.create({
-                data: {
-                    id: nextBlogId,
-                    authorId: authorId,
-                    title: title,
-                    content: content,
-                    image: image,
-                }
-            }));
-
-            return [blog, error]
-        });
+        const [blog, error] = await tryCatch(() => db.blog.create({
+            data: {
+                authorId: authorId,
+                title: title,
+                content: content,
+                image: image,
+            }
+        }));
         if (error) return [null, internalError("Internal error")];
         if (!blog) return [null, notFound("Not found")];
         return [blog, null];

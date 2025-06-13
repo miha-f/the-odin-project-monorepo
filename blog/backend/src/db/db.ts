@@ -20,14 +20,15 @@ export interface UserModel {
 export interface PostModel {
     findUnique(args: { where: { id: number } }): Promise<Post | null>;
     findFirst(args: { where: { blogId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Blog | null>;
-    findMany(): Promise<Post[]>;
+    findMany(args?: { where: { blogId?: number, id?: number } }): Promise<Post[]>;
     create(args: { data: Partial<Post> }): Promise<Post>;
     update(args: { where: { id: number }, data: Partial<Post> }): Promise<Post | null>;
     delete(args: { where: { id: number } }): Promise<Post | null>;
 }
 
 export interface CommentModel {
-    findMany(args: { where: { postId: number } }): Promise<Comment[]>;
+    findMany(args: { where: { blogId: number, postId: number } }): Promise<Comment[]>;
+    findFirst(args: { where: { blogId: number, postId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Blog | null>;
     create(args: { data: Partial<Comment> }): Promise<Comment>;
 }
 

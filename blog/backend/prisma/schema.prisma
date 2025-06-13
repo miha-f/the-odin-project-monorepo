@@ -25,7 +25,7 @@ model User {
 }
 
 model Blog {
-  id        Int
+  id        Int     @id @default(autoincrement())
   authorId  String
   title     String
   content   String
@@ -35,8 +35,6 @@ model Blog {
 
   author    User     @relation(fields: [authorId], references: [uuid])
   posts     Post[]
-
-  @@id([id, authorId])
 }
 
 model Post {
@@ -49,7 +47,7 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  blog      Blog     @relation(fields: [blogId, authorId], references: [id, authorId])
+  blog      Blog     @relation(fields: [blogId], references: [id])
   author    User     @relation(fields: [authorId], references: [uuid])
   comments  Comment[]
 
@@ -57,7 +55,7 @@ model Post {
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
+  id        Int
   authorId  String
   postId    Int
   blogId    Int
@@ -67,4 +65,6 @@ model Comment {
 
   author    User     @relation(fields: [authorId], references: [uuid])
   post      Post     @relation(fields: [postId, blogId], references: [id, blogId])
+
+  @@id([id, postId, blogId])
 }
