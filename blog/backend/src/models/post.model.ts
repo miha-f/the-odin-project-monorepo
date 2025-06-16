@@ -10,15 +10,3 @@ export interface Post {
     createdAt: Date;
     updatedAt: Date;
 };
-
-export const isPost = (obj: any): obj is Post => {
-    return (
-        typeof obj.id === 'number' &&
-        typeof obj.authorId === 'string' &&
-        typeof obj.blogId === 'number' &&
-        typeof obj.title === 'string' &&
-        typeof obj.content === 'string' &&
-        obj.createdAt instanceof Date &&
-        obj.updatedAt instanceof Date
-    );
-}

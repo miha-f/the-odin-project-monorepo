@@ -22,5 +22,8 @@ export default defineConfig({
         globals: true,
         environment: "node",
         silent: false,
+        // setupFiles: ["./src/testSetup.ts"],
+        // globalSetup: "./src/globalSetup.ts",
+        // include: ["src/**/*.test.ts"],
     },
 });

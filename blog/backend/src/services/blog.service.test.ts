@@ -1,22 +1,38 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { createBlogService } from "@/services/blog.service";
+import { createUserService } from "@/services/user.service";
 import mockDb from "@/db/mockDb";
-
-const blogService = createBlogService({ db: mockDb });
+import { seed } from "@/db/seed";
+import { User, Blog } from "@/models";
 
 describe("blogService", () => {
-    describe("getById", () => {
-        const tests = [
-            { name: "valid id", input: 0, expectedError: null, expectedDefinedBlog: true },
-            { name: "invalid id", input: -1, expectedError: true, expectedDefinedBlog: false },
-        ];
+    const blogService = createBlogService({ db: mockDb });
+    const userService = createUserService({ db: mockDb });
+    let users: User[];
+    let blogs: Blog[];
 
-        tests.forEach(({ name, input, expectedError, expectedDefinedBlog }) => {
-            it(name, async () => {
-                const [blog, err] = await blogService.getById(input);
-                expectedError ? expect(err).toBeDefined() : expect(err).toBeNull();
-                expectedDefinedBlog ? expect(blog).toBeDefined() : expect(blog).toBeNull();
-            });
+    beforeAll(async () => {
+        await seed(mockDb, 1);
+        const [usersdb, _usersErr] = await userService.getAll();
+        if (!usersdb) { console.log("users is not defined"); process.exit(1); }
+        const [blogsdb, _blogsErr] = await blogService.getAll();
+        if (!blogsdb) { console.log("blogs is not defined"); process.exit(1); }
+        users = usersdb;
+        blogs = blogsdb;
+    });
+
+    describe("getById", () => {
+        it("valid", async () => {
+            const [blog, err] = await blogService.getById(blogs[0].id);
+            expect(err).toBeNull();
+            expect(blog).toBeDefined();
+        });
+
+        it("invalid", async () => {
+            const [blog, err] = await blogService.getById(-1);
+            expect(err).toBeDefined();
+            expect(err).toHaveProperty("type", "NotFound");
+            expect(blog).toBeDefined();
         });
     });
 
@@ -29,86 +45,63 @@ describe("blogService", () => {
     });
 
     describe("create", () => {
-        const tests = [
-            {
-                name: "valid data",
-                input: { title: "a", content: "b" },
-                expectedError: null,
-                expectedDefinedBlog: true,
-            },
-            {
-                name: "missing fields",
-                input: {},
-                expectedError: true,
-                expectedDefinedBlog: false,
-            },
-        ];
+        it("creates blog with valid data", async () => {
+            const [blog, err] = await blogService.create(users[0].uuid, "a", "b");
+            expect(err).toBeNull();
+            expect(blog).toBeDefined();
+            expect(blog?.title).toBe("a");
+            expect(blog?.content).toBe("b");
+            expect(blog?.authorId).toBe(users[0].uuid);
+        });
 
-        tests.forEach(({ name, input, expectedError, expectedDefinedBlog }) => {
-            it(name, async () => {
-                const [blog, err] = await blogService.create(input);
-                expectedError ? expect(err).toBeDefined() : expect(err).toBeNull();
-                expectedDefinedBlog ? expect(blog).toBeDefined() : expect(blog).toBeNull();
-            });
+        it("fails to create blog with missing fields", async () => {
+            const [blog, err] = await blogService.create("", "", "");
+            expect(err).toBeDefined();
+            expect(err).toHaveProperty("type", "InternalError");
+            expect(blog).toBeNull();
+        });
+
+        it("fails to create blog with invalid uuid", async () => {
+            const [blog, err] = await blogService.create("non-existent-uuid", "Title", "Content");
+            expect(err).toBeDefined();
+            expect(err).toHaveProperty("type", "InternalError");
+            expect(blog).toBeNull();
         });
     });
 
     describe("update", () => {
-        const tests = [
-            {
-                name: "valid update",
-                id: 0,
-                data: { title: "a", content: "b" },
-                expectedError: null,
-                expectedDefinedBlog: true,
-            },
-            {
-                name: "no data",
-                id: 0,
-                data: {},
-                expectedError: null,
-                expectedDefinedBlog: true,
-            },
-            {
-                name: "invalid id",
-                id: -1,
-                data: { title: "a", content: "b" },
-                expectedError: true,
-                expectedDefinedBlog: false,
-            },
-        ];
+        it("valid update", async () => {
+            const [blog, err] = await blogService.update(blogs[0].id, { title: "a", content: "b" });
+            expect(err).toBeNull();
+            expect(blog).toBeDefined();
+        });
 
-        tests.forEach(({ name, id, data, expectedError, expectedDefinedBlog }) => {
-            it(name, async () => {
-                const [blog, err] = await blogService.update(id, data);
-                expectedError ? expect(err).toBeDefined() : expect(err).toBeNull();
-                expectedDefinedBlog ? expect(blog).toBeDefined() : expect(blog).toBeNull();
-            });
+        it("no data", async () => {
+            const [blog, err] = await blogService.update(blogs[0].id, {});
+            expect(err).toBeNull();
+            expect(blog).toBeDefined();
+        });
+
+        it("invalid id", async () => {
+            const [blog, err] = await blogService.update(-1, { title: "a", content: "b" });
+            expect(err).toBeDefined();
+            expect(err).toHaveProperty("type", "NotFound");
+            expect(blog).toBeNull();
         });
     });
 
     describe("remove", () => {
-        const tests = [
-            {
-                name: "valid remove",
-                input: 0,
-                expectedError: null,
-                expectedDefinedBlog: true,
-            },
-            {
-                name: "invalid index",
-                input: -1,
-                expectedError: true,
-                expectedDefinedBlog: false,
-            },
-        ];
+        it("valid remove", async () => {
+            const [blog, err] = await blogService.remove(blogs[0].id);
+            expect(err).toBeNull();
+            expect(blog).toBeDefined();
+        });
 
-        tests.forEach(({ name, input, expectedError, expectedDefinedBlog }) => {
-            it(name, async () => {
-                const [blog, err] = await blogService.remove(input);
-                expectedError ? expect(err).toBeDefined() : expect(err).toBeNull();
-                expectedDefinedBlog ? expect(blog).toBeDefined() : expect(blog).toBeNull();
-            });
+        it("invalid id", async () => {
+            const [blog, err] = await blogService.remove(-1);
+            expect(err).toBeDefined();
+            expect(err).toHaveProperty("type", "NotFound");
+            expect(blog).toBeNull();
         });
     });
 });

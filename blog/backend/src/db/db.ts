@@ -2,7 +2,6 @@ import { Blog, User, Post, Comment } from "@/models";
 
 export interface BlogModel {
     findUnique(args: { where: { id: number } }): Promise<Blog | null>;
-    findFirst(args: { where: { authorId: string }, orderBy: { id: string }, select: { id: boolean } }): Promise<Blog | null>;
     findMany(): Promise<Blog[]>;
     create(args: { data: Partial<Blog> }): Promise<Blog>;
     update(args: { where: { id: number }, data: Partial<Blog> }): Promise<Blog | null>;
@@ -19,7 +18,7 @@ export interface UserModel {
 
 export interface PostModel {
     findUnique(args: { where: { id: number } }): Promise<Post | null>;
-    findFirst(args: { where: { blogId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Blog | null>;
+    findFirst(args: { where: { blogId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Partial<Post> | null>;
     findMany(args?: { where: { blogId?: number, id?: number } }): Promise<Post[]>;
     create(args: { data: Partial<Post> }): Promise<Post>;
     update(args: { where: { id: number }, data: Partial<Post> }): Promise<Post | null>;
@@ -28,7 +27,7 @@ export interface PostModel {
 
 export interface CommentModel {
     findMany(args: { where: { blogId: number, postId: number } }): Promise<Comment[]>;
-    findFirst(args: { where: { blogId: number, postId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Blog | null>;
+    findFirst(args: { where: { blogId: number, postId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Partial<Comment> | null>;
     create(args: { data: Partial<Comment> }): Promise<Comment>;
 }
 

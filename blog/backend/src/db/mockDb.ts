@@ -1,214 +1,254 @@
-import { faker } from "@faker-js/faker";
-import { DB } from "@/db/db";
-import { Blog, isBlog } from "@/models/blog.model";
-import { User, isUserIn } from "@/models/user.model";
-import { Post, isPost } from "@/models/post.model";
-import { Comment, isComment } from "@/models/comment.model";
+import { DB, } from "@/db/db";
+import bcrypt from 'bcryptjs';
+import { Blog } from "@/models/blog.model";
+import { User } from "@/models/user.model";
+import { Post } from "@/models/post.model";
+import { Comment } from "@/models/comment.model";
 
-// NOTE(miha): Code for generating blogs
-const NUMBER_OF_BLOGS = 10;
+export const createInMemoryStore = <T, K>(getId: (t: T) => K) => {
+    const map = new Map<K, T>();
 
-const createBlog = (index: number): Blog => ({
-    id: index,
-    authorId: faker.string.uuid(),
-    title: faker.lorem.word({ length: { min: 3, max: 7 } }),
-    content: faker.lorem.sentence({ min: 3, max: 20 }),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-const createPartialBlog = (index: number): Partial<Blog> => ({
-    id: index,
-    authorId: faker.string.uuid(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-export const blogs: Blog[] = Array.from({ length: NUMBER_OF_BLOGS }, (_, i) => createBlog(i));
-
-// NOTE(miha): Code for generating users
-const NUMBER_OF_USERS = 10;
-
-const createUser = (uuid: string): User => ({
-    uuid: uuid,
-    username: faker.internet.username(),
-    passwordHash: "",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-const createPartialUser = (): Partial<User> => ({
-    uuid: faker.string.uuid(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-export const users: Map<string, User> = new Map(
-    Array.from({ length: NUMBER_OF_USERS }, () => {
-        const uuid = faker.string.uuid();
-        const user = createUser(uuid);
-        return [uuid, user] as [string, User];
-    })
-);
-
-// NOTE(miha): Code for generating posts
-const NUMBER_OF_POSTS = 10;
-
-const createPost = (index: number): Post => ({
-    id: index,
-    authorId: faker.helpers.arrayElement(Array.from(users.keys())),
-    // TODO(miha): postId should increment from 0 or 1 for given post
-    blogId: faker.number.int({ min: 0, max: NUMBER_OF_BLOGS }),
-    title: faker.lorem.word({ length: { min: 3, max: 7 } }),
-    content: faker.lorem.sentence({ min: 3, max: 20 }),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-const createPartialPost = (index: number): Partial<Post> => ({
-    id: index,
-    authorId: faker.helpers.arrayElement(Array.from(users.keys())),
-    blogId: faker.number.int({ min: 0, max: NUMBER_OF_BLOGS }),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-export const posts: Post[] = Array.from({ length: NUMBER_OF_POSTS }, (_, i) => createPost(i));
-
-// NOTE(miha): Code for generating comments
-const NUMBER_OF_COMMENTS = 10;
-
-const createComment = (index: number): Comment => ({
-    id: index,
-    authorId: faker.helpers.arrayElement(Array.from(users.keys())),
-    // TODO(miha): postId should increment from 0 or 1 for given post
-    postId: faker.number.int({ min: 0, max: NUMBER_OF_POSTS }),
-    content: faker.lorem.sentence({ min: 3, max: 20 }),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-const createPartialComment = (index: number): Partial<Comment> => ({
-    id: index,
-    authorId: faker.helpers.arrayElement(Array.from(users.keys())),
-    postId: faker.number.int({ min: 0, max: NUMBER_OF_POSTS }),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-});
-
-export const comments: Comment[] = Array.from({ length: NUMBER_OF_COMMENTS }, (_, i) => createComment(i));
-
-export const mockDb: DB = {
-    blog: {
-        findMany: async () => {
-            return blogs;
+    return {
+        create: (item: T): void => {
+            map.set(getId(item), item);
         },
 
-        findUnique: async ({ where }) => {
-            return blogs.find(blog => blog.id === where.id) || null;
+        get: (id: K): T | undefined => {
+            return map.get(id);
         },
 
-        create: async ({ data }) => {
-            const newBlog = { ...createPartialBlog(blogs.length), ...data };
-            if (!isBlog(newBlog))
-                throw new Error("Can't create blog, missing one or more fields");
-            blogs.push(newBlog);
-            return newBlog;
+        getAll: (): T[] => {
+            return Array.from(map.values());
         },
 
-        update: async ({ where, data }) => {
-            const blogIndex = blogs.findIndex((b) => b.id === where.id);
-            if (blogIndex === -1) return null;
-            blogs[blogIndex] = { ...blogs[blogIndex], ...data };
-            return blogs[blogIndex];
+        update: (id: K, updates: Partial<T>): T | undefined => {
+            const existing = map.get(id);
+            if (!existing) return undefined;
+            const updated = { ...existing, ...updates };
+            map.set(id, updated);
+            return updated;
         },
 
-        delete: async ({ where }) => {
-            const blogIndex = blogs.findIndex((b) => b.id === where.id);
-            if (blogIndex === -1) return null;
-            const [deleted] = blogs.splice(blogIndex, 1);
-            return deleted;
-        },
-    },
-    user: {
-        findMany: async () => {
-            return Array.from(users.values());
+        delete: (id: K): T | undefined => {
+            const existing = map.get(id);
+            if (!existing) return undefined;
+            map.delete(id);
+            return existing;
         },
 
-        findUnique: async ({ where }) => {
-            // TODO(miha): Do search on users based on username
-            return users.get(where.uuid) || null;
+        size: () => {
+            return map.size
         },
-
-        create: async ({ data }) => {
-            const newUser = { ...createPartialUser(), ...data };
-            if (!isUserIn(newUser))
-                throw new Error("Can't create user, missing one or more fields");
-            users.set(newUser.uuid, newUser);
-            return newUser;
-        },
-
-        update: async ({ where, data }) => {
-            const user = users.get(where.uuid);
-            if (!user) return null;
-            const updatedUser = { ...user, ...data };
-            users.set(where.uuid, updatedUser);
-            return updatedUser;
-        },
-
-        delete: async ({ where }) => {
-            const user = users.get(where.uuid);
-            if (!user) return null;
-            users.delete(where.uuid);
-            return user;
-        },
-    },
-    post: {
-        findMany: async () => {
-            return posts;
-        },
-
-        findUnique: async ({ where }) => {
-            return posts.find(post => post.id === where.id) || null;
-        },
-
-        create: async ({ data }) => {
-            const newPost = { ...createPartialPost(posts.length), ...data };
-            if (!isPost(newPost))
-                throw new Error("Can't create post, missing one or more fields");
-            posts.push(newPost);
-            return newPost;
-        },
-
-        update: async ({ where, data }) => {
-            const postIndex = posts.findIndex((b) => b.id === where.id);
-            if (postIndex === -1) return null;
-            posts[postIndex] = { ...posts[postIndex], ...data };
-            return posts[postIndex];
-        },
-
-        delete: async ({ where }) => {
-            const postIndex = posts.findIndex((b) => b.id === where.id);
-            if (postIndex === -1) return null;
-            const [deleted] = posts.splice(postIndex, 1);
-            return deleted;
-        },
-    },
-    comment: {
-        findMany: async () => {
-            return comments;
-        },
-
-        create: async ({ data }) => {
-            const newcomment = { ...createPartialComment(comments.length), ...data };
-            if (!isComment(newcomment))
-                throw new Error("Can't create comment, missing one or more fields");
-            comments.push(newcomment);
-            return newcomment;
-        },
-    },
-
-    $transaction: async (fn) => fn(mockDb),
+    };
 };
 
+export const createInMemoryDB = (): DB => {
+    const userStore = createInMemoryStore<User, string>((user) => user.uuid);
+    const postStore = createInMemoryStore<Post, number>((post) => post.id);
+    const blogStore = createInMemoryStore<Blog, number>((blog) => blog.id);
+    const commentStore = createInMemoryStore<Comment, number>((comment) => comment.id);
+
+    return {
+        user: {
+            findUnique: async (args: { where: { uuid?: string } | { username?: string } }): Promise<User | null> => {
+                if ('uuid' in args.where && args.where.uuid)
+                    return userStore.get(args.where.uuid) || null;
+
+                if ('username' in args.where) {
+                    const username = (args.where as { username: string }).username;
+                    return userStore.getAll().find((user) => user.username === username) || null;
+                }
+
+                return null;
+            },
+
+            findMany: async (): Promise<User[]> => userStore.getAll(),
+
+            create: async (args: { data: Partial<User> }): Promise<User> => {
+                const hash = await bcrypt.hash("password", 10);
+                const user: User = {
+                    uuid: crypto.randomUUID(),
+                    username: args.data.username!,
+                    passwordHash: hash,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                };
+                userStore.create(user);
+                return user;
+            },
+
+            update: async (args: { where: { uuid: string }, data: Partial<User> }): Promise<User | null> => {
+                return userStore.update(args.where.uuid, args.data) || null;
+            },
+
+            delete: async (args: { where: { uuid: string } }): Promise<User | null> => {
+                return userStore.delete(args.where.uuid) || null;
+            },
+        },
+
+        post: {
+            findUnique: async (args: { where: { id: number } }): Promise<Post | null> => {
+                return postStore.get(args.where.id) || null;
+            },
+
+            findFirst: async (args: { where: { blogId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Partial<Post> | null> => {
+                const all = postStore.getAll();
+                const filtered = Array.from(all).filter(blog => blog.blogId === args.where.blogId);
+                if (filtered.length === 0) return null;
+                filtered.sort((a, b) =>
+                    args.orderBy.id === 'asc' ? a.id - b.id : b.id - a.id
+                );
+                const first = filtered[0];
+                if (args.select.id) {
+                    return { id: first.id };
+                }
+                return first;
+            },
+
+            findMany: async (args?: { where: { blogId?: number, id?: number } }): Promise<Post[]> => {
+                const posts = postStore.getAll();
+                if (args?.where?.blogId) {
+                    return posts.filter((post) => post.blogId === args.where.blogId);
+                }
+                return posts;
+            },
+
+            create: async (args: { data: Partial<Post> }): Promise<Post> => {
+                if (!args.data.authorId || typeof args.data.authorId !== "string" || args.data.authorId.trim() === "")
+                    throw new Error("Invalid or missing authorId");
+                if (!args.data.blogId || typeof args.data.blogId !== "number")
+                    throw new Error("Invalid or missing blogId");
+
+                const author = userStore.get(args.data.authorId);
+                if (!author)
+                    throw new Error("Author not found");
+
+                const blog = blogStore.get(args.data.blogId);
+                if (!blog)
+                    throw new Error("Blog not found");
+
+                const post: Post = {
+                    id: args.data.id!,
+                    authorId: args.data.authorId!,
+                    blogId: args.data.blogId!,
+                    content: args.data.content!,
+                    title: args.data.title!,
+                    images: args.data.images,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                };
+                postStore.create(post);
+                return post;
+            },
+
+            update: async (args: { where: { id: number }, data: Partial<Post> }): Promise<Post | null> => {
+                return postStore.update(args.where.id, args.data) || null;
+            },
+
+            delete: async (args: { where: { id: number } }): Promise<Post | null> => {
+                return postStore.delete(args.where.id) || null;
+            },
+        },
+
+        blog: {
+            findUnique: async (args: { where: { id: number } }): Promise<Blog | null> => {
+                return blogStore.get(args.where.id) || null;
+            },
+
+            findMany: async (): Promise<Blog[]> => blogStore.getAll(),
+
+            create: async (args: { data: Partial<Blog> }): Promise<Blog> => {
+                if (!args.data.authorId || typeof args.data.authorId !== "string" || args.data.authorId.trim() === "") {
+                    throw new Error("Invalid or missing authorId");
+                }
+
+                const author = userStore.get(args.data.authorId);
+                if (!author) {
+                    throw new Error("Author not found");
+                }
+
+                const blog: Blog = {
+                    id: blogStore.size() + 1,
+                    authorId: args.data.authorId!,
+                    title: args.data.title!,
+                    content: args.data.content!,
+                    image: args.data.image,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                };
+                blogStore.create(blog);
+                return blog;
+            },
+
+            update: async (args: { where: { id: number }, data: Partial<Blog> }): Promise<Blog | null> => {
+                return blogStore.update(args.where.id, args.data) || null;
+            },
+
+            delete: async (args: { where: { id: number } }): Promise<Blog | null> => {
+                return blogStore.delete(args.where.id) || null;
+            },
+        },
+
+        comment: {
+            findMany: async (args: { where: { blogId: number, postId: number } }): Promise<Comment[]> => {
+                return commentStore.getAll().filter(
+                    (comment) => comment.blogId === args.where.blogId && comment.postId === args.where.postId
+                );
+            },
+
+            findFirst: async (args: { where: { blogId: number, postId: number }, orderBy: { id: string }, select: { id: boolean } }): Promise<Partial<Comment> | null> => {
+                const all = commentStore.getAll();
+                const filtered = Array.from(all).filter(comment =>
+                    comment.blogId === args.where.blogId &&
+                    comment.postId === args.where.postId
+                );
+                if (filtered.length === 0) return null;
+                filtered.sort((a, b) =>
+                    args.orderBy.id === 'asc' ? a.id - b.id : b.id - a.id
+                );
+                const first = filtered[0];
+                if (args.select.id) {
+                    return { id: first.id };
+                }
+                return first;
+            },
+
+            create: async (args: { data: Partial<Comment> }): Promise<Comment> => {
+                if (!args.data.authorId || typeof args.data.authorId !== "string" || args.data.authorId.trim() === "")
+                    throw new Error("Invalid or missing authorId");
+                if (!args.data.blogId || typeof args.data.blogId !== "number")
+                    throw new Error("Invalid or missing blogId");
+                if (!args.data.postId || typeof args.data.postId !== "number")
+                    throw new Error("Invalid or missing postId");
+
+                const author = userStore.get(args.data.authorId);
+                if (!author)
+                    throw new Error("Author not found");
+
+                const blog = blogStore.get(args.data.blogId);
+                if (!blog)
+                    throw new Error("Blog not found");
+
+                const post = postStore.get(args.data.postId);
+                if (!post)
+                    throw new Error("Post not found");
+
+                const comment: Comment = {
+                    id: args.data.id!,
+                    authorId: args.data.authorId!,
+                    blogId: args.data.blogId!,
+                    postId: args.data.postId!,
+                    content: args.data.content!,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                };
+                commentStore.create(comment);
+                return comment;
+            },
+        },
+        $transaction: async (fn) => fn(mockDb),
+    };
+};
+
+export const mockDb = createInMemoryDB();
 export default mockDb;
