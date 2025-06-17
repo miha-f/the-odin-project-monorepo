@@ -32,7 +32,7 @@ export const createBlogService = ({ db }: { db: DB }) => {
                 image: image,
             }
         }));
-        if (error) return [null, internalError("Internal error")];
+        if (error) return [null, internalError("Internal error: ", error)];
         if (!blog) return [null, notFound("Not found")];
         return [blog, null];
     };

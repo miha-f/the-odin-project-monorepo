@@ -13,9 +13,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 type TokenErrorType = Promise<[string | null, AppError | null]>;
 
-const userService = createUserService({ db: prismaDb });
-
 export const createAuthService = ({ db }: { db: DB }) => {
+    const userService = createUserService({ db: db });
+
     const login = async (username: string, password: string): TokenErrorType => {
         const [user, userErr] = await userService.getByUsername(username);
         if (userErr) return [null, internalError("error getting user from db")];
@@ -24,7 +24,7 @@ export const createAuthService = ({ db }: { db: DB }) => {
         const passwordMatch = await bcrypt.compare(password, user.passwordHash);
         if (!passwordMatch) return [null, unauthorized("password missmatch")];
 
-        const token = jwt.sign({ sub: user.username }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ sub: user.uuid }, JWT_SECRET, { expiresIn: '1h' });
 
         return [token, null];
     };

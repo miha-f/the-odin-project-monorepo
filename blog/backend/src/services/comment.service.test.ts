@@ -58,7 +58,7 @@ describe("blogService", () => {
         it("fails to create comment with missing fields", async () => {
             const [comment, err] = await commentService.create("", "");
             expect(err).toBeDefined();
-            expect(err).toHaveProperty("type", "InternalError");
+            expect(err).toHaveProperty("type", "BadRequest");
             expect(comment).toBeNull();
         });
 
@@ -67,7 +67,7 @@ describe("blogService", () => {
                 "", -1, -1, ""
             );
             expect(err).toBeDefined();
-            expect(err).toHaveProperty("type", "InternalError");
+            expect(err).toHaveProperty("type", "BadRequest");
             expect(comment).toBeNull();
         });
     });

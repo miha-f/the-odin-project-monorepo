@@ -107,10 +107,16 @@ export const createInMemoryDB = (): DB => {
 
             findMany: async (args?: { where: { blogId?: number, id?: number } }): Promise<Post[]> => {
                 const posts = postStore.getAll();
-                if (args?.where?.blogId) {
-                    return posts.filter((post) => post.blogId === args.where.blogId);
-                }
-                return posts;
+                // if (args?.where?.blogId) {
+                //     return posts.filter((post) => post.blogId === args.where.blogId);
+                // }
+                // return posts;
+
+                return posts.filter((post) => {
+                    const matchesBlogId = args?.where?.blogId === undefined || post.blogId === args.where.blogId;
+                    const matchesId = args?.where?.id === undefined || post.id === args.where.id;
+                    return matchesBlogId && matchesId;
+                });
             },
 
             create: async (args: { data: Partial<Post> }): Promise<Post> => {
@@ -166,6 +172,9 @@ export const createInMemoryDB = (): DB => {
                 if (!author) {
                     throw new Error("Author not found");
                 }
+
+                if (!args.data.title || !args.data.content)
+                    throw new Error("Invalid or missing data");
 
                 const blog: Blog = {
                     id: blogStore.size() + 1,

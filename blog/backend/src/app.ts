@@ -1,18 +1,54 @@
 import express from "express";
 import cors from "cors";
 import pinoHttp from 'pino-http';
-import router from "@/routes";
 import { logger } from "@/utils/logger";
-import passport from '@/utils/auth';
+import { createPassportStrategy } from "@/utils/auth";
 
-const app = express();
+import {
+    createUserService,
+    createBlogService,
+    createPostService,
+    createCommentService,
+    createAuthService,
+} from "@/services";
+import {
+    createUserRoutes,
+    createBlogRoutes,
+    createPostRoutes,
+    createCommentRoutes,
+    createAuthRoutes,
+} from "@/routes";
+import { DB } from "@/db/db"
 
-app.use(cors());
-app.use(express.json());
-app.use(passport.initialize());
+export const createApp = (db: DB, print = false) => {
+    const app = express();
 
-app.use(pinoHttp({ logger }));
+    app.use(cors());
+    app.use(express.json());
 
-app.use(router);
+    const passport = createPassportStrategy(db);
+    app.use(passport.initialize());
 
-export default app;
+    if (print)
+        app.use(pinoHttp({ logger }));
+
+    const userService = createUserService({ db: db });
+    const blogService = createBlogService({ db: db });
+    const postService = createPostService({ db: db });
+    const commentService = createCommentService({ db: db });
+    const authService = createAuthService({ db: db });
+
+    const userRoutes = createUserRoutes(userService);
+    const blogRoutes = createBlogRoutes(blogService);
+    const postRoutes = createPostRoutes(postService);
+    const commentRoutes = createCommentRoutes(commentService);
+    const authRoutes = createAuthRoutes(authService);
+
+    app.use("/blogs", blogRoutes);
+    app.use("/blogs", postRoutes);
+    app.use("/blogs", commentRoutes);
+    app.use("/users", userRoutes);
+    app.use("/auth", authRoutes);
+
+    return app;
+}

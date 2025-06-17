@@ -1,4 +1,4 @@
-import { AppError, internalError, notFound } from "@/errors/errors";
+import { AppError, internalError, notFound, badRequest } from "@/errors/errors";
 import { tryCatch } from "@/utils/tryCatch";
 import { DB } from "@/db/db";
 import { Comment } from "@/models";
@@ -15,6 +15,8 @@ export const createCommentService = ({ db }: { db: DB }) => {
     };
 
     const create = async (authorId: string, blogId: number, postId: number, content: string): CommentErrorType => {
+        if (!content) return [null, badRequest("comment not provided")];
+
         const [comment, error] = await db.$transaction(async (tx) => {
             const [lastComment, lastCommentError] = await tryCatch(() => tx.comment.findFirst({
                 where: { blogId, postId },

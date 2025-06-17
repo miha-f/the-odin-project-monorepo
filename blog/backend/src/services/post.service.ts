@@ -32,14 +32,13 @@ export const createPostService = ({ db }: { db: DB }) => {
         return [posts, null];
     };
 
-    const getByBlogIdAndPostId = async (blogId: number, postId: number): PostArrayErrorType => {
+    const getByBlogIdAndPostId = async (blogId: number, postId: number): PostErrorType => {
         const [post, error] = await tryCatch(() => db.post.findMany(
             { where: { blogId, id: postId } },
         ));
-        console.log(post, error);
         if (error) return [null, internalError("Internal error")];
-        if (!post) return [null, notFound("Not found")];
-        return [post, null];
+        if (!post || !post[0]) return [null, notFound("Not found")];
+        return [post[0], null];
     };
 
     const create = async (
@@ -79,8 +78,23 @@ export const createPostService = ({ db }: { db: DB }) => {
         return [post, null];
     };
 
-    const update = async (id: number, data: Partial<Post>): PostErrorType => {
-        const [post, error] = await tryCatch(() => db.post.update({ where: { id: id }, data: data }));
+    const update = async (
+        postId: number,
+        blogId: number,
+        title?: string,
+        content?: string,
+        images?: string[],
+    ): PostErrorType => {
+        const [post, error] = await tryCatch(() => db.post.update(
+            {
+                where:
+                    { id: postId, blogId: blogId },
+                data: {
+                    title: title,
+                    content: content,
+                    images: images,
+                }
+            }));
         if (error) return [null, internalError("Internal error")];
         if (!post) return [null, notFound("Not found")];
         return [post, null];

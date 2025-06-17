@@ -75,26 +75,27 @@ describe("postService", () => {
 
     describe("update", () => {
         it("valid update", async () => {
-            const [post, err] = await postService.update(posts[0].id, {
-                title: "Updated Title",
-                content: "Updated Content",
-            });
+            const [post, err] = await postService.update(posts[0].id,
+                posts[0].blogId,
+                "Updated Title",
+                "Updated Content",
+            );
             expect(err).toBeNull();
             expect(post).toBeDefined();
             expect(post?.title).toBe("Updated Title");
         });
 
         it("no data", async () => {
-            const [post, err] = await postService.update(posts[0].id, {});
+            const [post, err] = await postService.update(posts[0].id, posts[0].blogId);
             expect(err).toBeNull();
             expect(post).toBeDefined();
         });
 
         it("invalid id", async () => {
-            const [post, err] = await postService.update(-1, {
-                title: "Doesn't Matter",
-                content: "Still doesn't matter",
-            });
+            const [post, err] = await postService.update(-1, -1,
+                "Doesn't Matter",
+                "Still doesn't matter",
+            );
             expect(err).toBeDefined();
             expect(err).toHaveProperty("type", "NotFound");
             expect(post).toBeNull();
