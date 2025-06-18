@@ -29,3 +29,20 @@ export type Comment = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type User = {
+    uuid: string;
+    username: string;
+    passwordHash: string;
+    createdAt: Date;
+    updatedAt: Date;
+};
+
+export type UserIn = {
+    uuid: string,
+    username: string;
+    password: string;
+    passwordRepeat: string;
+    createdAt: Date;
+    updatedAt: Date;
+};

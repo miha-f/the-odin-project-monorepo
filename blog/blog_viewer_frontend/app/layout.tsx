@@ -4,6 +4,7 @@ import React from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider, Container } from '@mantine/core';
 import { theme } from '../theme';
 import Header from '@/components/layout/Header';
+import { AuthProvider } from "@/utils/AuthContext";
 
 export const metadata = {
     title: 'Mantine Next.js template',
@@ -23,10 +24,12 @@ export default function RootLayout({ children }: { children: any }) {
             </head>
             <body>
                 <MantineProvider theme={theme}>
-                    <Header />
-                    <Container size={1200}>
-                        {children}
-                    </Container>
+                    <AuthProvider>
+                        <Header />
+                        <Container size={1200}>
+                            {children}
+                        </Container>
+                    </AuthProvider>
                 </MantineProvider>
             </body>
         </html>
