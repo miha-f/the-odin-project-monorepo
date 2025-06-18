@@ -1,7 +1,7 @@
 import { Post, Comment } from "@/utils/models";
 import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
-import { Container, Text, Title, Center, Flex, Image, Paper } from '@mantine/core';
+import { Text, Title, Center, Flex, Image, Paper } from '@mantine/core';
 import { formatDistance } from "date-fns";
 import Link from "next/link";
 
@@ -31,75 +31,73 @@ export default async function PostPage({ params }: { params: { blogId: number, p
     }
 
     return (
-        <Container>
-            <Flex direction="column" gap={8}>
-                <Flex
-                    justify="space-between"
-                    align="center"
-                    py="sm"
-                >
-                    <Title order={1}>
-                        {post.title}
-                    </Title>
-                    <Flex direction="column" align="end">
-                        <Text size="sm" c="dimmed">
-                            Created: {formatDistance(post.createdAt, new Date(), { addSuffix: true })}
-                        </Text>
-                        <Text size="sm" c="dimmed">
-                            Updated: {formatDistance(post.updatedAt, new Date(), { addSuffix: true })}
+        <Flex direction="column" gap={8}>
+            <Flex
+                justify="space-between"
+                align="center"
+                py="sm"
+            >
+                <Title order={1}>
+                    {post.title}
+                </Title>
+                <Flex direction="column" align="end">
+                    <Text size="sm" c="dimmed">
+                        Created: {formatDistance(post.createdAt, new Date(), { addSuffix: true })}
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                        Updated: {formatDistance(post.updatedAt, new Date(), { addSuffix: true })}
+                    </Text>
+                </Flex>
+            </Flex>
+
+            <Text c="dimmed">
+                <Link href={`/users/${post.authorId}`}>
+                    Author: {post.authorId}
+                </Link>
+            </Text>
+
+            <Text c="dimmed">
+                <Link href={`/blogs/${blogId}`}>
+                    Blog: {blogId}
+                </Link>
+            </Text>
+
+            <Title order={3}>Post content:</Title>
+            {post.content}
+
+
+            {post.images && Array.isArray(post.images) && post.images.length > 0 && (
+                <>
+                    <Title order={3}>Images:</Title>
+                    <div>
+                        {post.images.map((imageUrl, index) => (
+                            <Image
+                                key={index}
+                                radius="md"
+                                src={imageUrl || "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png"}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+
+            <Title order={3}>Comments:</Title>
+
+            {comments.map((comment) => (
+                <Paper key={comment.id} shadow="sm" p="md" radius="md" withBorder>
+                    <Flex justify="space-between">
+                        <Text>{comment.authorId}</Text>
+                        <Text>
+                            Created: {formatDistance(comment.createdAt, new Date(), { addSuffix: true })}
                         </Text>
                     </Flex>
-                </Flex>
-
-                <Text c="dimmed">
-                    <Link href={`/users/${post.authorId}`}>
-                        Author: {post.authorId}
-                    </Link>
-                </Text>
-
-                <Text c="dimmed">
-                    <Link href={`/blogs/${blogId}`}>
-                        Blog: {blogId}
-                    </Link>
-                </Text>
-
-                <Title order={3}>Post content:</Title>
-                {post.content}
+                    <Text>
+                        {comment.content}
+                    </Text>
+                </Paper>
+            ))}
 
 
-                {post.images && Array.isArray(post.images) && post.images.length > 0 && (
-                    <>
-                        <Title order={3}>Images:</Title>
-                        <div>
-                            {post.images.map((imageUrl, index) => (
-                                <Image
-                                    key={index}
-                                    radius="md"
-                                    src={imageUrl || "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png"}
-                                />
-                            ))}
-                        </div>
-                    </>
-                )}
-
-                <Title order={3}>Comments:</Title>
-
-                {comments.map((comment) => (
-                    <Paper key={comment.id} shadow="sm" p="md" radius="md" withBorder>
-                        <Flex justify="space-between">
-                            <Text>{comment.authorId}</Text>
-                            <Text>
-                                Created: {formatDistance(comment.createdAt, new Date(), { addSuffix: true })}
-                            </Text>
-                        </Flex>
-                        <Text>
-                            {comment.content}
-                        </Text>
-                    </Paper>
-                ))}
-
-
-            </Flex>
-        </Container >
+        </Flex>
     );
 }

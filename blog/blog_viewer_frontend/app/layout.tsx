@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css';
 
 import React from 'react';
-import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
+import { ColorSchemeScript, mantineHtmlProps, MantineProvider, Container } from '@mantine/core';
 import { theme } from '../theme';
 import Header from '@/components/layout/Header';
 
@@ -24,7 +24,9 @@ export default function RootLayout({ children }: { children: any }) {
             <body>
                 <MantineProvider theme={theme}>
                     <Header />
-                    {children}
+                    <Container size={1200}>
+                        {children}
+                    </Container>
                 </MantineProvider>
             </body>
         </html>
