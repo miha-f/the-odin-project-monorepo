@@ -23,7 +23,10 @@ import { DB } from "@/db/db"
 export const createApp = (db: DB, print = false) => {
     const app = express();
 
-    app.use(cors());
+    app.use(cors({
+        origin: "http://localhost:3006",
+        credentials: true,
+    }));
     app.use(express.json());
 
     const passport = createPassportStrategy(db);
