@@ -2,16 +2,7 @@ import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
 import { Container, Grid, GridCol, Paper, Text, Title, Center, Flex, Image } from '@mantine/core';
 import Link from "next/link";
-
-type Blog = {
-    id: number;
-    authorId: string;
-    title: string;
-    content: string;
-    image?: string;
-    updatedAt: Date;
-    createdAt: Date;
-};
+import { Blog } from "@/utils/models";
 
 export default async function HomePage() {
     const { data: blogs, error } = await tryCatch<Blog[]>(api.get("/blogs"));
@@ -69,7 +60,7 @@ export default async function HomePage() {
                             </Text>
                             <Image
                                 radius="md"
-                                src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png"
+                                src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-5.png"
                             />
                         </Paper>
                     </GridCol>
