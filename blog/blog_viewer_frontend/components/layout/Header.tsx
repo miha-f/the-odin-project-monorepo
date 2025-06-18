@@ -12,8 +12,8 @@ export default function Header() {
                 </Link>
                 <Group gap="sm">
                     <Link href="/">Home</Link>
-                    <Link href="/">Users</Link>
-                    <Link href="/">Blogs</Link>
+                    <Link href="/users">Users</Link>
+                    <Link href="/blogs">Blogs</Link>
                     <Link href="/login">Login</Link>
                     <Link href="/register">Register</Link>
                 </Group>

@@ -1,6 +1,6 @@
 import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
-import { Container, Grid, GridCol, Paper, Text, Title, Center, Flex, Image } from '@mantine/core';
+import { Container, Text, Title, Center, Flex, Image } from '@mantine/core';
 import { Blog, Post } from "@/utils/models";
 import { formatDistance } from "date-fns";
 import Link from "next/link";

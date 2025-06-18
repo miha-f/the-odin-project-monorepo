@@ -1,29 +1,30 @@
-import { Post } from "@/utils/models";
+import { Post, Comment } from "@/utils/models";
 import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
-import { Container, Text, Title, Center, Flex, Image } from '@mantine/core';
+import { Container, Text, Title, Center, Flex, Image, Paper } from '@mantine/core';
 import { formatDistance } from "date-fns";
 import Link from "next/link";
 
 export default async function PostPage({ params }: { params: { blogId: number, postId: number } }) {
     const { blogId, postId } = await params;
     const { data: post, error: postErr } = await tryCatch<Post>(api.get(`/blogs/${blogId}/posts/${postId}`));
+    const { data: comments, error: commentsErr } = await tryCatch<Comment[]>(api.get(`/blogs/${blogId}/posts/${postId}/comments`));
 
-    if (postErr) {
+    if (postErr || commentsErr) {
         return (
             <Center>
                 <Text c="red" size="lg" mt="xl">
-                    Failed to load post.
+                    Failed to load.
                 </Text>
             </Center>
         );
     }
 
-    if (!post) {
+    if (!post || !comments || comments.length === 0) {
         return (
             <Center>
                 <Text size="lg" mt="xl">
-                    Post not found.
+                    Not found.
                 </Text>
             </Center>
         );
@@ -65,11 +66,38 @@ export default async function PostPage({ params }: { params: { blogId: number, p
                 <Title order={3}>Post content:</Title>
                 {post.content}
 
-                {/* TODO: Go over all images */}
-                <Image
-                    radius="md"
-                    src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png"
-                />
+
+                {post.images && Array.isArray(post.images) && post.images.length > 0 && (
+                    <>
+                        <Title order={3}>Images:</Title>
+                        <div>
+                            {post.images.map((imageUrl, index) => (
+                                <Image
+                                    key={index}
+                                    radius="md"
+                                    src={imageUrl || "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png"}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
+
+                <Title order={3}>Comments:</Title>
+
+                {comments.map((comment) => (
+                    <Paper key={comment.id} shadow="sm" p="md" radius="md" withBorder>
+                        <Flex justify="space-between">
+                            <Text>{comment.authorId}</Text>
+                            <Text>
+                                Created: {formatDistance(comment.createdAt, new Date(), { addSuffix: true })}
+                            </Text>
+                        </Flex>
+                        <Text>
+                            {comment.content}
+                        </Text>
+                    </Paper>
+                ))}
+
 
             </Flex>
         </Container >
