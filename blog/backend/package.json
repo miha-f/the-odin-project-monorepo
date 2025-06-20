@@ -4,10 +4,10 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "dev": "tsx watch src/index.ts",
+        "dev": "tsx watch src/server.ts",
         "run": "vite-node",
         "build": "tsc",
-        "start": "node dist/index.ts",
+        "start": "node dist/server.ts",
         "db:init": "npx prisma db push --force-reset && vite-node src/db/seed.js",
         "db:migrate": "npx prisma migrate dev",
         "db": "echo \"migrate\" && exit 1",
@@ -50,6 +50,7 @@
         "typescript": "^5.8.3",
         "vite": "^6.3.5",
         "vite-node": "^3.2.3",
+        "vite-tsconfig-paths": "^5.1.4",
         "vitest": "^3.2.0"
     }
 }

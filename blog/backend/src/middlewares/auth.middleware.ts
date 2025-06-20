@@ -1,29 +1,32 @@
 import passport from 'passport';
-import { internalError, unauthorized } from "@/errors/errors";
-import { handleAppError } from "@/utils/handleAppError";
+import { internalError, unauthorized } from "@/errors";
+import { Request, Response, NextFunction } from "express";
+import { User } from "@/api/user";
 
 // export const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// NOTE(miha): Debug jwtAuth middleware.
-export const jwtAuth = (req, res, next) => {
+
+// TODO(miha): Refactor all jwtAuth to auth
+export const auth = (req: Request, res: Response, next: NextFunction) => {
     // console.log("Authorization Header:", req.headers["authorization"]);
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-        // console.log("== Passport JWT Debug ==");
-        // console.log("Error:", err);
-        // console.log("User:", user);
-        // console.log("Info:", info);
+    passport.authenticate(
+        "jwt",
+        { session: false },
+        (err: any, user: User | false, _info: object | string | undefined) => {
+            // console.log("== Passport JWT Debug ==");
+            // console.log("Error:", err);
+            // console.log("User:", user);
+            // console.log("Info:", _info);
+            if (err) throw internalError("JWT authentication failed", err);
 
-        if (err) {
-            const { status, body } = handleAppError(internalError("JWT authentication failed", err));
-            return res.status(status).json(body);
+            if (!user) {
+                throw unauthorized("Invalid or expired token, or user no longer exists");
+            }
+
+            req.user = user;
+            next();
         }
-
-        if (!user) {
-            const appErr = unauthorized("Invalid or expired token, or user no longer exists");
-            return res.status(401).json({ error: appErr });
-        }
-
-        req.user = user;
-        next();
-    })(req, res, next);
+    )(req, res, next);
 };
+
+export const jwtAuth = auth;

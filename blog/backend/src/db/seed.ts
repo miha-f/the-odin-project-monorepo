@@ -1,18 +1,21 @@
 import { faker } from '@faker-js/faker';
-import { PrismaClient } from '@prisma/client';
-import { createUserService } from '@/services/user.service.ts';
-import { createBlogService } from '@/services/blog.service.ts';
-import { createPostService } from '@/services/post.service.ts';
-import { createCommentService } from '@/services/comment.service.ts';
-import { User, Blog, Post } from "@/models";
+import { prisma } from "@/db/prismaDb";
+import {
+    createUserService,
+    createBlogService,
+    createPostService,
+    createCommentService
+} from '@/services';
+import { User } from "@/api/user";
+import { Post } from "@/api/post";
+import { Blog } from "@/api/blog";
 import { DB } from "@/db/db";
-import pLimit from "p-limit";
 
 export const createSeed = (db: DB) => {
-    const userService = createUserService({ db: db });
-    const blogService = createBlogService({ db: db });
-    const postService = createPostService({ db: db });
-    const commentService = createCommentService({ db: db });
+    const userService = createUserService(db);
+    const blogService = createBlogService(db);
+    const postService = createPostService(db);
+    const commentService = createCommentService(db);
 
     return {
         seedUsers: async (n = 5): Promise<User[]> => {
@@ -32,7 +35,8 @@ export const createSeed = (db: DB) => {
                 const [blog, error] = await blogService.create(
                     faker.helpers.arrayElement(users).uuid,
                     faker.lorem.word({ length: { min: 3, max: 7 } }),
-                    faker.lorem.sentence({ min: 3, max: 20 })
+                    faker.lorem.sentence({ min: 3, max: 20 }),
+                    undefined,
                 );
                 if (error) console.log(error);
                 if (blog)
@@ -158,8 +162,6 @@ export const seed = async (db: DB, N = 10, print = false) => {
 }
 
 const main = async () => {
-    // ran as a script, use prisma as DB
-    const prisma: DB = new PrismaClient();
     console.log("We are runnign main script....");
     seed(prisma, 10, true);
 }

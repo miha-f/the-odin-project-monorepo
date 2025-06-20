@@ -1,12 +1,12 @@
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import passport from 'passport';
-import { createUserService } from '@/services/user.service';
+import { createUserService } from '@/api/user';
 import { DB } from '@/db/db';
+import { JWT_SECRET } from "@/config";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 export const createPassportStrategy = (db: DB) => {
-    const userService = createUserService({ db });
+    const userService = createUserService(db);
 
     const opts = {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

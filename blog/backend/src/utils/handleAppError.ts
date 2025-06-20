@@ -1,17 +1,44 @@
-import { AppError } from "@/errors/errors";
+import { AppError } from "@/errors";
 
-export function handleAppError(error: AppError) {
-    switch (error.type) {
+export function handleAppError(error: AppError): { status: number; message: string } {
+    const status = getStatusFromType(error.type);
+    const baseMessage = error.message;
+
+    let causeMessage = "";
+    if (error.cause) {
+        if (typeof error.cause === "string") {
+            causeMessage = ` Cause: ${error.cause}`;
+        } else {
+            try {
+                causeMessage = ` Cause: ${JSON.stringify(error.cause)}`;
+            } catch {
+                causeMessage = ` Cause: [Unserializable object]`;
+            }
+        }
+    }
+
+    return {
+        status,
+        message: `[${error.type}]: ${baseMessage}, ${causeMessage}`,
+    };
+}
+
+function getStatusFromType(type: AppError["type"]): number {
+    switch (type) {
         case "NotFound":
-            return { status: 404, body: { error: error.message } };
-        case "Conflict":
-            return { status: 409, body: { error: error.message } };
+            return 404;
         case "BadRequest":
-            return { status: 400, body: { error: error.message } };
+            return 400;
         case "Unauthorized":
-            return { status: 401, body: { error: error.message } };
+            return 401;
+        // case "Forbidden":
+        //     return 403;
+        case "Conflict":
+            return 409;
+        // case "UnprocessableEntity":
+        //     return 422;
         case "InternalError":
         default:
-            return { status: 500, body: { error: error.message } };
+            return 500;
     }
 }
