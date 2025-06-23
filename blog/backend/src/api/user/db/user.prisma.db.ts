@@ -18,16 +18,21 @@ export const createUserPrismaDb = (prisma: PrismaClient): UserDbInterface => {
                 limit = 10,
                 sort = 'createdAt',
                 order = 'desc',
+                ids,
                 search
             } = options;
 
-            const where: Prisma.UserWhereInput = search
-                ? {
+            const where: Prisma.UserWhereInput = {
+                ...(search && {
                     OR: [
                         { username: { contains: search, mode: 'insensitive' } },
-                    ]
-                }
-                : {};
+                    ],
+                }),
+
+                ...(ids && ids.length > 0 && {
+                    uuid: { in: ids },
+                }),
+            };
 
             return prisma.user.findMany({
                 where,
