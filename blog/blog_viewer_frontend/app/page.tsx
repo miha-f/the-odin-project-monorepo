@@ -1,32 +1,24 @@
-import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
 import { Grid, GridCol, Paper, Text, Title, Center, Flex, Image } from '@mantine/core';
 import Link from "next/link";
-import { Blog } from "@/utils/models";
+import { fetchHomePageData } from "@/data/fetchHomePageData";
 
 export default async function HomePage() {
-    const { data: blogs, error } = await tryCatch<Blog[]>(api.get("/blogs"));
+    const { data, error } = await tryCatch(fetchHomePageData());
 
     if (error) {
         return (
             <Center>
                 <Text c="red" size="lg" mt="xl">
-                    Failed to load blogs.
+                    {(error as Error).message}
                 </Text>
             </Center>
         );
     }
 
-    if (!blogs || blogs.length === 0) {
-        return (
-            <Center>
-                <Text size="lg" mt="xl">
-                    No blogs found.
-                </Text>
-            </Center>
-        );
-    }
+    const { blogs, authors } = data;
 
+    // TODO(miha): Make custom HomePageBlogl.ts component for blogs.
     return (
         <Grid>
             {blogs.map(({ id, title, content, authorId }) => (
@@ -43,7 +35,7 @@ export default async function HomePage() {
                             <Text
                                 size="sm"
                                 c="dimmed"
-                                title={authorId}
+                                title={authors.get(authorId)?.username || "n/a"}
                                 style={{
                                     maxWidth: 150,
                                     overflow: 'hidden',
@@ -51,7 +43,9 @@ export default async function HomePage() {
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                {authorId}
+                                <Link href={`/users/${authorId}`}>
+                                    {authors.get(authorId)?.username || "n/a"}
+                                </Link>
                             </Text>
                         </Flex>
                         <Text mt="sm" lineClamp={3}>
@@ -59,7 +53,7 @@ export default async function HomePage() {
                         </Text>
                         <Image
                             radius="md"
-                            src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-5.png"
+                            src={`https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-${Math.floor(Math.random() * 10) + 1}.png`}
                         />
                     </Paper>
                 </GridCol>
