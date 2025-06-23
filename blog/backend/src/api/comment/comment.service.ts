@@ -26,7 +26,7 @@ export const createCommentService = (db: DB) => {
         const [comments, error] = await tryCatch(() => db.comment.getAll(postId, blogId, options));
         logger.debug({ comments, error }, "CommentService.getAll");
         if (error) return [null, internalError("Internal error")];
-        if (!comments) return [null, notFound("Not found")];
+        if (!comments) return [[], notFound("Not found")];
 
         return [comments, null];
     };

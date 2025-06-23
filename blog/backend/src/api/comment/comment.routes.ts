@@ -32,10 +32,10 @@ export const createCommentRoutes = (commentService: CommentServiceInterface) => 
             const { blogId, postId } = resultPath.data;
 
             let [posts, err] = await commentService.getAll(blogId, postId, options);
-            if (err)
+            if (err && err.type !== 'NotFound')
                 throw err;
 
-            res.status(200).json(success(posts));
+            return res.status(200).json(success(posts));
         }));
 
     // NOTE(miha): Create new comment under post with postId (number), {} 
