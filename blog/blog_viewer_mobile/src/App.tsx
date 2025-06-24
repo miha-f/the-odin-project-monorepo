@@ -1,48 +1,48 @@
-import { useCallback, useEffect, useState } from '@lynx-js/react'
+import { useEffect } from '@lynx-js/react'
 
 import './App.css'
-import arrow from './assets/arrow.png'
-import lynxLogo from './assets/lynx-logo.png'
-import reactLynxLogo from './assets/react-logo.png'
+import { BASE_URL } from '@/lib/apiClient.js'
+import { useState } from '@lynx-js/react/legacy-react-runtime'
 
-export function App(props: {
-  onMounted?: () => void
-}) {
-  const [alterLogo, setAlterLogo] = useState(false)
+interface Blog {
+    id: number;
+    authorId: string;
+    title: string;
+    content: string;
+    image?: string;
+    updatedAt: Date;
+    createdAt: Date;
+};
 
-  useEffect(() => {
-    console.info('Hello, ReactLynx')
-    props.onMounted?.()
-  }, [])
+export function App() {
 
-  const onTap = useCallback(() => {
-    'background only'
-    setAlterLogo(!alterLogo)
-  }, [alterLogo])
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-  return (
-    <view>
-      <view className='Background' />
-      <view className='App'>
-        <view className='Banner'>
-          <view className='Logo' bindtap={onTap}>
-            {alterLogo
-              ? <image src={reactLynxLogo} className='Logo--react' />
-              : <image src={lynxLogo} className='Logo--lynx' />}
-          </view>
-          <text className='Title'>React</text>
-          <text className='Subtitle'>on Lynx</text>
-        </view>
-        <view className='Content'>
-          <image src={arrow} className='Arrow' />
-          <text className='Description'>Tap the logo and have fun!</text>
-          <text className='Hint'>
-            Edit<text style={{ fontStyle: 'italic' }}>{' src/App.tsx '}</text>
-            to see updates!
-          </text>
-        </view>
-        <view style={{ flex: 1 }}></view>
-      </view>
-    </view>
-  )
+    useEffect(() => {
+        const fetchBlogs = async () => {
+            try {
+                const res = await fetch(BASE_URL + "/blogs?limit=100");
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                setBlogs(data.data);
+            } catch (err) {
+                setError("Failed to fetch blogs error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchBlogs();
+    }, [])
+
+    if (loading) return <text>Loading...</text>;
+    if (error) return <text>{error}</text>;
+
+    return (
+        <>
+            <text>hello from app</text>
+            <text>hello from app</text>
+        </>
+    )
 }
