@@ -1,6 +1,7 @@
 export interface BlogGetAllOptions {
     page: number;
     limit: number;
+    authorId?: string;
     sort?: 'createdAt' | 'updatedAt' | 'title';
     order?: 'asc' | 'desc';
     search?: string;

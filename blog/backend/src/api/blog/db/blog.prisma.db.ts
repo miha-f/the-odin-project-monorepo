@@ -17,17 +17,22 @@ export const createBlogPrismaDb = (prisma: PrismaClient): BlogDbInterface => {
                 limit = 10,
                 sort = 'createdAt',
                 order = 'desc',
-                search
+                search,
+                authorId,
             } = options;
 
-            const where: Prisma.BlogWhereInput = search
-                ? {
+            const where: Prisma.BlogWhereInput = {
+                ...(search && {
                     OR: [
                         { title: { contains: search, mode: 'insensitive' } },
                         { content: { contains: search, mode: 'insensitive' } }
                     ]
-                }
-                : {};
+                }),
+
+                ...(authorId && {
+                    authorId: authorId,
+                }),
+            };
 
             const result = await prisma.blog.findMany({
                 where,
