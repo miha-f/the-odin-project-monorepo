@@ -1,6 +1,6 @@
 import BlogsList from '@/components/BlogsList'
 
-export default function Settings() {
+export default function Index() {
 
     return (
         <BlogsList />

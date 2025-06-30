@@ -15,7 +15,7 @@ export async function tryCatch<T, E = Error>(
 ): Promise<Result<T, E>> {
     try {
         const data = await promise;
-        return { data, error: null };
+        return { data: data, error: null };
     } catch (error) {
         return { data: null, error: error as E };
     }

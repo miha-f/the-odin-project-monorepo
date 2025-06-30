@@ -31,7 +31,7 @@ export default function BlogsList() {
                 </XStack>
                 <Text color="$gray10" numberOfLines={3}>{item.content}</Text>
                 <Link href={`/blogs/${item.id}`} asChild>
-                    <Button size="$3" mt="$2">Read more</Button>
+                    <Button size="$3" mt="$2">Open blog</Button>
                 </Link>
             </YStack>
         </Card>
