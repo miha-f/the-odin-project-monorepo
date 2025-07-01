@@ -2,9 +2,9 @@ import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
 import { Blog, User } from "@/utils/models";
 
-const LIMIT = 12;
+const LIMIT = 10;
 
-export async function fetchHomePageData(): Promise<{ blogs: Blog[]; authors: Map<string, User> }> {
+export async function fetchBlogsAuthors(): Promise<{ blogs: Blog[]; authors: Map<string, User> }> {
     const { data: blogs, error: blogsError } = await tryCatch<Blog[]>(api.get(`/blogs?limit=${LIMIT}`));
     if (blogsError || !blogs) { throw new Error("Failed to fetch blogs"); }
 

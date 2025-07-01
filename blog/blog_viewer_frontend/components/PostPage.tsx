@@ -1,6 +1,6 @@
 'use client'
 
-import { Post, Comment } from "@/utils/models";
+import { User, Blog, Post, Comment } from "@/utils/models";
 import { useAuth } from "@/utils/AuthContext";
 import { Text, Title, Flex, Image, Paper } from '@mantine/core';
 import { formatDistance } from "date-fns";
@@ -8,14 +8,16 @@ import Link from "next/link";
 import NewCommentForm from "./NewCommentForm";
 
 interface Props {
-    blogId: number
+    author: User
+    blog: Blog
     post: Post
     comments: Comment[]
+    commentsAuthors: Map<string, User>
 };
 
 export function PostPage(props: Props) {
     const { user } = useAuth();
-    const { blogId, post, comments } = props;
+    const { blog, post, comments, author, commentsAuthors } = props;
 
     return (
         <Flex direction="column" gap={8}>
@@ -38,14 +40,14 @@ export function PostPage(props: Props) {
             </Flex>
 
             <Text c="dimmed">
-                <Link href={`/users/${post.authorId}`}>
-                    Author: {post.authorId}
+                <Link href={`/users/${author.uuid}`}>
+                    Author: {author.username}
                 </Link>
             </Text>
 
             <Text c="dimmed">
-                <Link href={`/blogs/${blogId}`}>
-                    Blog: {blogId}
+                <Link href={`/blogs/${blog.id}`}>
+                    Blog: {blog.title}
                 </Link>
             </Text>
 
@@ -70,12 +72,12 @@ export function PostPage(props: Props) {
 
             <Title order={3}>Comments:</Title>
 
-            {user && <NewCommentForm blogId={blogId} postId={post.id} />}
+            {user && <NewCommentForm blogId={blog.id} postId={post.id} />}
 
             {comments.map((comment) => (
                 <Paper key={comment.id} shadow="sm" p="md" radius="md" withBorder>
                     <Flex justify="space-between">
-                        <Text>{comment.authorId}</Text>
+                        <Text>{commentsAuthors.get(comment.authorId)?.username || "n/a"}</Text>
                         <Text>
                             Created: {formatDistance(comment.createdAt, new Date(), { addSuffix: true })}
                         </Text>

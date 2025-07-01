@@ -1,34 +1,28 @@
 import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
 import { Text, Title, Center, Flex, Image } from '@mantine/core';
-import { Blog, Post } from "@/utils/models";
+import { Post } from "@/utils/models";
 import { formatDistance } from "date-fns";
 import Link from "next/link";
+import { fetchBlogAuthor } from "@/data/fetchBlogAuthor";
 
 export default async function BlogPage({ params }: { params: { blogId: number } }) {
     const { blogId } = await params;
-    const { data: blog, error: blogErr } = await tryCatch<Blog>(api.get(`/blogs/${blogId}`));
-    const { data: posts, error: postsErr } = await tryCatch<Post[]>(api.get(`/blogs/${blogId}/posts`));
+    const { data: data, error: blogAuthorError } = await tryCatch(fetchBlogAuthor(blogId));
+    const { data: posts, error: postsError } = await tryCatch<Post[]>(api.get(`/blogs/${blogId}/posts`));
 
-    if (blogErr || postsErr) {
+    const error = blogAuthorError || postsError;
+    if (error) {
         return (
             <Center>
                 <Text c="red" size="lg" mt="xl">
-                    Failed to load.
+                    {(error as Error).message}
                 </Text>
             </Center>
         );
     }
 
-    if (!blog || !posts) {
-        return (
-            <Center>
-                <Text size="lg" mt="xl">
-                    Not found.
-                </Text>
-            </Center>
-        );
-    }
+    const { blog, author } = data;
 
     return (
         <Flex direction="column" gap={8}>
@@ -52,7 +46,7 @@ export default async function BlogPage({ params }: { params: { blogId: number } 
 
             <Text c="dimmed">
                 <Link href={`/users/${blog.authorId}`}>
-                    Author: {blog.authorId}
+                    Author: {author.username}
                 </Link>
             </Text>
 
@@ -61,9 +55,10 @@ export default async function BlogPage({ params }: { params: { blogId: number } 
 
             <Image
                 radius="md"
-                src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-7.png"
+                src={`https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-${Math.floor(Math.random() * 10) + 1}.png`}
             />
 
+            {/* TODO(miha): Some posts component */}
             <Title order={3}>Blog posts:</Title>
             <ul>
                 {posts.map((post) => (

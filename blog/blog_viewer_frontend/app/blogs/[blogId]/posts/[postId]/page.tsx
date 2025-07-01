@@ -1,35 +1,32 @@
-import { Post, Comment } from "@/utils/models";
+import { Post } from "@/utils/models";
 import { api } from "@/lib/axiosClient";
 import { tryCatch } from "@/utils/tryCatch";
 import { Text, Center } from '@mantine/core';
 import { PostPage } from "@/components/PostPage";
+import { fetchBlogAuthor } from "@/data/fetchBlogAuthor";
+import { fetchCommentsAuthors } from "@/data/fetchCommentsAuthors";
 
 export default async function Page({ params }: { params: { blogId: number, postId: number } }) {
     const { blogId, postId } = await params;
-    const { data: post, error: postErr } = await tryCatch<Post>(api.get(`/blogs/${blogId}/posts/${postId}`));
-    const { data: comments, error: commentsErr } = await tryCatch<Comment[]>(api.get(`/blogs/${blogId}/posts/${postId}/comments`));
+    const { data: blogAuthorData, error: blogAuthorError } = await tryCatch(fetchBlogAuthor(blogId));
+    const { data: post, error: postError } = await tryCatch<Post>(api.get(`/blogs/${blogId}/posts/${postId}`));
+    const { data: commentsAuthorData, error: commentsError } = await tryCatch(fetchCommentsAuthors(blogId, postId));
 
-    if (postErr || commentsErr) {
+    const error = blogAuthorError || postError || commentsError;
+    if (error) {
         return (
             <Center>
                 <Text c="red" size="lg" mt="xl">
-                    Failed to load.
+                    {(error as Error).message}
                 </Text>
             </Center>
         );
     }
 
-    if (!post || !comments || comments.length === 0) {
-        return (
-            <Center>
-                <Text size="lg" mt="xl">
-                    Not found.
-                </Text>
-            </Center>
-        );
-    }
+    const { blog, author } = blogAuthorData;
+    const { comments, authors: commentsAuthors } = commentsAuthorData;
 
     return (
-        <PostPage blogId={blogId} post={post} comments={comments} />
+        <PostPage author={author} blog={blog} post={post} comments={comments} commentsAuthors={commentsAuthors} />
     );
 }
