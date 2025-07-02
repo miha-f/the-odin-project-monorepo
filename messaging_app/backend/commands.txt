@@ -21,3 +21,9 @@
 
 # describe pod and errors k8
 kubectl describe pod my-postgres-postgresql-0
+
+# go migrate create migration
+migrate create -ext sql -dir internal/db/migrations -seq init
+
+# go migrate apply to db:
+migrate -path ./internal/db/migrations -database "postgres://postgres:postgres@localhost:5432/messaging_app?sslmode=disable" up
