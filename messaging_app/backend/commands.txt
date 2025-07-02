@@ -1,0 +1,23 @@
+# install postgres k8s
+- `cd k8s`
+- `helm install my-postgres bitnami/postgresql -f postgres/values.yaml`
+
+# port forward k8 postgres port (so localhost can use it)
+- `kubectl get pods`
+- `kubectl port-forward svc/my-postgres-postgresql 5432:5432`
+
+# get k8 postgres secrets
+- `kubectl get secrets`
+- `kubectl get secret my-postgres-postgresql -o yaml`
+
+# upgrade k8 chart
+- `helm upgrade my-postgres bitnami/postgresql -f postgres/values.yaml`
+
+# uninstall k8
+- `helm uninstall my-postgres`
+
+# delete PVC (persisting volume)
+- `kubectl delete pvc -l app.kubernetes.io/instance=my-postgres`
+
+# describe pod and errors k8
+kubectl describe pod my-postgres-postgresql-0

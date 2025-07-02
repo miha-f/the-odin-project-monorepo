@@ -1,0 +1,33 @@
+auth:
+  username: postgres
+  password: postgres
+  database: messaging_app
+  existingSecret: ""
+
+primary:
+  persistence:
+    enabled: true
+    storageClass: "local-path"
+    size: 1Gi
+
+metrics:
+  enabled: false
+
+containerSecurityContext:
+  enabled: true
+  runAsUser: 1001
+
+podSecurityContext:
+  enabled: true
+  fsGroup: 1001
+
+service:
+  type: ClusterIP
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
