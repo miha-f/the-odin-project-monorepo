@@ -31,6 +31,7 @@ func (svc AuthService) GetTokenAuth() *jwtauth.JWTAuth {
 }
 
 func (svc AuthService) Authenticate(username, password string) (*model.UserResponse, error) {
+	// TODO(miha): Move this to userService
 	// NOTE(miha): Check if user exists.
 	user, err := svc.db.GetUserByUsername(context.TODO(), username)
 	if err != nil {
@@ -57,8 +58,9 @@ func (svc AuthService) Authenticate(username, password string) (*model.UserRespo
 
 func (svc AuthService) GenerateJWT(user *model.UserResponse) (string, error) {
 	_, tokenString, err := svc.tokenAuth.Encode(map[string]interface{}{
-		"userId": user.Id,
-		"exp":    time.Now().Add(24 * time.Hour),
+		"userId":   user.Id,
+		"username": user.Username,
+		"exp":      time.Now().Add(24 * time.Hour),
 	})
 	if err != nil {
 		return "", err

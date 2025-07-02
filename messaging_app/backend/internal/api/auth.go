@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"miha-f.github.com/message-app/internal/apperr"
@@ -129,4 +131,43 @@ func (api authApi) HandlePostLogin(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{
 		"token": tokenString,
 	})
+}
+
+func (api authApi) HandleGetMe(w http.ResponseWriter, r *http.Request) {
+	// TODO(miha): Currently we save Id and username to the jwt token - for
+	// conveience. We only have GetUserByUsername and not GetUserById.
+	// If we impl GetUserById mayber remove username from token
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	usernameAny := claims["username"]
+
+	log.Println(usernameAny)
+
+	username, ok := usernameAny.(string)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": fmt.Errorf("auth service converting token to string error").Error(),
+		})
+		return
+	}
+
+	user, err := api.userService.GetByUsername(username)
+	if err != nil {
+		switch {
+		case errors.Is(err, apperr.ErrNotFound):
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": fmt.Errorf("username not found: %w", err).Error(),
+			})
+			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
+			})
+			return
+		}
+	}
+
+	json.NewEncoder(w).Encode(user)
 }

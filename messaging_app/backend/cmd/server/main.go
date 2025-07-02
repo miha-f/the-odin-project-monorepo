@@ -76,6 +76,7 @@ func main() {
 			userID := claims["userId"]
 			w.Write([]byte(fmt.Sprintf("Hello user %v", userID)))
 		})
+		r.Get("/me", authApi.HandleGetMe)
 	})
 
 	//
