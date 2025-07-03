@@ -6,13 +6,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/jackc/pgx/v5"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/jwtauth/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"miha-f.github.com/message-app/internal/api"
 	"miha-f.github.com/message-app/internal/db/queries"
@@ -28,13 +30,15 @@ func main() {
 
 	// TODO(miha): Get this from config (that gets it from env).
 	const DB_URL string = "postgres://postgres:postgres@localhost:5432/messaging_app?sslmode=disable"
-	conn, err := pgx.Connect(ctx, DB_URL)
+	pool, err := pgxpool.New(ctx, DB_URL)
 	if err != nil {
 		panic(err)
 	}
-	defer conn.Close(ctx)
+	if err := pool.Ping(ctx); err != nil {
+		log.Fatalf("Unable to ping DB: %v", err)
+	}
 
-	db := queries.New(conn)
+	db := queries.New(pool)
 
 	authService := service.NewAuthService(db, []byte("secret"))
 	userService := service.NewUserService(db)
@@ -76,7 +80,7 @@ func main() {
 			userID := claims["userId"]
 			w.Write([]byte(fmt.Sprintf("Hello user %v", userID)))
 		})
-		r.Get("/me", authApi.HandleGetMe)
+		r.Get("/auth/me", authApi.HandleGetMe)
 	})
 
 	//
@@ -108,6 +112,35 @@ func main() {
 	// 	r.Get("/login", nil)
 	// })
 
-	log.Println("Server running on: ", *addr)
-	log.Fatal(http.ListenAndServe(*addr, r))
+	// log.Println("Server running on: ", *addr)
+	// log.Fatal(http.ListenAndServe(*addr, r))
+
+	srv := &http.Server{
+		Addr:    *addr,
+		Handler: r,
+	}
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+
+	go func() {
+		log.Printf("Server running on %s\n", *addr)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("ListenAndServe error: %v", err)
+		}
+	}()
+
+	<-stop
+	log.Println("Shutting down server...")
+
+	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctxShutDown); err != nil {
+		log.Fatalf("Server forced to shutdown: %v", err)
+	}
+
+	pool.Close()
+
+	log.Println("Server exited properly")
 }
