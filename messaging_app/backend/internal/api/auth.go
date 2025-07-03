@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"miha-f.github.com/message-app/internal/apperr"
+	"miha-f.github.com/message-app/internal/model"
 	"miha-f.github.com/message-app/internal/service"
 )
 
@@ -77,7 +77,24 @@ func (api authApi) HandlePostRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(user)
+	tokenString, err := api.authService.GenerateJWT(&model.UserResponse{
+		UserBase: model.UserBase{
+			Id:       int(user.ID),
+			Username: user.Username,
+		},
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]any{
+		"token": tokenString,
+		"user":  user,
+	})
 }
 
 func (api authApi) HandlePostLogin(w http.ResponseWriter, r *http.Request) {
@@ -139,8 +156,6 @@ func (api authApi) HandleGetMe(w http.ResponseWriter, r *http.Request) {
 	// If we impl GetUserById mayber remove username from token
 	_, claims, _ := jwtauth.FromContext(r.Context())
 	usernameAny := claims["username"]
-
-	log.Println(usernameAny)
 
 	username, ok := usernameAny.(string)
 	if !ok {
