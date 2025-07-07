@@ -23,6 +23,11 @@ func NewWebsocketApi(websocketService *service.WebsocketService) *websocketApi {
 		upgrader: websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
+			CheckOrigin: func(r *http.Request) bool {
+				// TODO(miha): Don't hardcode urls.
+				origin := r.Header.Get("Origin")
+				return origin == "http://localhost:5173" || origin == "http://localhost:3000"
+			},
 		},
 	}
 }
