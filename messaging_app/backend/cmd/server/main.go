@@ -42,7 +42,10 @@ func main() {
 
 	authService := service.NewAuthService(db, []byte("secret"))
 	userService := service.NewUserService(db)
+	websocketService := service.NewWebsocketService(db)
+
 	authApi := api.NewAuthApi(authService, userService)
+	websocketApi := api.NewWebsocketApi(websocketService)
 
 	_, _ = jwtSecret, authApi
 
@@ -71,6 +74,7 @@ func main() {
 		r.Post("/login", authApi.HandlePostLogin)
 	})
 
+	// NOTE(miha): Protected routes
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(authService.GetTokenAuth()))
 		r.Use(jwtauth.Authenticator(authService.GetTokenAuth()))
@@ -82,6 +86,8 @@ func main() {
 		})
 		r.Get("/auth/me", authApi.HandleGetMe)
 	})
+
+	r.Get("/ws", websocketApi.HandleGetWebsocket)
 
 	//
 	// r.Post("/login", func(w http.ResponseWriter, r *http.Request) {
@@ -115,6 +121,7 @@ func main() {
 	// log.Println("Server running on: ", *addr)
 	// log.Fatal(http.ListenAndServe(*addr, r))
 
+	// TODO(miha): We need to add sensible defaults (timeouts, ...)
 	srv := &http.Server{
 		Addr:    *addr,
 		Handler: r,
