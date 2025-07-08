@@ -8,6 +8,34 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Message struct {
+	ID        int32            `json:"id"`
+	RoomID    *int32           `json:"room_id"`
+	SenderID  *int32           `json:"sender_id"`
+	Content   string           `json:"content"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+}
+
+type MessageRead struct {
+	MessageID int32            `json:"message_id"`
+	UserID    int32            `json:"user_id"`
+	ReadAt    pgtype.Timestamp `json:"read_at"`
+}
+
+type Room struct {
+	ID        int32            `json:"id"`
+	Name      *string          `json:"name"`
+	IsPrivate *bool            `json:"is_private"`
+	CreatedBy *int32           `json:"created_by"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+}
+
+type RoomMember struct {
+	RoomID   int32            `json:"room_id"`
+	UserID   int32            `json:"user_id"`
+	JoinedAt pgtype.Timestamp `json:"joined_at"`
+}
+
 type User struct {
 	ID             int32            `json:"id"`
 	Username       string           `json:"username"`
