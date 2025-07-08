@@ -135,6 +135,23 @@ func (q *Queries) GetUnreadMessagesCount(ctx context.Context, arg GetUnreadMessa
 	return count, err
 }
 
+const getUserById = `-- name: GetUserById :one
+SELECT id, username, hashed_password FROM users WHERE id = $1
+`
+
+type GetUserByIdRow struct {
+	ID             int32  `json:"id"`
+	Username       string `json:"username"`
+	HashedPassword string `json:"hashed_password"`
+}
+
+func (q *Queries) GetUserById(ctx context.Context, id int32) (GetUserByIdRow, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
+	var i GetUserByIdRow
+	err := row.Scan(&i.ID, &i.Username, &i.HashedPassword)
+	return i, err
+}
+
 const getUserByUsername = `-- name: GetUserByUsername :one
 SELECT id, username, hashed_password FROM users WHERE username = $1
 `

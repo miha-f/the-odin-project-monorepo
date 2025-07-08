@@ -42,10 +42,9 @@ func main() {
 
 	authService := service.NewAuthService(db, []byte("secret"))
 	userService := service.NewUserService(db)
-	websocketService := service.NewWebsocketService(db)
 
 	authApi := api.NewAuthApi(authService, userService)
-	websocketApi := api.NewWebsocketApi(websocketService)
+	websocketApi := api.NewWebsocketApi(db, authService)
 
 	_, _ = jwtSecret, authApi
 

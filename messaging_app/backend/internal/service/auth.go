@@ -68,3 +68,25 @@ func (svc AuthService) GenerateJWT(user *model.UserResponse) (string, error) {
 
 	return tokenString, nil
 }
+
+func (svc AuthService) GetUserID(tokenStr string) (int64, error) {
+	token, err := svc.tokenAuth.Decode(tokenStr)
+	if err != nil {
+		return 0, err
+	}
+
+	ctx := context.Background()
+	ctx = jwtauth.NewContext(ctx, token, nil)
+
+	_, claims, err := jwtauth.FromContext(ctx)
+	if err != nil {
+		return -1, errors.New("token invalid")
+	}
+
+	userID, ok := claims["userId"].(float64)
+	if !ok {
+		return -1, errors.New("userId not found or wrong type")
+	}
+
+	return int64(userID), nil
+}
