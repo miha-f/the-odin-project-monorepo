@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/websocket"
@@ -46,13 +45,12 @@ func (api websocketApi) HandleGetWebsocket(w http.ResponseWriter, r *http.Reques
 	// access to given chat_room
 	fmt.Println("websocket url queries: ", r.URL.Query())
 
-	roomIDStr := r.URL.Query().Get("room_id")
-	roomID, err := strconv.ParseInt(roomIDStr, 10, 64)
+	roomID, err := getRoomIdFromPath(r)
 	if err != nil {
-		http.Error(w, "Invalid room_id", http.StatusBadRequest)
+		// TODO: customError
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
 		return
 	}
-	_ = roomID
 
 	token := r.URL.Query().Get("token")
 	if token == "" {

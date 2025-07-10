@@ -34,28 +34,8 @@ func (api authApi) HandlePostRegister(w http.ResponseWriter, r *http.Request) {
 		PasswordRepeat string `json:"passwordRepeat" validate:"required,eqfield=Password"`
 	}
 	var req registerRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Errorf("invalid JSON body error: %w", err).Error(),
-		})
-		return
-	}
-
-	// TODO(miha): Validate stuff better - better return errors. And move to apperrs or smth
-	if err := api.validator.Struct(req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-
-		validationErrors := err.(validator.ValidationErrors)
-		errorsMap := make(map[string]string)
-		for _, fieldErr := range validationErrors {
-			errorsMap[fieldErr.Field()] = fmt.Sprintf("failed on the '%s' tag", fieldErr.Tag())
-		}
-
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"errors": errorsMap,
-		})
-		return
+	if err := validateRequest(r, &req, api.validator); err != nil {
+		// TODO: return err
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
@@ -150,23 +130,7 @@ func (api authApi) HandlePostLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api authApi) HandleGetMe(w http.ResponseWriter, r *http.Request) {
-	user, err := api.authService.GetUserFromRequest(r)
-	if err != nil {
-		switch {
-		case errors.Is(err, apperr.ErrNotFound):
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": fmt.Errorf("username not found: %w", err).Error(),
-			})
-			return
-		default:
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
-			})
-			return
-		}
-	}
+	user := getUserFromContext(r)
 
 	json.NewEncoder(w).Encode(user)
 }

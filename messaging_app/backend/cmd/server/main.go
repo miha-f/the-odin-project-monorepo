@@ -16,6 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"miha-f.github.com/message-app/internal/api"
+	"miha-f.github.com/message-app/internal/appmiddleware"
 	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/service"
 )
@@ -82,23 +83,29 @@ func main() {
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(authService.GetTokenAuth()))
 		// TODO: create new Authenticator middleware, so we put user to the context
-		r.Use(jwtauth.Authenticator(authService.GetTokenAuth()))
+		// r.Use(jwtauth.Authenticator(authService.GetTokenAuth()))
+		r.Use(appmiddleware.AddUserToContext(userService))
 
 		r.Get("/auth/me", authApi.HandleGetMe)
 
 		r.Route("/rooms", func(r chi.Router) {
 			r.Get("/me", roomApi.HandleGetUserRooms)
-			r.Get("/{roomId}/users", roomApi.HandleGetAllUsersInRoom)
 			r.Post("/", roomApi.HandlePostCreateRoom)
-			r.Post("/{roomId}/users", roomApi.HandlePostAddUser)
-			r.Delete("/{roomId}/users", roomApi.HandleDeleteUser)
 
-			r.Get("/{roomId}/messages", messageApi.HandleGetLatestMessages)  // get latest messages in room
-			r.Post("/{roomId}/messages", messageApi.HandlePostCreateMessage) // create new msg
+			r.Group(func(r chi.Router) {
+				r.Use(appmiddleware.CheckUserHasRoomAccess(roomService))
+
+				r.Get("/{roomId}/users", roomApi.HandleGetAllUsersInRoom)
+				r.Post("/{roomId}/users", roomApi.HandlePostAddUser)
+				r.Delete("/{roomId}/users", roomApi.HandleDeleteUser)
+
+				r.Get("/{roomId}/messages", messageApi.HandleGetLatestMessages)
+				r.Post("/{roomId}/messages", messageApi.HandlePostCreateMessage)
+			})
 		})
 
 		r.Route("/messages", func(r chi.Router) {
-			r.Get("/unread/me", messageApi.HandleGetUndreadMessageCount) // get all undread messages (little red dot with number of unread)
+			r.Get("/unread/me", messageApi.HandleGetUndreadMessageCount)
 		})
 	})
 
