@@ -12,12 +12,12 @@ import (
 	"github.com/jaswdr/faker"
 	"golang.org/x/crypto/bcrypt"
 
-	"miha-f.github.com/message-app/internal/db/queries"
+	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/model"
 )
 
 type Seed struct {
-	db   *queries.Queries
+	db   *db.Queries
 	fake *faker.Faker
 }
 
@@ -39,7 +39,7 @@ func (seed Seed) Users(n int) []model.User {
 			panic(err)
 		}
 
-		user, err := seed.db.CreateUser(context.Background(), queries.CreateUserParams{
+		user, err := seed.db.CreateUser(context.Background(), db.CreateUserParams{
 			Username:       username,
 			HashedPassword: string(hashedPassword),
 		})
@@ -70,7 +70,7 @@ func (seed Seed) Rooms(users []model.User, n int) []model.Room {
 
 		createdByI32 := int32(createdBy.ID)
 
-		room, err := seed.db.CreateRoom(context.Background(), queries.CreateRoomParams{
+		room, err := seed.db.CreateRoom(context.Background(), db.CreateRoomParams{
 			Name:      &name,
 			IsPrivate: &isPrivate,
 			CreatedBy: &createdByI32,
@@ -101,7 +101,7 @@ func (seed Seed) RoomMembers(rooms []model.Room, users []model.User, n int) []mo
 	for _, room := range rooms {
 		roomIdI32 := int32(room.ID)
 		userIdI32 := int32(*room.CreatedBy)
-		err := seed.db.AddRoomMember(context.Background(), queries.AddRoomMemberParams{
+		err := seed.db.AddRoomMember(context.Background(), db.AddRoomMemberParams{
 			RoomID: roomIdI32,
 			UserID: userIdI32,
 		})
@@ -133,7 +133,7 @@ func (seed Seed) RoomMembers(rooms []model.Room, users []model.User, n int) []mo
 		roomIdI32 := int32(room.ID)
 		userIdI32 := int32(user.ID)
 
-		err := seed.db.AddRoomMember(context.Background(), queries.AddRoomMemberParams{
+		err := seed.db.AddRoomMember(context.Background(), db.AddRoomMemberParams{
 			RoomID: roomIdI32,
 			UserID: userIdI32,
 		})
@@ -162,7 +162,7 @@ func (seed Seed) Messages(roomMembers []model.RoomMember, n int) []model.Message
 		userId := int32(roomMember.UserID)
 		content := seed.fake.Lorem().Sentence(20)
 
-		message, err := seed.db.CreateMessage(context.Background(), queries.CreateMessageParams{
+		message, err := seed.db.CreateMessage(context.Background(), db.CreateMessageParams{
 			RoomID:   &roomId,
 			SenderID: &userId,
 			Content:  content,
@@ -205,7 +205,7 @@ func main() {
 	}
 	defer conn.Close(ctx)
 
-	db := queries.New(conn)
+	db := db.New(conn)
 	fake := faker.New()
 	seed := Seed{db: db, fake: &fake}
 
