@@ -69,6 +69,26 @@ func (q *Queries) GetRoomByID(ctx context.Context, id int32) (Room, error) {
 	return i, err
 }
 
+const isUserInRoom = `-- name: IsUserInRoom :one
+SELECT EXISTS (
+    SELECT 1
+    FROM room_members
+    WHERE room_id = $1 AND user_id = $2
+)
+`
+
+type IsUserInRoomParams struct {
+	RoomID int32 `json:"room_id"`
+	UserID int32 `json:"user_id"`
+}
+
+func (q *Queries) IsUserInRoom(ctx context.Context, arg IsUserInRoomParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isUserInRoom, arg.RoomID, arg.UserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const listRoomMembers = `-- name: ListRoomMembers :many
 SELECT u.id, u.username, rm.joined_at
 FROM room_members rm
@@ -115,6 +135,45 @@ type ListRoomsParams struct {
 
 func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, error) {
 	rows, err := q.db.Query(ctx, listRooms, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Room{}
+	for rows.Next() {
+		var i Room
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.IsPrivate,
+			&i.CreatedBy,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUserRooms = `-- name: ListUserRooms :many
+SELECT id, name, is_private, created_by, created_at FROM rooms
+WHERE created_by = $1
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3
+`
+
+type ListUserRoomsParams struct {
+	CreatedBy *int32 `json:"created_by"`
+	Limit     int32  `json:"limit"`
+	Offset    int32  `json:"offset"`
+}
+
+func (q *Queries) ListUserRooms(ctx context.Context, arg ListUserRoomsParams) ([]Room, error) {
+	rows, err := q.db.Query(ctx, listUserRooms, arg.CreatedBy, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

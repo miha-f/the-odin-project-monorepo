@@ -33,35 +33,33 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, username, hashed_password FROM users WHERE id = $1
+SELECT id, username, hashed_password, created_at FROM users WHERE id = $1
 `
 
-type GetUserByIdRow struct {
-	ID             int32  `json:"id"`
-	Username       string `json:"username"`
-	HashedPassword string `json:"hashed_password"`
-}
-
-func (q *Queries) GetUserById(ctx context.Context, id int32) (GetUserByIdRow, error) {
+func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 	row := q.db.QueryRow(ctx, getUserById, id)
-	var i GetUserByIdRow
-	err := row.Scan(&i.ID, &i.Username, &i.HashedPassword)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.CreatedAt,
+	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, hashed_password FROM users WHERE username = $1
+SELECT id, username, hashed_password, created_at FROM users WHERE username = $1
 `
 
-type GetUserByUsernameRow struct {
-	ID             int32  `json:"id"`
-	Username       string `json:"username"`
-	HashedPassword string `json:"hashed_password"`
-}
-
-func (q *Queries) GetUserByUsername(ctx context.Context, username string) (GetUserByUsernameRow, error) {
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByUsername, username)
-	var i GetUserByUsernameRow
-	err := row.Scan(&i.ID, &i.Username, &i.HashedPassword)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.CreatedAt,
+	)
 	return i, err
 }

@@ -11,6 +11,12 @@ SELECT * FROM rooms
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2;
 
+-- name: ListUserRooms :many
+SELECT * FROM rooms
+WHERE created_by = $1
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3;
+
 -- name: AddRoomMember :exec
 INSERT INTO room_members (room_id, user_id)
 VALUES ($1, $2)
@@ -26,3 +32,9 @@ FROM room_members rm
 JOIN users u ON rm.user_id = u.id
 WHERE rm.room_id = $1;
 
+-- name: IsUserInRoom :one
+SELECT EXISTS (
+    SELECT 1
+    FROM room_members
+    WHERE room_id = $1 AND user_id = $2
+);
