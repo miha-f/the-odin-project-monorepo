@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/websocket"
-	"miha-f.github.com/message-app/internal/db/queries"
+	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/service"
 	chatservice "miha-f.github.com/message-app/internal/service/chat"
 )
@@ -18,10 +18,10 @@ type websocketApi struct {
 	upgrader    websocket.Upgrader
 	hub         *chatservice.Hub
 	authService *service.AuthService
-	db          *queries.Queries
+	db          *db.Queries
 }
 
-func NewWebsocketApi(db *queries.Queries, authService *service.AuthService) *websocketApi {
+func NewWebsocketApi(db *db.Queries, authService *service.AuthService) *websocketApi {
 	return &websocketApi{
 		validator: validator.New(),
 		// TODO(miha): What are some sensible values here?
@@ -60,7 +60,7 @@ func (api websocketApi) HandleGetWebsocket(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	userID, err := api.authService.GetUserID(token)
+	userID, err := api.authService.GetUserIdFromToken(token)
 	if err != nil {
 		// TODO:
 	}

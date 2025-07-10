@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 	"miha-f.github.com/message-app/internal/apperr"
@@ -43,7 +42,7 @@ func (api authApi) HandlePostRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO(miha): Validate stuff better - better return errors
+	// TODO(miha): Validate stuff better - better return errors. And move to apperrs or smth
 	if err := api.validator.Struct(req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 
@@ -151,22 +150,7 @@ func (api authApi) HandlePostLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api authApi) HandleGetMe(w http.ResponseWriter, r *http.Request) {
-	// TODO(miha): Currently we save Id and username to the jwt token - for
-	// conveience. We only have GetUserByUsername and not GetUserById.
-	// If we impl GetUserById mayber remove username from token
-	_, claims, _ := jwtauth.FromContext(r.Context())
-	usernameAny := claims["username"]
-
-	username, ok := usernameAny.(string)
-	if !ok {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Errorf("auth service converting token to string error").Error(),
-		})
-		return
-	}
-
-	user, err := api.userService.GetByUsername(username)
+	user, err := api.authService.GetUserFromRequest(r)
 	if err != nil {
 		switch {
 		case errors.Is(err, apperr.ErrNotFound):
