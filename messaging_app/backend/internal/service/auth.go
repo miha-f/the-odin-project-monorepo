@@ -4,25 +4,28 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/jackc/pgx/v5"
 	"golang.org/x/crypto/bcrypt"
 	"miha-f.github.com/message-app/internal/apperr"
-	"miha-f.github.com/message-app/internal/db/queries"
+	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/model"
 )
 
 type AuthService struct {
-	tokenAuth *jwtauth.JWTAuth
-	db        *queries.Queries
+	tokenAuth   *jwtauth.JWTAuth
+	db          *db.Queries
+	userService *UserService
 }
 
-func NewAuthService(db *queries.Queries, secret []byte) *AuthService {
+func NewAuthService(db *db.Queries, secret []byte, userService *UserService) *AuthService {
 	return &AuthService{
-		tokenAuth: jwtauth.New("HS256", secret, nil),
-		db:        db,
+		tokenAuth:   jwtauth.New("HS256", secret, nil),
+		db:          db,
+		userService: userService,
 	}
 }
 
@@ -60,7 +63,7 @@ func (svc AuthService) GenerateJWT(user *model.UserResponse) (string, error) {
 	_, tokenString, err := svc.tokenAuth.Encode(map[string]interface{}{
 		"userId":   user.Id,
 		"username": user.Username,
-		"exp":      time.Now().Add(24 * time.Hour),
+		"exp":      time.Now().Add(10 * 24 * time.Hour), // TODO: what is sensible exp value?
 	})
 	if err != nil {
 		return "", err
@@ -69,7 +72,7 @@ func (svc AuthService) GenerateJWT(user *model.UserResponse) (string, error) {
 	return tokenString, nil
 }
 
-func (svc AuthService) GetUserID(tokenStr string) (int64, error) {
+func (svc AuthService) GetUserIdFromToken(tokenStr string) (int64, error) {
 	token, err := svc.tokenAuth.Decode(tokenStr)
 	if err != nil {
 		return 0, err
@@ -89,4 +92,26 @@ func (svc AuthService) GetUserID(tokenStr string) (int64, error) {
 	}
 
 	return int64(userID), nil
+}
+
+func (svc AuthService) GetUserFromRequest(r *http.Request) (model.User, error) {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	usernameAny := claims["username"]
+
+	username, ok := usernameAny.(string)
+	if !ok {
+		return model.User{}, fmt.Errorf("auth service converting token to string error")
+	}
+
+	user, err := svc.userService.GetByUsername(username)
+	if err != nil {
+		switch {
+		case errors.Is(err, apperr.ErrNotFound):
+			return model.User{}, fmt.Errorf("username not found: %w", err)
+		default:
+			return model.User{}, fmt.Errorf("unknown auth service error: %w", err)
+		}
+	}
+
+	return user, nil
 }
