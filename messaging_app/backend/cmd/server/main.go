@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"miha-f.github.com/message-app/internal/api"
-	"miha-f.github.com/message-app/internal/db/queries"
+	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/service"
 )
 
@@ -38,13 +37,19 @@ func main() {
 		log.Fatalf("Unable to ping DB: %v", err)
 	}
 
-	db := queries.New(pool)
+	db := db.New(pool)
 
-	authService := service.NewAuthService(db, []byte("secret"))
+	// TODO: create custom store interface that has pool and sqlc db.
+
 	userService := service.NewUserService(db)
+	roomService := service.NewRoomService(pool, db)
+	authService := service.NewAuthService(db, []byte("secret"), userService)
+	messageService := service.NewMessageService(db)
 
 	authApi := api.NewAuthApi(authService, userService)
 	websocketApi := api.NewWebsocketApi(db, authService)
+	roomApi := api.NewRoomApi(authService, roomService)
+	messageApi := api.NewMessageApi(authService, roomService, messageService)
 
 	_, _ = jwtSecret, authApi
 
@@ -76,14 +81,25 @@ func main() {
 	// NOTE(miha): Protected routes
 	r.Group(func(r chi.Router) {
 		r.Use(jwtauth.Verifier(authService.GetTokenAuth()))
+		// TODO: create new Authenticator middleware, so we put user to the context
 		r.Use(jwtauth.Authenticator(authService.GetTokenAuth()))
 
-		r.Get("/profile", func(w http.ResponseWriter, r *http.Request) {
-			_, claims, _ := jwtauth.FromContext(r.Context())
-			userID := claims["userId"]
-			w.Write([]byte(fmt.Sprintf("Hello user %v", userID)))
-		})
 		r.Get("/auth/me", authApi.HandleGetMe)
+
+		r.Route("/rooms", func(r chi.Router) {
+			r.Get("/me", roomApi.HandleGetUserRooms)
+			r.Get("/{roomId}/users", roomApi.HandleGetAllUsersInRoom)
+			r.Post("/", roomApi.HandlePostCreateRoom)
+			r.Post("/{roomId}/users", roomApi.HandlePostAddUser)
+			r.Delete("/{roomId}/users", roomApi.HandleDeleteUser)
+
+			r.Get("/{roomId}/messages", messageApi.HandleGetLatestMessages)  // get latest messages in room
+			r.Post("/{roomId}/messages", messageApi.HandlePostCreateMessage) // create new msg
+		})
+
+		r.Route("/messages", func(r chi.Router) {
+			r.Get("/unread/me", messageApi.HandleGetUndreadMessageCount) // get all undread messages (little red dot with number of unread)
+		})
 	})
 
 	r.Get("/ws", websocketApi.HandleGetWebsocket)
