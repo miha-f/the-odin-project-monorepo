@@ -160,32 +160,45 @@ func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]Room, e
 }
 
 const listUserRooms = `-- name: ListUserRooms :many
-SELECT id, name, is_private, created_by, created_at FROM rooms
-WHERE created_by = $1
-ORDER BY created_at DESC
+SELECT r.name, r.is_private, r.created_by, r.id, r.created_at
+FROM room_members rm
+JOIN rooms r ON rm.room_id = r.id
+WHERE rm.user_id = $1
 LIMIT $2 OFFSET $3
 `
 
 type ListUserRoomsParams struct {
-	CreatedBy *int32 `json:"created_by"`
-	Limit     int32  `json:"limit"`
-	Offset    int32  `json:"offset"`
+	UserID int32 `json:"user_id"`
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListUserRooms(ctx context.Context, arg ListUserRoomsParams) ([]Room, error) {
-	rows, err := q.db.Query(ctx, listUserRooms, arg.CreatedBy, arg.Limit, arg.Offset)
+type ListUserRoomsRow struct {
+	Name      *string          `json:"name"`
+	IsPrivate *bool            `json:"is_private"`
+	CreatedBy *int32           `json:"created_by"`
+	ID        int32            `json:"id"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+}
+
+// SELECT * FROM rooms
+// WHERE created_by = $1
+// ORDER BY created_at DESC
+// LIMIT $2 OFFSET $3;
+func (q *Queries) ListUserRooms(ctx context.Context, arg ListUserRoomsParams) ([]ListUserRoomsRow, error) {
+	rows, err := q.db.Query(ctx, listUserRooms, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Room{}
+	items := []ListUserRoomsRow{}
 	for rows.Next() {
-		var i Room
+		var i ListUserRoomsRow
 		if err := rows.Scan(
-			&i.ID,
 			&i.Name,
 			&i.IsPrivate,
 			&i.CreatedBy,
+			&i.ID,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err

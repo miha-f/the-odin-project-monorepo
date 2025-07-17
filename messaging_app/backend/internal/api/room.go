@@ -81,6 +81,27 @@ func (api roomApi) HandlePostCreateRoom(w http.ResponseWriter, r *http.Request) 
 }
 
 func (api roomApi) HandlePostAddUser(w http.ResponseWriter, r *http.Request) {
+	type addUserRequest struct {
+		NewUserID int `json:"new_user_id" validate:"required,gt=0"`
+		RoomID    int `json:"room_id" validate:"required,gt=0"`
+	}
+	var req addUserRequest
+	if err := validateRequest(r, &req, api.validator); err != nil {
+		apperr.WriteJSONError(w, err)
+		return
+	}
+
+	user := getUserFromContext(r)
+
+	err := api.roomService.AddRoomMember(user.ID, int64(req.NewUserID), int64(req.RoomID))
+	if err != nil {
+		apperr.WriteJSONError(w, err)
+		return
+	}
+
+	WriteJSON(w, map[string]any{
+		"new_user": req,
+	})
 }
 
 func (api roomApi) HandleDeleteUser(w http.ResponseWriter, r *http.Request) {

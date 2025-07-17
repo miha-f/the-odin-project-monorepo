@@ -11,10 +11,15 @@ SELECT * FROM rooms
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2;
 
+-- SELECT * FROM rooms
+-- WHERE created_by = $1
+-- ORDER BY created_at DESC
+-- LIMIT $2 OFFSET $3;
 -- name: ListUserRooms :many
-SELECT * FROM rooms
-WHERE created_by = $1
-ORDER BY created_at DESC
+SELECT r.name, r.is_private, r.created_by, r.id, r.created_at
+FROM room_members rm
+JOIN rooms r ON rm.room_id = r.id
+WHERE rm.user_id = $1
 LIMIT $2 OFFSET $3;
 
 -- name: AddRoomMember :exec

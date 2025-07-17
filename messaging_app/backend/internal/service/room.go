@@ -25,9 +25,9 @@ func NewRoomService(pool *pgxpool.Pool, db *db.Queries) *RoomService {
 func (svc RoomService) GetUserRooms(userID int64, limit, offset int32) ([]model.Room, error) {
 	id := int32(userID)
 	rooms, err := svc.db.ListUserRooms(context.TODO(), db.ListUserRoomsParams{
-		CreatedBy: &id,
-		Limit:     limit,
-		Offset:    offset,
+		UserID: id,
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return nil, apperr.NewInternalServerError()
@@ -139,4 +139,23 @@ func (svc RoomService) IsUserInRoom(userID, roomID int64) (bool, error) {
 	}
 
 	return isUserInRoom, nil
+}
+
+func (svc RoomService) AddRoomMember(userID, newUserID, roomID int64) error {
+	room, err := svc.GetRoom(roomID)
+	if err != nil {
+	}
+
+	if *room.CreatedBy != userID {
+		// TODO: handle not authorized to add ppl
+	}
+
+	err = svc.db.AddRoomMember(context.TODO(), db.AddRoomMemberParams{
+		RoomID: int32(roomID),
+		UserID: int32(newUserID),
+	})
+	if err != nil {
+	}
+
+	return nil
 }
