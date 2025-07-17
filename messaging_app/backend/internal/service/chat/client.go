@@ -10,17 +10,21 @@ import (
 )
 
 const (
-	writeWait      = 10 * time.Second
-	pongWait       = 60 * time.Second
-	pingPeriod     = (pongWait * 9) / 10
-	maxMessageSize = 512
+	writeWait  = 10 * time.Second
+	pongWait   = 60 * time.Second
+	pingPeriod = (pongWait * 9) / 10
+	// TODO(miha): We need to split messages on the frontend, so they are always
+	// bellow 4KB size (including its headers, json). We need to alter our
+	// message in DB, to have part and is last. On frontend we can combine
+	// larger messages as one!
+	maxMessageSize = 4096 // 4 KB
 )
 
 type Client struct {
 	ID   int64
 	Room *Room
 	Conn *websocket.Conn
-	Send chan []byte
+	Send chan *Message
 }
 
 func (c *Client) ReadPump() {
@@ -65,19 +69,7 @@ func (c *Client) ReadPump() {
 			CreatedAt: time.Now(),
 		}
 
-		payload, err := json.Marshal(msg)
-		if err != nil {
-			log.Printf("Failed to marshal message: %v", err)
-			return
-		}
-
-		// TODO(miha): Save message to db
-
-		c.Room.Broadcast <- []byte(payload)
-		// c.Room.Broadcast <- Message{
-		// 	SenderID: c.ID,
-		// 	Data:     message,
-		// }
+		c.Room.Broadcast <- msg
 	}
 }
 
@@ -98,7 +90,13 @@ func (c *Client) WritePump() {
 				return
 			}
 
-			err := c.Conn.WriteMessage(websocket.TextMessage, message)
+			b, err := json.Marshal(&message)
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+
+			err = c.Conn.WriteMessage(websocket.TextMessage, b)
 			if err != nil {
 				log.Println("write:", err)
 				return

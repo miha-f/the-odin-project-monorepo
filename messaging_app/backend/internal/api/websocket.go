@@ -90,7 +90,7 @@ func (api websocketApi) HandleGetWebsocket(w http.ResponseWriter, r *http.Reques
 		ID:   userID,
 		Conn: conn,
 		Room: room,
-		Send: make(chan []byte, 256),
+		Send: make(chan *chatservice.Message, 256),
 	}
 
 	room.Register <- client

@@ -3,7 +3,6 @@ package chatservice
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"log"
 
@@ -14,18 +13,20 @@ type Room struct {
 	ID      int64
 	Clients map[*Client]bool
 	// TODO(miha): Broadcast should accept Message
-	Broadcast  chan []byte
+	Broadcast  chan *Message
 	Register   chan *Client
 	Unregister chan *Client
 	db         *db.Queries
 }
+
+type WebsocketMessage struct{}
 
 func NewRoom(db *db.Queries, id int64) *Room {
 	return &Room{
 		ID:      id,
 		Clients: make(map[*Client]bool),
 		// Broadcast:  make(chan Message),
-		Broadcast:  make(chan []byte),
+		Broadcast:  make(chan *Message),
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
 		db:         db,
@@ -66,18 +67,12 @@ func (r *Room) Run() {
 				close(client.Send)
 			}
 		case msg := <-r.Broadcast:
-			log.Printf("Sending message %s in room %d to clients %+v", msg, r.ID, r.Clients)
-
-			var message Message
-			if err := json.Unmarshal(msg, &message); err != nil {
-			}
-
 			roomIDInt32 := int32(r.ID)
-			senderIDInt32 := int32(message.SenderID)
+			senderIDInt32 := int32(msg.SenderID)
 			r.db.CreateMessage(context.TODO(), db.CreateMessageParams{
 				RoomID:   &roomIDInt32,
 				SenderID: &senderIDInt32,
-				Content:  message.Content,
+				Content:  msg.Content,
 			})
 
 			for c := range r.Clients {
