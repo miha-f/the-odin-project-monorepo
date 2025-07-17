@@ -8,6 +8,7 @@ import Register from "@/app/pages/Register";
 import Protected from "@/app/pages/Protected";
 import RoomList from "@/app/pages/protected/RoomList";
 import Room from "@/app/pages/protected/Room";
+import FriendList from "./pages/protected/FriendList";
 
 const RequireAuth: React.FC = () => {
     const auth = useAuth();
@@ -65,7 +66,7 @@ export const router = createBrowserRouter([
                     { path: "/rooms", element: <RoomList /> },
                     { path: "/rooms/:roomId", element: <Room /> },
 
-                    { path: "/friends", element: <Protected /> },
+                    { path: "/friends", element: <FriendList /> },
                     { path: "/friends/:friendId", element: <Protected /> },
 
                     { path: "/settings", element: <Protected /> },
