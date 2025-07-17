@@ -36,24 +36,6 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (M
 	return i, err
 }
 
-const getUnreadMessagesCount = `-- name: GetUnreadMessagesCount :one
-SELECT COUNT(*) FROM messages m
-LEFT JOIN message_reads mr ON m.id = mr.message_id AND mr.user_id = $2
-WHERE m.room_id = $1 AND mr.message_id IS NULL
-`
-
-type GetUnreadMessagesCountParams struct {
-	RoomID *int32 `json:"room_id"`
-	UserID int32  `json:"user_id"`
-}
-
-func (q *Queries) GetUnreadMessagesCount(ctx context.Context, arg GetUnreadMessagesCountParams) (int64, error) {
-	row := q.db.QueryRow(ctx, getUnreadMessagesCount, arg.RoomID, arg.UserID)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
 const listMessagesByRoom = `-- name: ListMessagesByRoom :many
 SELECT m.id, m.room_id, m.sender_id, m.content, m.created_at, u.username AS sender_username
 FROM messages m
@@ -103,20 +85,4 @@ func (q *Queries) ListMessagesByRoom(ctx context.Context, arg ListMessagesByRoom
 		return nil, err
 	}
 	return items, nil
-}
-
-const markMessageRead = `-- name: MarkMessageRead :exec
-INSERT INTO message_reads (message_id, user_id)
-VALUES ($1, $2)
-ON CONFLICT DO NOTHING
-`
-
-type MarkMessageReadParams struct {
-	MessageID int32 `json:"message_id"`
-	UserID    int32 `json:"user_id"`
-}
-
-func (q *Queries) MarkMessageRead(ctx context.Context, arg MarkMessageReadParams) error {
-	_, err := q.db.Exec(ctx, markMessageRead, arg.MessageID, arg.UserID)
-	return err
 }

@@ -32,12 +32,14 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 	return i, err
 }
 
-const getUserById = `-- name: GetUserById :one
-SELECT id, username, hashed_password, created_at FROM users WHERE id = $1
+const getUserByID = `-- name: GetUserByID :one
+SELECT id, username, hashed_password, created_at 
+FROM users 
+WHERE id = $1
 `
 
-func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
-	row := q.db.QueryRow(ctx, getUserById, id)
+func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -49,7 +51,9 @@ func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, hashed_password, created_at FROM users WHERE username = $1
+SELECT id, username, hashed_password, created_at 
+FROM users 
+WHERE username = $1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -62,4 +66,55 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const getUsersByIDs = `-- name: GetUsersByIDs :many
+SELECT id, username, hashed_password, created_at
+FROM users
+WHERE ($3::int[] IS NULL OR id = ANY($3))
+ORDER BY
+    CASE WHEN $4 = 'id_asc' THEN users.id END ASC,
+    CASE WHEN $4 = 'id_desc' THEN users.id END DESC,
+    CASE WHEN $4 = 'username_asc' THEN users.username END ASC,
+    CASE WHEN $4 = 'username_desc' THEN users.username END DESC,
+    CASE WHEN $4 = 'created_at_asc' THEN users.created_at END ASC,
+    CASE WHEN $4 = 'created_at_desc' THEN users.created_at END DESC
+LIMIT $1 OFFSET $2
+`
+
+type GetUsersByIDsParams struct {
+	Limit   int32       `json:"limit"`
+	Offset  int32       `json:"offset"`
+	Ids     []int32     `json:"ids"`
+	OrderBy interface{} `json:"order_by"`
+}
+
+func (q *Queries) GetUsersByIDs(ctx context.Context, arg GetUsersByIDsParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, getUsersByIDs,
+		arg.Limit,
+		arg.Offset,
+		arg.Ids,
+		arg.OrderBy,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []User{}
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.HashedPassword,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

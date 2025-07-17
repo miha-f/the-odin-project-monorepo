@@ -1,0 +1,3 @@
+ALTER TABLE friend_requests DROP CONSTRAINT IF EXISTS valid_status;
+DROP TABLE IF EXISTS friend_requests CASCADE;
+DROP TABLE IF EXISTS friendships CASCADE;
