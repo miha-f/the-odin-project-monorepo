@@ -17,7 +17,7 @@ func CheckUserHasRoomAccess(roomService *service.RoomService) func(http.Handler)
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			user := r.Context().Value(ContextUserKey).(model.User)
 
-			roomIDStr := chi.URLParam(r, "roomId")
+			roomIDStr := chi.URLParam(r, "roomID")
 			roomID, err := strconv.ParseInt(roomIDStr, 10, 64)
 			if err != nil {
 				// TODO: customError
