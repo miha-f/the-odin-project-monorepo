@@ -44,6 +44,16 @@ func (seed Seed) Users(n int) []model.User {
 			HashedPassword: string(hashedPassword),
 		})
 		if err != nil {
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) {
+				switch pgErr.Code {
+				case "23503":
+					continue
+				case "23505":
+					log.Println("Unique constraint violation")
+					continue
+				}
+			}
 			panic(err)
 		}
 
@@ -99,11 +109,11 @@ func (seed Seed) RoomMembers(rooms []model.Room, users []model.User, n int) []mo
 
 	// NOTE(miha): Need to first add members for room creators.
 	for _, room := range rooms {
-		roomIdI32 := int32(room.ID)
-		userIdI32 := int32(*room.CreatedBy)
+		roomIDInt32 := int32(room.ID)
+		userIDInt32 := int32(*room.CreatedBy)
 		err := seed.db.AddRoomMember(context.Background(), db.AddRoomMemberParams{
-			RoomID: roomIdI32,
-			UserID: userIdI32,
+			RoomID: roomIDInt32,
+			UserID: userIDInt32,
 		})
 		if err != nil {
 			var pgErr *pgconn.PgError
@@ -130,12 +140,12 @@ func (seed Seed) RoomMembers(rooms []model.Room, users []model.User, n int) []mo
 	for range n {
 		room := RandomElement(rooms)
 		user := RandomElement(users)
-		roomIdI32 := int32(room.ID)
-		userIdI32 := int32(user.ID)
+		roomIDInt32 := int32(room.ID)
+		userIDInt32 := int32(user.ID)
 
 		err := seed.db.AddRoomMember(context.Background(), db.AddRoomMemberParams{
-			RoomID: roomIdI32,
-			UserID: userIdI32,
+			RoomID: roomIDInt32,
+			UserID: userIDInt32,
 		})
 		if err != nil {
 			panic(err)
@@ -158,13 +168,13 @@ func (seed Seed) Messages(roomMembers []model.RoomMember, n int) []model.Message
 
 	for range n {
 		roomMember := RandomElement(roomMembers)
-		roomId := int32(roomMember.RoomID)
-		userId := int32(roomMember.UserID)
+		roomID := int32(roomMember.RoomID)
+		userID := int32(roomMember.UserID)
 		content := seed.fake.Lorem().Sentence(20)
 
 		message, err := seed.db.CreateMessage(context.Background(), db.CreateMessageParams{
-			RoomID:   &roomId,
-			SenderID: &userId,
+			RoomID:   &roomID,
+			SenderID: &userID,
 			Content:  content,
 		})
 		if err != nil {
@@ -192,6 +202,44 @@ func (seed Seed) MessageReads(roomMembers []model.RoomMember, n int) []model.Mes
 	return messages
 }
 
+func (seed Seed) Friendship(users []model.User) {
+	for _, user := range users {
+		potentialFriend := user
+		for potentialFriend.ID == user.ID {
+			potentialFriend = RandomElement(users)
+		}
+		seed.db.SendFriendRequest(context.Background(), db.SendFriendRequestParams{
+			SenderID:   int32(user.ID),
+			ReceiverID: int32(potentialFriend.ID),
+		})
+		log.Printf("user %d is sending friend request to user %d\n", user.ID, potentialFriend.ID)
+	}
+
+	for _, user := range users {
+		friendRequests, err := seed.db.ListIncomingFriendRequests(context.Background(), int32(user.ID))
+		if err != nil {
+			panic("friendRequests err")
+		}
+
+		for _, fr := range friendRequests {
+			// NOTE(miha): Accept 30% of requests
+			if rand.Float32() < 0.3 {
+				seed.db.AcceptFriendRequest(context.Background(), db.AcceptFriendRequestParams{
+					SenderID:   int32(fr.SenderID),
+					ReceiverID: int32(fr.ReceiverID),
+				})
+				log.Printf("user %d is accepting friend request from user %d\n", fr.ReceiverID, fr.SenderID)
+			} else {
+				seed.db.RejectFriendRequest(context.Background(), db.RejectFriendRequestParams{
+					SenderID:   int32(fr.SenderID),
+					ReceiverID: int32(fr.ReceiverID),
+				})
+				log.Printf("user %d is rejecting friend request from user %d\n", fr.ReceiverID, fr.SenderID)
+			}
+		}
+	}
+}
+
 func main() {
 	log.Println("Started seeding data")
 
@@ -210,6 +258,7 @@ func main() {
 	seed := Seed{db: db, fake: &fake}
 
 	users := seed.Users(10)
+	seed.Friendship(users)
 	rooms := seed.Rooms(users, 100)
 	roomMembers := seed.RoomMembers(rooms, users, 300)
 	messages := seed.Messages(roomMembers, 3000)

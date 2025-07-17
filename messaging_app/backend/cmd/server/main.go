@@ -47,6 +47,7 @@ func main() {
 	authService := service.NewAuthService(db, []byte("secret"), userService)
 	messageService := service.NewMessageService(db)
 
+	userApi := api.NewUserApi(userService)
 	authApi := api.NewAuthApi(authService, userService)
 	websocketApi := api.NewWebsocketApi(db, authService)
 	roomApi := api.NewRoomApi(authService, roomService)
@@ -59,6 +60,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.SetHeader("Content-Type", "application/json"))
 	r.Use(middleware.Logger)
+	// r.Use(middleware.RequestID) // TODO: add requestID and log with this id (this way we can log full error, but display only minimal error)
 	r.Use(cors.Handler(cors.Options{
 		// TODO(miha): Configure to specific domain once we deploy to k8s.
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
@@ -95,17 +97,30 @@ func main() {
 			r.Group(func(r chi.Router) {
 				r.Use(appmiddleware.CheckUserHasRoomAccess(roomService))
 
-				r.Get("/{roomId}/users", roomApi.HandleGetAllUsersInRoom)
-				r.Post("/{roomId}/users", roomApi.HandlePostAddUser)
-				r.Delete("/{roomId}/users", roomApi.HandleDeleteUser)
+				r.Get("/{roomID}/users", roomApi.HandleGetAllUsersInRoom)
+				r.Post("/{roomID}/users", roomApi.HandlePostAddUser)
+				r.Delete("/{roomID}/users", roomApi.HandleDeleteUser)
 
-				r.Get("/{roomId}/messages", messageApi.HandleGetLatestMessages)
-				r.Post("/{roomId}/messages", messageApi.HandlePostCreateMessage)
+				r.Get("/{roomID}/messages", messageApi.HandleGetLatestMessages)
+				r.Post("/{roomID}/messages", messageApi.HandlePostCreateMessage)
 			})
 		})
 
+		r.Route("/users", func(r chi.Router) {
+			r.Get("/", userApi.HandleGetAllUsers)
+			r.Get("/{userID}", userApi.HandleGetUser)
+
+			r.Get("/me/friends", userApi.HandleGetMyFriends)
+
+			r.Get("/me/friends/incoming", userApi.HandleGetIncomingFriendRequests)
+			r.Post("/me/friends/incoming", userApi.HandleAcceptFriendRequest)
+
+			r.Get("/me/friends/outgoing", userApi.HandleGetOutgoingFriendRequests)
+			r.Post("/me/friends/outgoing", userApi.HandleCreateFriendRequest)
+		})
+
 		r.Route("/messages", func(r chi.Router) {
-			r.Get("/unread/me", messageApi.HandleGetUndreadMessageCount)
+			// r.Get("/unread/me", messageApi.HandleGetUndreadMessageCount)
 		})
 	})
 
