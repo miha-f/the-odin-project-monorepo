@@ -3,7 +3,7 @@ package model
 import "time"
 
 type UserBase struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Username string `json:"username"`
 	// CreatedAt time.Time `json:"createdAt"`
 }
