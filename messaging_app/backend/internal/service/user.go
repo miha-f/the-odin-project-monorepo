@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/jackc/pgx/v5"
 	"miha-f.github.com/message-app/internal/apperr"
@@ -32,10 +31,10 @@ func (svc UserService) GetByUsername(username string) (model.User, error) {
 	user, err := svc.db.GetUserByUsername(context.TODO(), username)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return model.User{}, fmt.Errorf("%w: user %s not found: %w", apperr.ErrNotFound, username, err)
+			return model.User{}, apperr.NewNotFoundError("username", username)
 		}
 
-		return model.User{}, fmt.Errorf("%w: %w", apperr.ErrInternal, err)
+		return model.User{}, apperr.NewInternalServerError()
 	}
 
 	return model.User{
@@ -43,4 +42,152 @@ func (svc UserService) GetByUsername(username string) (model.User, error) {
 		Username:  user.Username,
 		CreatedAt: user.CreatedAt.Time,
 	}, nil
+}
+
+func (svc UserService) GetByID(ID int64) (model.User, error) {
+	user, err := svc.db.GetUserByID(context.TODO(), int32(ID))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return model.User{}, apperr.NewNotFoundError("id", ID)
+		}
+
+		return model.User{}, apperr.NewInternalServerError()
+	}
+
+	return model.User{
+		ID:        int64(user.ID),
+		Username:  user.Username,
+		CreatedAt: user.CreatedAt.Time,
+	}, nil
+}
+
+func (svc UserService) GetByIDs(IDs []int32, limit, offset int, orderBy string) ([]model.User, error) {
+	users, err := svc.db.GetUsersByIDs(context.TODO(), db.GetUsersByIDsParams{
+		Limit:   int32(limit),
+		Offset:  int32(offset),
+		Ids:     IDs,
+		OrderBy: orderBy,
+	})
+	if err != nil {
+		// TODO(miha): Handle this error better
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apperr.NewNotFoundError("ids", -1)
+		}
+
+		return nil, apperr.NewInternalServerError()
+	}
+
+	result := []model.User{}
+	for _, user := range users {
+		result = append(result, model.User{
+			ID:        int64(user.ID),
+			Username:  user.Username,
+			CreatedAt: user.CreatedAt.Time,
+		})
+	}
+
+	return result, nil
+}
+
+func (svc UserService) GetFriendsByIDs(IDs []int32, limit, offset int, orderBy string) ([]model.User, error) {
+	panic("not impl")
+}
+
+func (svc UserService) GetFriends(userID int32) ([]model.User, error) {
+	friends, err := svc.db.GetFriendsOfUser(context.TODO(), userID)
+	if err != nil {
+		// TODO(miha): Handle this error better
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apperr.NewNotFoundError("ids", -1)
+		}
+
+		return nil, apperr.NewInternalServerError()
+	}
+
+	result := []model.User{}
+	for _, user := range friends {
+		result = append(result, model.User{
+			ID:        int64(user.ID),
+			Username:  user.Username,
+			CreatedAt: user.CreatedAt.Time,
+		})
+	}
+
+	return result, nil
+}
+
+func (svc UserService) GetIncomingFriends(userID int32) ([]model.FriendRequest, error) {
+	incomingFriends, err := svc.db.ListIncomingFriendRequests(context.TODO(), userID)
+	if err != nil {
+		// TODO(miha): Handle this error better
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apperr.NewNotFoundError("ids", -1)
+		}
+
+		return nil, apperr.NewInternalServerError()
+	}
+
+	result := []model.FriendRequest{}
+	for _, f := range incomingFriends {
+		result = append(result, model.FriendRequest{
+			ID:          f.ID,
+			SenderID:    f.SenderID,
+			ReceiverID:  f.ReceiverID,
+			Status:      f.Status,
+			CreatedAt:   f.CreatedAt.Time,
+			RespondedAt: f.RespondedAt.Time,
+		})
+	}
+
+	return result, nil
+}
+
+func (svc UserService) GetOutgoingFriends(userID int32) ([]model.FriendRequest, error) {
+	outgoingFriends, err := svc.db.ListOutgoingFriendRequests(context.TODO(), userID)
+	if err != nil {
+		// TODO(miha): Handle this error better
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apperr.NewNotFoundError("ids", -1)
+		}
+
+		return nil, apperr.NewInternalServerError()
+	}
+
+	result := []model.FriendRequest{}
+	for _, f := range outgoingFriends {
+		result = append(result, model.FriendRequest{
+			ID:          f.ID,
+			SenderID:    f.SenderID,
+			ReceiverID:  f.ReceiverID,
+			Status:      f.Status,
+			CreatedAt:   f.CreatedAt.Time,
+			RespondedAt: f.RespondedAt.Time,
+		})
+	}
+
+	return result, nil
+}
+
+func (svc UserService) SendFriendRequest(senderID, receiverID int32) error {
+	err := svc.db.SendFriendRequest(context.TODO(), db.SendFriendRequestParams{
+		SenderID:   senderID,
+		ReceiverID: receiverID,
+	})
+	if err != nil {
+		return apperr.NewInternalServerError()
+	}
+
+	return nil
+}
+
+func (svc UserService) AcceptFriendRequest(senderID, receiverID int32) error {
+	err := svc.db.AcceptFriendRequest(context.TODO(), db.AcceptFriendRequestParams{
+		SenderID:   senderID,
+		ReceiverID: receiverID,
+	})
+	if err != nil {
+		return apperr.NewInternalServerError()
+	}
+
+	return nil
 }

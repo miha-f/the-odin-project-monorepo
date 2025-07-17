@@ -71,6 +71,8 @@ func (c *Client) ReadPump() {
 			return
 		}
 
+		// TODO(miha): Save message to db
+
 		c.Room.Broadcast <- []byte(payload)
 		// c.Room.Broadcast <- Message{
 		// 	SenderID: c.ID,

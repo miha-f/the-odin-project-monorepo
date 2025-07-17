@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -39,21 +38,21 @@ func (svc AuthService) Authenticate(username, password string) (*model.UserRespo
 	user, err := svc.db.GetUserByUsername(context.TODO(), username)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("%w: user %s not found: %w", apperr.ErrNotFound, username, err)
+			return nil, apperr.NewNotFoundError("username", username)
 		}
 
-		return nil, fmt.Errorf("%w: %w", apperr.ErrInternal, err)
+		return nil, apperr.NewInternalServerError()
 	}
 
 	// NOTE(miha): Check if passwords match.
 	err = bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password))
 	if err != nil {
-		return nil, fmt.Errorf("%w: wrong password :%w", apperr.ErrBadRequest, err)
+		return nil, apperr.NewBadRequestError()
 	}
 
 	return &model.UserResponse{
 		UserBase: model.UserBase{
-			Id:       int(user.ID),
+			ID:       int(user.ID),
 			Username: user.Username,
 		},
 	}, nil
@@ -61,18 +60,18 @@ func (svc AuthService) Authenticate(username, password string) (*model.UserRespo
 
 func (svc AuthService) GenerateJWT(user *model.UserResponse) (string, error) {
 	_, tokenString, err := svc.tokenAuth.Encode(map[string]interface{}{
-		"userId":   user.Id,
+		"userID":   user.ID,
 		"username": user.Username,
 		"exp":      time.Now().Add(10 * 24 * time.Hour), // TODO: what is sensible exp value?
 	})
 	if err != nil {
-		return "", err
+		return "", apperr.NewInternalServerError()
 	}
 
 	return tokenString, nil
 }
 
-func (svc AuthService) GetUserIdFromToken(tokenStr string) (int64, error) {
+func (svc AuthService) GetUserIDFromToken(tokenStr string) (int64, error) {
 	token, err := svc.tokenAuth.Decode(tokenStr)
 	if err != nil {
 		return 0, err
@@ -83,12 +82,12 @@ func (svc AuthService) GetUserIdFromToken(tokenStr string) (int64, error) {
 
 	_, claims, err := jwtauth.FromContext(ctx)
 	if err != nil {
-		return -1, errors.New("token invalid")
+		return -1, apperr.NewBadRequestError()
 	}
 
-	userID, ok := claims["userId"].(float64)
+	userID, ok := claims["userID"].(float64)
 	if !ok {
-		return -1, errors.New("userId not found or wrong type")
+		return -1, apperr.NewNotFoundError("userID", int64(userID))
 	}
 
 	return int64(userID), nil
@@ -100,17 +99,12 @@ func (svc AuthService) GetUserFromRequest(r *http.Request) (model.User, error) {
 
 	username, ok := usernameAny.(string)
 	if !ok {
-		return model.User{}, fmt.Errorf("auth service converting token to string error")
+		return model.User{}, apperr.NewBadRequestError()
 	}
 
 	user, err := svc.userService.GetByUsername(username)
 	if err != nil {
-		switch {
-		case errors.Is(err, apperr.ErrNotFound):
-			return model.User{}, fmt.Errorf("username not found: %w", err)
-		default:
-			return model.User{}, fmt.Errorf("unknown auth service error: %w", err)
-		}
+		return model.User{}, err
 	}
 
 	return user, nil

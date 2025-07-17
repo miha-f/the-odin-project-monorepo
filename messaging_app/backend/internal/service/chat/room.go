@@ -1,6 +1,14 @@
 package chatservice
 
-import "log"
+import (
+	"context"
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"log"
+
+	"miha-f.github.com/message-app/internal/db"
+)
 
 type Room struct {
 	ID      int64
@@ -9,9 +17,10 @@ type Room struct {
 	Broadcast  chan []byte
 	Register   chan *Client
 	Unregister chan *Client
+	db         *db.Queries
 }
 
-func NewRoom(id int64) *Room {
+func NewRoom(db *db.Queries, id int64) *Room {
 	return &Room{
 		ID:      id,
 		Clients: make(map[*Client]bool),
@@ -19,8 +28,11 @@ func NewRoom(id int64) *Room {
 		Broadcast:  make(chan []byte),
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
+		db:         db,
 	}
 }
+
+// TODO(miha): We should send message types and not []byte.
 
 func (r *Room) Run() {
 	for {
@@ -28,6 +40,25 @@ func (r *Room) Run() {
 		case client := <-r.Register:
 			log.Printf("Client %d connected to room %d", client.ID, r.ID)
 			r.Clients[client] = true
+
+			roomIDInt32 := int32(r.ID)
+			lastMessageID, err := r.db.GetLastMessageIDInRoom(context.TODO(), &roomIDInt32)
+			if err != nil && !errors.Is(err, sql.ErrNoRows) {
+				log.Printf("failed to get last message for room %d: %v", r.ID, err)
+				break
+			}
+
+			if lastMessageID > 0 {
+				err = r.db.UpsertRoomRead(context.TODO(), db.UpsertRoomReadParams{
+					RoomID:            int32(r.ID),
+					UserID:            int32(client.ID),
+					LastReadMessageID: &lastMessageID,
+				})
+				if err != nil {
+					log.Printf("failed to upsert room_read for user %d in room %d: %v", client.ID, r.ID, err)
+				}
+			}
+
 		case client := <-r.Unregister:
 			if _, ok := r.Clients[client]; ok {
 				log.Printf("Client %d disconnected from room %d", client.ID, r.ID)
@@ -36,6 +67,19 @@ func (r *Room) Run() {
 			}
 		case msg := <-r.Broadcast:
 			log.Printf("Sending message %s in room %d to clients %+v", msg, r.ID, r.Clients)
+
+			var message Message
+			if err := json.Unmarshal(msg, &message); err != nil {
+			}
+
+			roomIDInt32 := int32(r.ID)
+			senderIDInt32 := int32(message.SenderID)
+			r.db.CreateMessage(context.TODO(), db.CreateMessageParams{
+				RoomID:   &roomIDInt32,
+				SenderID: &senderIDInt32,
+				Content:  message.Content,
+			})
+
 			for c := range r.Clients {
 				select {
 				case c.Send <- msg:
