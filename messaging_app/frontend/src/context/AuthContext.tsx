@@ -1,48 +1,67 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "@/lib/apiClient";
+import { tryCatch } from "@/utils/tryCatch";
+import type User from "@/models/User";
 
-interface User {
-    username: string
-}
-
-interface AuthContextType {
+type AuthContextType = {
     user: User | null;
-    login: (username: string, password: string) => Promise<void>;
-    logout: () => void;
     loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-    const ctx = useContext(AuthContext);
-    if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
-    return ctx;
+    saveToken: (arg0: string) => void;
+    getToken: () => string | null;
+    logout: () => void;
+    refetch: () => void;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const AuthContext = createContext<AuthContextType>({
+    user: null,
+    loading: true,
+    saveToken: (token: string) => { },
+    getToken: () => null,
+    logout: () => { },
+    refetch: () => { },
+});
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // on mount, check if user info or token exists (e.g. localStorage)
-        // set user if valid, else null
+    const fetchUser = async () => {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        if (!token) { return setLoading(false); }
+
+        const { data, error } = await tryCatch<{ msg: User }>(api.get("/auth/me"));
+
+        if (error) {
+            localStorage.removeItem("token");
+            setLoading(false);
+            return;
+        }
+
+        setUser(data.msg);
         setLoading(false);
+    };
+
+    const saveToken = (token: string) => {
+        localStorage.setItem("token", token);
+    };
+
+    const getToken = () => localStorage.getItem("token");
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        setUser(null);
+    };
+
+    useEffect(() => {
+        fetchUser();
     }, []);
 
-    async function login(username: string, password: string) {
-        // call backend API to login, get tokens, user info
-        // store tokens in memory or localStorage
-        // setUser with user data
-    }
-
-    function logout() {
-        // clear tokens and user
-        setUser(null);
-    }
-
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, loading, saveToken, getToken, logout, refetch: fetchUser }}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+export const useAuth = () => useContext(AuthContext);

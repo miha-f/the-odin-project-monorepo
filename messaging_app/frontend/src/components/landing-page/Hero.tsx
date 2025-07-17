@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { fadeUp } from "./MotionPresets";
 import MotionSection from "./MotionSection";

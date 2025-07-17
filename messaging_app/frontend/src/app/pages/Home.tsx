@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import "keen-slider/keen-slider.min.css";
 import { motion } from "motion/react";
 import Hero from "@/components/landing-page/Hero";

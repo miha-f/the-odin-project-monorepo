@@ -23,10 +23,10 @@ export default function Layout() {
 
 
     const sidebarIcons = [
-        { icon: Search, href: "#" },
-        { icon: MessageCircle, href: "#" },
-        { icon: Users, href: "#" },
-        { icon: Settings, href: "#" },
+        { icon: Search, href: "/search" },
+        { icon: MessageCircle, href: "/rooms" },
+        { icon: Users, href: "/friends" },
+        { icon: Settings, href: "/settings" },
     ];
 
     return (
@@ -118,10 +118,8 @@ export default function Layout() {
                 </header>
 
                 {/* Main */}
-                <main className="flex-1 overflow-y-auto p-8">
-                    <div className="bg-white shadow rounded-xl p-6">
-                        <Outlet />
-                    </div>
+                <main className="flex-1 overflow-y-auto p-2 flex justify-center">
+                    <Outlet />
                 </main>
             </div>
         </div>
