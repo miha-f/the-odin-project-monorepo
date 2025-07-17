@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React, { useState } from "react";
+import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {
     MessageCircle,
@@ -10,7 +10,7 @@ import {
     Menu,
 } from "lucide-react";
 
-export default function Layout() {
+function Layout() {
     const { logout } = useAuth();
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,15 +43,15 @@ export default function Layout() {
                 {/* Nav */}
                 <nav className="flex flex-col gap-6 flex-1 items-center">
                     {sidebarIcons.map(({ icon: Icon, href }, idx) => (
-                        <a
+                        <Link
                             key={idx}
-                            href={href}
+                            to={href}
                             className="group relative flex items-center justify-center"
                         >
                             <div className="w-10 h-10 flex items-center justify-center rounded-lg transition bg-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-600">
                                 <Icon className="w-5 h-5" />
                             </div>
-                        </a>
+                        </Link>
                     ))}
                 </nav>
 
@@ -78,15 +78,15 @@ export default function Layout() {
                 {/* Nav items */}
                 <nav className="flex flex-col gap-6 flex-1 items-start">
                     {sidebarIcons.map(({ icon: Icon, href }, idx) => (
-                        <a
+                        <Link
                             key={idx}
-                            href={href}
+                            to={href}
                             className="group relative flex items-center justify-center"
                         >
                             <div className="w-10 h-10 flex items-center justify-center rounded-lg transition bg-gray-100 group-hover:bg-indigo-50 group-hover:text-indigo-600">
                                 <Icon className="w-5 h-5" />
                             </div>
-                        </a>
+                        </Link>
                     ))}
                 </nav>
 
@@ -125,3 +125,5 @@ export default function Layout() {
         </div>
     );
 }
+
+export default React.memo(Layout);
