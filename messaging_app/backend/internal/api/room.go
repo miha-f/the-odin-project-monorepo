@@ -1,10 +1,10 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"miha-f.github.com/message-app/internal/apperr"
 	"miha-f.github.com/message-app/internal/service"
 )
 
@@ -27,9 +27,11 @@ func (api roomApi) HandleGetUserRooms(w http.ResponseWriter, r *http.Request) {
 
 	rooms, err := api.roomService.GetUserRooms(user.ID, 100, 0)
 	if err != nil {
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]any{
+	WriteJSON(w, map[string]any{
 		"rooms": rooms,
 	})
 }
@@ -37,22 +39,19 @@ func (api roomApi) HandleGetUserRooms(w http.ResponseWriter, r *http.Request) {
 // TODO(miha): Need to check that logged in user is in the room - we do this, but
 // we don't do anything in the if/else.
 func (api roomApi) HandleGetAllUsersInRoom(w http.ResponseWriter, r *http.Request) {
-	isUserInRoom := isUserInRoom(r)
-	roomID, err := getRoomIdFromPath(r)
+	roomID, err := getRoomIDFromPath(r)
 	if err != nil {
-	}
-
-	// TODO: check if room is public also -> we need to be in room anyway. If room is
-	// public we are free to join in the room and then check stuff in room
-	// TODO: return unathorized err
-	if !isUserInRoom {
+		apperr.WriteJSONError(w, apperr.NewInvalidPathParamError("roomID", string(roomID)))
+		return
 	}
 
 	roomMembers, err := api.roomService.GetAllUsersInRoom(int64(roomID))
 	if err != nil {
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]any{
+	WriteJSON(w, map[string]any{
 		"room_members": roomMembers,
 	})
 }
@@ -64,16 +63,19 @@ func (api roomApi) HandlePostCreateRoom(w http.ResponseWriter, r *http.Request) 
 	}
 	var req createRoomRequest
 	if err := validateRequest(r, &req, api.validator); err != nil {
-		// TODO: return err
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
 	user := getUserFromContext(r)
 
 	room, err := api.roomService.CreateRoom(req.Name, req.IsPrivate, user.ID)
 	if err != nil {
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]any{
+	WriteJSON(w, map[string]any{
 		"room": room,
 	})
 }

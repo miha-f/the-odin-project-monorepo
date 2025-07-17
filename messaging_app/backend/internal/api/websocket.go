@@ -2,11 +2,12 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/websocket"
+	"miha-f.github.com/message-app/internal/apperr"
 	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/service"
 	chatservice "miha-f.github.com/message-app/internal/service/chat"
@@ -34,56 +35,54 @@ func NewWebsocketApi(db *db.Queries, authService *service.AuthService) *websocke
 				return true
 			},
 		},
-		hub:         chatservice.NewHub(),
+		hub:         chatservice.NewHub(db),
 		authService: authService,
 		db:          db,
 	}
 }
 
 func (api websocketApi) HandleGetWebsocket(w http.ResponseWriter, r *http.Request) {
-	// TODO(miha): We get query params here, check that user is auther and has
-	// access to given chat_room
-	fmt.Println("websocket url queries: ", r.URL.Query())
-
-	roomID, err := getRoomIdFromPath(r)
+	roomIDStr := r.URL.Query().Get("room_id")
+	if roomIDStr == "" {
+		apperr.WriteJSONError(w, apperr.NewInvalidQueryParamError("room_id"))
+		return
+	}
+	roomID, err := strconv.ParseInt(roomIDStr, 10, 64)
 	if err != nil {
-		// TODO: customError
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		apperr.WriteJSONError(w, apperr.NewInvalidQueryParamError("room_id"))
 		return
 	}
 
 	token := r.URL.Query().Get("token")
 	if token == "" {
-		http.Error(w, "Invalid token", http.StatusBadRequest)
+		apperr.WriteJSONError(w, apperr.NewInvalidQueryParamError("token"))
 		return
 	}
 
-	userID, err := api.authService.GetUserIdFromToken(token)
+	userID, err := api.authService.GetUserIDFromToken(token)
 	if err != nil {
-		// TODO:
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
-	members, err := api.db.ListRoomMembers(context.TODO(), int32(roomID))
+	isUserInRoom, err := api.db.IsUserInRoom(context.TODO(), db.IsUserInRoomParams{
+		RoomID: int32(roomID),
+		UserID: int32(userID),
+	})
+	if !isUserInRoom {
+		apperr.WriteJSONError(w, apperr.NewForbiddenError())
+		return
+	}
 	if err != nil {
-		// TODO:
-	}
-
-	fmt.Println("members: ", members)
-
-	isMember := false
-	for _, m := range members {
-		if int32(userID) == m.ID {
-			isMember = true
-		}
-	}
-	if !isMember {
-		// TODO: return not chat room member ee
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
 	room := api.hub.GetRoom(roomID)
 
 	conn, err := api.upgrader.Upgrade(w, r, nil)
 	if err != nil {
+		apperr.WriteJSONError(w, err)
 		return
 	}
 

@@ -2,8 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -35,42 +33,34 @@ func (api authApi) HandlePostRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	var req registerRequest
 	if err := validateRequest(r, &req, api.validator); err != nil {
-		// TODO: return err
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
-		})
+		apperr.WriteJSONError(w, err)
 		return
 	}
 
 	user, err := api.userService.Create(req.Username, string(hashedPassword))
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
-		})
+		apperr.WriteJSONError(w, err)
 		return
 	}
 
 	tokenString, err := api.authService.GenerateJWT(&model.UserResponse{
 		UserBase: model.UserBase{
-			Id:       int(user.ID),
+			ID:       int(user.ID),
 			Username: user.Username,
 		},
 	})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
-		})
+		apperr.WriteJSONError(w, err)
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]any{
+	WriteJSON(w, map[string]any{
 		"token": tokenString,
 		"user":  user,
 	})
@@ -84,53 +74,28 @@ func (api authApi) HandlePostLogin(w http.ResponseWriter, r *http.Request) {
 	var req loginRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Errorf("invalid JSON body error: %w", err).Error(),
-		})
+		apperr.WriteJSONError(w, err)
 		return
 	}
 
 	user, err := api.authService.Authenticate(req.Username, req.Password)
 	if err != nil {
-		switch {
-		case errors.Is(err, apperr.ErrNotFound):
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": fmt.Errorf("username not found: %w", err).Error(),
-			})
-			return
-		case errors.Is(err, apperr.ErrBadRequest):
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": fmt.Errorf("wrong password: %w", err).Error(),
-			})
-			return
-		default:
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{
-				"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
-			})
-			return
-		}
+		apperr.WriteJSONError(w, err)
+		return
 	}
 
 	tokenString, err := api.authService.GenerateJWT(user)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Errorf("unknown auth service error: %w", err).Error(),
-		})
+		apperr.WriteJSONError(w, err)
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	WriteJSON(w, map[string]string{
 		"token": tokenString,
 	})
 }
 
 func (api authApi) HandleGetMe(w http.ResponseWriter, r *http.Request) {
 	user := getUserFromContext(r)
-
-	json.NewEncoder(w).Encode(user)
+	WriteJSON(w, user)
 }
