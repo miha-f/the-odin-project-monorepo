@@ -19,13 +19,12 @@ import (
 	"miha-f.github.com/message-app/internal/appmiddleware"
 	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/service"
+	"miha-f.github.com/message-app/internal/pubsub"
 )
 
 var addr = flag.String("addr", ":8081", "http service address")
 
 func main() {
-	jwtSecret := []byte("supersecretkey")
-
 	ctx := context.Background()
 
 	// TODO(miha): Get this from config (that gets it from env).
@@ -40,20 +39,21 @@ func main() {
 
 	db := db.New(pool)
 
+    const REDIS_URL string ="localhost:6379"
+    pubsub := pubsub.NewPubSub(REDIS_URL)
+
 	// TODO: create custom store interface that has pool and sqlc db.
 
-	userService := service.NewUserService(db)
+	userService := service.NewUserService(pool, db)
 	roomService := service.NewRoomService(pool, db)
 	authService := service.NewAuthService(db, []byte("secret"), userService)
 	messageService := service.NewMessageService(db)
 
 	userApi := api.NewUserApi(userService)
 	authApi := api.NewAuthApi(authService, userService)
-	websocketApi := api.NewWebsocketApi(db, authService)
+	websocketApi := api.NewWebsocketApi(db, pubsub, authService)
 	roomApi := api.NewRoomApi(authService, roomService)
 	messageApi := api.NewMessageApi(authService, roomService, messageService)
-
-	_, _ = jwtSecret, authApi
 
 	flag.Parse()
 
@@ -125,38 +125,6 @@ func main() {
 	})
 
 	r.Get("/ws", websocketApi.HandleGetWebsocket)
-
-	//
-	// r.Post("/login", func(w http.ResponseWriter, r *http.Request) {
-	// 	// validate user credentials...
-	// 	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{
-	// 		"user_id": 123,
-	// 		"exp":     time.Now().Add(24 * time.Hour),
-	// 	})
-	// 	w.Write([]byte(tokenString))
-	// })
-	//
-	// // Protected routes group
-	// r.Group(func(r chi.Router) {
-	// 	r.Use(jwtauth.Verifier(tokenAuth))      // verify JWT from Authorization header
-	// 	r.Use(jwtauth.Authenticator(tokenAuth)) // handle unauthorized
-	//
-	// 	r.Get("/profile", func(w http.ResponseWriter, r *http.Request) {
-	// 		_, claims, _ := jwtauth.FromContext(r.Context())
-	// 		userID := claims["user_id"]
-	// 		w.Write([]byte(fmt.Sprintf("Hello user %v", userID)))
-	// 	})
-	// })
-	//
-	// // TODO(miha): We want to have refresh token (in cookies) and normal token
-	// // in local storage
-	// r.Route("/auth", func(r chi.Router) {
-	// 	r.Get("/register", nil)
-	// 	r.Get("/login", nil)
-	// })
-
-	// log.Println("Server running on: ", *addr)
-	// log.Fatal(http.ListenAndServe(*addr, r))
 
 	// TODO(miha): We need to add sensible defaults (timeouts, ...)
 	srv := &http.Server{

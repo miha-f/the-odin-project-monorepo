@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"miha-f.github.com/message-app/internal/model"
 )
 
 const (
@@ -24,7 +25,7 @@ type Client struct {
 	ID   int64
 	Room *Room
 	Conn *websocket.Conn
-	Send chan *Message
+	Send chan *model.WebsocketMessage
 }
 
 func (c *Client) ReadPump() {
@@ -61,7 +62,7 @@ func (c *Client) ReadPump() {
 			continue
 		}
 
-		msg := &Message{
+		msg := &model.WebsocketMessage{
 			Type:      "chat_message",
 			RoomID:    c.Room.ID,
 			SenderID:  c.ID,

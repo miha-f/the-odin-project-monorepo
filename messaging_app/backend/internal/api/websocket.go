@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 	"miha-f.github.com/message-app/internal/apperr"
 	"miha-f.github.com/message-app/internal/db"
+	"miha-f.github.com/message-app/internal/model"
+	"miha-f.github.com/message-app/internal/pubsub"
 	"miha-f.github.com/message-app/internal/service"
 	chatservice "miha-f.github.com/message-app/internal/service/chat"
 )
@@ -21,7 +23,7 @@ type websocketApi struct {
 	db          *db.Queries
 }
 
-func NewWebsocketApi(db *db.Queries, authService *service.AuthService) *websocketApi {
+func NewWebsocketApi(db *db.Queries, pubsub *pubsub.PubSub, authService *service.AuthService) *websocketApi {
 	return &websocketApi{
 		validator: validator.New(),
 		// TODO(miha): What are some sensible values here?
@@ -35,7 +37,7 @@ func NewWebsocketApi(db *db.Queries, authService *service.AuthService) *websocke
 				return true
 			},
 		},
-		hub:         chatservice.NewHub(db),
+		hub:         chatservice.NewHub(db, pubsub),
 		authService: authService,
 		db:          db,
 	}
@@ -90,7 +92,7 @@ func (api websocketApi) HandleGetWebsocket(w http.ResponseWriter, r *http.Reques
 		ID:   userID,
 		Conn: conn,
 		Room: room,
-		Send: make(chan *chatservice.Message, 256),
+		Send: make(chan *model.WebsocketMessage, 256),
 	}
 
 	room.Register <- client
