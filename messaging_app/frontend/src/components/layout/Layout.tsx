@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 function Layout() {
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -112,7 +112,7 @@ function Layout() {
                     <h1 className="text-lg font-semibold">OurChat Admin</h1>
                     <div className="flex items-center gap-4">
                         <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">
-                            M
+                            {user?.username[0].toUpperCase() || "?"}
                         </div>
                     </div>
                 </header>
