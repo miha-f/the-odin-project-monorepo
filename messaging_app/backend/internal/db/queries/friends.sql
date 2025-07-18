@@ -34,6 +34,18 @@ SELECT * FROM friend_requests
 WHERE sender_id = $1 AND status = 'pending'
 ORDER BY created_at DESC;
 
+-- name: HasPendingFriendRequest :one
+SELECT EXISTS (
+  SELECT 1 FROM friend_requests
+  WHERE
+    status = 'pending'
+    AND (
+      (sender_id = $1 AND receiver_id = $2)
+      OR
+      (sender_id = $2 AND receiver_id = $1)
+    )
+);
+
 -- name: GetFriendsOfUser :many
 SELECT u.*
 FROM friendships f
@@ -44,5 +56,5 @@ JOIN users u ON
 -- name: AreFriends :one
 SELECT EXISTS (
     SELECT 1 FROM friendships
-    WHERE (user_id = LEAST($1, $2) AND friend_id = GREATEST($1, $2))
+    WHERE (user_id = LEAST(@user_id::int, @friend_id::int) AND friend_id = GREATEST(@user_id::int, @friend_id::int))
 );

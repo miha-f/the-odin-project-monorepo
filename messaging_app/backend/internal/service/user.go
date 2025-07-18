@@ -5,17 +5,22 @@ import (
 	"errors"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"miha-f.github.com/message-app/internal/apperr"
 	"miha-f.github.com/message-app/internal/db"
 	"miha-f.github.com/message-app/internal/model"
 )
 
 type UserService struct {
-	db *db.Queries
+	pool *pgxpool.Pool
+	db   *db.Queries
 }
 
-func NewUserService(db *db.Queries) *UserService {
-	return &UserService{db: db}
+func NewUserService(pool *pgxpool.Pool, db *db.Queries) *UserService {
+	return &UserService{
+		pool: pool,
+		db:   db,
+	}
 }
 
 func (svc UserService) Create(username, hashedPassword string) (db.CreateUserRow, error) {
@@ -169,10 +174,51 @@ func (svc UserService) GetOutgoingFriends(userID int32) ([]model.FriendRequest, 
 }
 
 func (svc UserService) SendFriendRequest(senderID, receiverID int32) error {
-	err := svc.db.SendFriendRequest(context.TODO(), db.SendFriendRequestParams{
+	ctx := context.TODO()
+	tx, err := svc.pool.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return apperr.NewInternalServerError()
+	}
+
+	dbtx := svc.db.WithTx(tx)
+
+	areFriends, err := dbtx.AreFriends(ctx, db.AreFriendsParams{
+		UserID:   senderID,
+		FriendID: receiverID,
+	})
+	if err != nil {
+		tx.Rollback(ctx)
+		return apperr.NewInternalServerError()
+	}
+
+	if areFriends {
+		tx.Rollback(ctx)
+        return apperr.NewDuplicateResourceError()
+	}
+
+	isPending, err := dbtx.HasPendingFriendRequest(ctx, db.HasPendingFriendRequestParams{
 		SenderID:   senderID,
 		ReceiverID: receiverID,
 	})
+	if err != nil {
+		tx.Rollback(ctx)
+		return apperr.NewInternalServerError()
+	}
+	if isPending {
+		tx.Rollback(ctx)
+        return apperr.NewDuplicateResourceError()
+	}
+
+	err = dbtx.SendFriendRequest(ctx, db.SendFriendRequestParams{
+		SenderID:   senderID,
+		ReceiverID: receiverID,
+	})
+	if err != nil {
+		tx.Rollback(ctx)
+		return apperr.NewInternalServerError()
+	}
+
+	err = tx.Commit(ctx)
 	if err != nil {
 		return apperr.NewInternalServerError()
 	}

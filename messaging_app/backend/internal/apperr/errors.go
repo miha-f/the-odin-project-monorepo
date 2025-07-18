@@ -69,3 +69,7 @@ func NewUnauthorizedError() APIError {
 func NewForbiddenError() APIError {
 	return NewAPIError(http.StatusForbidden, "forbidden")
 }
+
+func NewDuplicateResourceError() APIError {
+	return NewAPIError(http.StatusConflict, "duplicate resource")
+}

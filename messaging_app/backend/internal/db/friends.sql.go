@@ -34,17 +34,17 @@ func (q *Queries) AcceptFriendRequest(ctx context.Context, arg AcceptFriendReque
 const areFriends = `-- name: AreFriends :one
 SELECT EXISTS (
     SELECT 1 FROM friendships
-    WHERE (user_id = LEAST($1, $2) AND friend_id = GREATEST($1, $2))
+    WHERE (user_id = LEAST($1::int, $2::int) AND friend_id = GREATEST($1::int, $2::int))
 )
 `
 
 type AreFriendsParams struct {
 	UserID   int32 `json:"user_id"`
-	UserID_2 int32 `json:"user_id_2"`
+	FriendID int32 `json:"friend_id"`
 }
 
 func (q *Queries) AreFriends(ctx context.Context, arg AreFriendsParams) (bool, error) {
-	row := q.db.QueryRow(ctx, areFriends, arg.UserID, arg.UserID_2)
+	row := q.db.QueryRow(ctx, areFriends, arg.UserID, arg.FriendID)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err
@@ -97,6 +97,31 @@ func (q *Queries) GetFriendsOfUser(ctx context.Context, userID int32) ([]User, e
 		return nil, err
 	}
 	return items, nil
+}
+
+const hasPendingFriendRequest = `-- name: HasPendingFriendRequest :one
+SELECT EXISTS (
+  SELECT 1 FROM friend_requests
+  WHERE
+    status = 'pending'
+    AND (
+      (sender_id = $1 AND receiver_id = $2)
+      OR
+      (sender_id = $2 AND receiver_id = $1)
+    )
+)
+`
+
+type HasPendingFriendRequestParams struct {
+	SenderID   int32 `json:"sender_id"`
+	ReceiverID int32 `json:"receiver_id"`
+}
+
+func (q *Queries) HasPendingFriendRequest(ctx context.Context, arg HasPendingFriendRequestParams) (bool, error) {
+	row := q.db.QueryRow(ctx, hasPendingFriendRequest, arg.SenderID, arg.ReceiverID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }
 
 const listIncomingFriendRequests = `-- name: ListIncomingFriendRequests :many
