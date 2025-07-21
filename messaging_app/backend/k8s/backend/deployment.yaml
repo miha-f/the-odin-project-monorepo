@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msg-chat-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: msg-chat-backend
+  template:
+    metadata:
+      labels:
+        app: msg-chat-backend
+    spec:
+      containers:
+        - name: msg-chat-backend
+          image: msg-chat-backend
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:postgres@my-postgres-postgresql:5432/messaging_app?sslmode=disable
+            - name: REDIS_ADDR
+              value: my-redis-master:6379
+
