@@ -67,6 +67,7 @@ export const router = createBrowserRouter([
                     { path: "/rooms/:roomId", element: <Room /> },
 
                     { path: "/friends", element: <FriendList /> },
+
                     { path: "/friends/:friendId", element: <Protected /> },
 
                     { path: "/settings", element: <Protected /> },
