@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/jwtauth/v5"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -25,11 +26,19 @@ import (
 
 var addr = flag.String("addr", ":8081", "http service address")
 
+func getEnv(key, fallback string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		return fallback
+	}
+	return val
+}
+
 func main() {
 	ctx := context.Background()
 
 	// TODO(miha): Get this from config (that gets it from env).
-	const DB_URL string = "postgres://postgres:postgres@localhost:5432/messaging_app?sslmode=disable"
+	DB_URL := getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/messaging_app?sslmode=disable")
 	pool, err := pgxpool.New(ctx, DB_URL)
 	if err != nil {
 		panic(err)
@@ -40,8 +49,9 @@ func main() {
 
 	db := db.New(pool)
 
-	const REDIS_URL string = "localhost:6379"
-	pubsub := pubsub.NewPubSub(REDIS_URL)
+	REDIS_URL := getEnv("REDIS_ADDR", "localhost:6379")
+	serverInstanceID := uuid.NewString()
+	pubsub := pubsub.NewPubSub(REDIS_URL, serverInstanceID)
 
 	// TODO(miha): In each handler we pass different msg to logger. Maybe use some centralized
 	// logging values i.e. applog.LogTokenError(&logger, err)
@@ -67,7 +77,7 @@ func main() {
 	r.Use(middleware.SetHeader("Content-Type", "application/json"))
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
-	r.Use(appmiddleware.Zerolog(log.Logger))
+	r.Use(appmiddleware.Zerolog(log.Logger, serverInstanceID))
 	r.Use(cors.Handler(cors.Options{
 		// TODO(miha): Configure to specific domain once we deploy to k8s.
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
