@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"miha-f.github.com/message-app/internal/model"
 )
@@ -15,7 +14,7 @@ type PubSub struct {
 	InstanceID string
 }
 
-func NewPubSub(addr string) *PubSub {
+func NewPubSub(addr string, instanceID string) *PubSub {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     addr,
 		Password: "redis", // TODO: plain password
@@ -23,7 +22,7 @@ func NewPubSub(addr string) *PubSub {
 
 	return &PubSub{
 		client:     rdb,
-		InstanceID: uuid.NewString(),
+		InstanceID: instanceID,
 	}
 }
 

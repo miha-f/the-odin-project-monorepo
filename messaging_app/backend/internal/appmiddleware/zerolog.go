@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func Zerolog(logger zerolog.Logger) func(http.Handler) http.Handler {
+func Zerolog(logger zerolog.Logger, serverInstanceID string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
@@ -22,6 +22,7 @@ func Zerolog(logger zerolog.Logger) func(http.Handler) http.Handler {
 				Str("method", r.Method).
 				Str("url", sanitizedURL).
 				Str("remote_ip", r.RemoteAddr).
+				Str("server_instace_id", serverInstanceID).
 				Logger()
 
 			ctx := log.WithContext(r.Context())
