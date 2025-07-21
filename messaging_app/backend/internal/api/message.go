@@ -1,9 +1,11 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/rs/zerolog"
 	"miha-f.github.com/message-app/internal/apperr"
 	"miha-f.github.com/message-app/internal/service"
 )
@@ -28,18 +30,28 @@ func NewMessageApi(
 	}
 }
 
+func (api messageApi) getLogger(r *http.Request) zerolog.Logger {
+	return zerolog.Ctx(r.Context()).With().Str("handler", "Message").Logger()
+}
+
 func (api messageApi) HandleGetLatestMessages(w http.ResponseWriter, r *http.Request) {
+	log := api.getLogger(r)
+
 	roomID, err := getRoomIDFromPath(r)
 	if err != nil {
-		apperr.WriteJSONError(w, apperr.NewInvalidPathParamError("roomID", string(roomID)))
+		log.Warn().Msgf("couldn't get roomID from path, error: %v", err)
+		apperr.WriteJSONError(w, apperr.NewInvalidPathParamError("roomID", fmt.Sprintf("%d", roomID)))
 		return
 	}
 
 	messages, err := api.messageService.GetLatestMessages(int64(roomID), 100, 0)
 	if err != nil {
+		log.Warn().Msgf("couldn't get latest messages, error: %v", err)
 		apperr.WriteJSONError(w, err)
 		return
 	}
+
+	log.Debug().Msgf("succesfully got room (%d) messages: %v", roomID, messages)
 
 	WriteJSON(w, map[string]any{
 		"room_id":  roomID,
@@ -77,17 +89,21 @@ func (api messageApi) HandleGetRoomsWithUndreadMessages(w http.ResponseWriter, r
 }
 
 func (api messageApi) HandlePostCreateMessage(w http.ResponseWriter, r *http.Request) {
+	log := api.getLogger(r)
+
 	type createMessageRequest struct {
 		Content string `json:"content" validate:"required,min=1"`
 	}
 	var req createMessageRequest
 	if err := validateRequest(r, &req, api.validator); err != nil {
+		log.Warn().Msgf("validation error: %v", err)
 		apperr.WriteJSONError(w, err)
 		return
 	}
 
 	roomID, err := getRoomIDFromPath(r)
 	if err != nil {
+		log.Warn().Msgf("couldn't get roomID from path, error: %v", err)
 		apperr.WriteJSONError(w, err)
 		return
 	}
@@ -100,9 +116,12 @@ func (api messageApi) HandlePostCreateMessage(w http.ResponseWriter, r *http.Req
 		req.Content,
 	)
 	if err != nil {
+		log.Warn().Msgf("couldn't create new message, error: %v", err)
 		apperr.WriteJSONError(w, err)
 		return
 	}
+
+	log.Debug().Msgf("created new message: %v", message)
 
 	WriteJSON(w, map[string]any{
 		"message": message,

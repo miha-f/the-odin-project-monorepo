@@ -13,9 +13,8 @@ import (
 )
 
 type Room struct {
-	ID      int64
-	Clients map[*Client]bool
-	// TODO(miha): Broadcast should accept Message
+	ID         int64
+	Clients    map[*Client]bool
 	Broadcast  chan *model.WebsocketMessage
 	Register   chan *Client
 	Unregister chan *Client
@@ -27,9 +26,8 @@ type WebsocketMessage struct{}
 
 func NewRoom(db *db.Queries, pubsub *pubsub.PubSub, id int64) *Room {
 	return &Room{
-		ID:      id,
-		Clients: make(map[*Client]bool),
-		// Broadcast:  make(chan Message),
+		ID:         id,
+		Clients:    make(map[*Client]bool),
 		Broadcast:  make(chan *model.WebsocketMessage),
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),

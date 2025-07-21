@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,12 +13,14 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"miha-f.github.com/message-app/internal/api"
 	"miha-f.github.com/message-app/internal/appmiddleware"
 	"miha-f.github.com/message-app/internal/db"
-	"miha-f.github.com/message-app/internal/service"
 	"miha-f.github.com/message-app/internal/pubsub"
+	"miha-f.github.com/message-app/internal/service"
 )
 
 var addr = flag.String("addr", ":8081", "http service address")
@@ -34,13 +35,18 @@ func main() {
 		panic(err)
 	}
 	if err := pool.Ping(ctx); err != nil {
-		log.Fatalf("Unable to ping DB: %v", err)
+		log.Fatal().Msgf("Unable to ping DB: %v", err)
 	}
 
 	db := db.New(pool)
 
-    const REDIS_URL string ="localhost:6379"
-    pubsub := pubsub.NewPubSub(REDIS_URL)
+	const REDIS_URL string = "localhost:6379"
+	pubsub := pubsub.NewPubSub(REDIS_URL)
+
+	// TODO(miha): In each handler we pass different msg to logger. Maybe use some centralized
+	// logging values i.e. applog.LogTokenError(&logger, err)
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	// TODO: create custom store interface that has pool and sqlc db.
 
@@ -59,8 +65,9 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.SetHeader("Content-Type", "application/json"))
-	r.Use(middleware.Logger)
-	// r.Use(middleware.RequestID) // TODO: add requestID and log with this id (this way we can log full error, but display only minimal error)
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(appmiddleware.Zerolog(log.Logger))
 	r.Use(cors.Handler(cors.Options{
 		// TODO(miha): Configure to specific domain once we deploy to k8s.
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
@@ -138,21 +145,21 @@ func main() {
 	go func() {
 		log.Printf("Server running on %s\n", *addr)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("ListenAndServe error: %v", err)
+			log.Fatal().Msgf("ListenAndServe error: %v", err)
 		}
 	}()
 
 	<-stop
-	log.Println("Shutting down server...")
+	log.Info().Msg("Shutting down server...")
 
 	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctxShutDown); err != nil {
-		log.Fatalf("Server forced to shutdown: %v", err)
+		log.Fatal().Msgf("Server forced to shutdown: %v", err)
 	}
 
 	pool.Close()
 
-	log.Println("Server exited properly")
+	log.Info().Msg("Server exited properly")
 }
