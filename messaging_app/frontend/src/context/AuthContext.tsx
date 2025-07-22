@@ -15,7 +15,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({
     user: null,
     loading: true,
-    saveToken: (token: string) => { },
+    saveToken: () => { },
     getToken: () => null,
     logout: () => { },
     refetch: () => { },

@@ -59,11 +59,12 @@ export default function Room() {
     };
 
     const { send, isConnected } = useChatWebSocket({
-        url: `ws://localhost:8081/ws?token=${getToken() || ""}&room_id=${roomId}`,
+        // url: `ws://localhost:8081/ws?token=${getToken() || ""}&room_id=${roomId}`,
+        url: `ws://localhost:30082/ws?token=${getToken() || ""}&room_id=${roomId}`,
         onMessage: handleWsMessage,
         onOpen: () => console.log("WebSocket connected!"),
         onClose: () => console.log("WebSocket disconnected!"),
-        disabled: loadingMessages,
+        // disabled: loadingMessages,
     });
 
     const handleSend = () => {
