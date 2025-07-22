@@ -40,7 +40,7 @@ export default function Carousel({ children, className }: CarouselProps) {
             <div className="mt-6 flex justify-center items-center gap-4">
                 {/* Left Arrow */}
                 <button
-                    onClick={(e) => e.stopPropagation() || instanceRef.current?.prev()}
+                    onClick={(e) => { e.stopPropagation(); instanceRef.current?.prev(); }}
                     className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
                 >
                     <ChevronLeft className="w-5 h-5" />
@@ -60,7 +60,7 @@ export default function Carousel({ children, className }: CarouselProps) {
 
                 {/* Right Arrow */}
                 <button
-                    onClick={(e) => e.stopPropagation() || instanceRef.current?.next()}
+                    onClick={(e) => { e.stopPropagation(); instanceRef.current?.next(); }}
                     className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
                 >
                     <ChevronRight className="w-5 h-5" />
