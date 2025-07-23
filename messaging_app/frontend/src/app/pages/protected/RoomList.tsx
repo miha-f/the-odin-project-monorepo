@@ -36,7 +36,7 @@ export default function Rooms() {
     if (rooms.length === 0) return <p className="text-gray-500 p-4">No rooms found.</p>;
 
     return (
-        <div className="w-full max-w-6xl mx-auto mt-8 p-4 bg-white rounded-lg shadow">
+        <>
             <h2 className="text-xl font-bold mb-4">Your Rooms</h2>
             <ul className="divide-y divide-gray-200">
                 {rooms.map((room) => (
@@ -66,6 +66,6 @@ export default function Rooms() {
                     </Link>
                 ))}
             </ul>
-        </div >
+        </>
     );
 }

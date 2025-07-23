@@ -84,8 +84,8 @@ export default function Room() {
     if (loadingMessages) return <p className="text-gray-500">Loading...</p>;
 
     return (
-        <div className="flex flex-col h-full w-full max-w-4xl mx-auto bg-white shadow rounded-xl">
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex flex-col h-full w-full mx-auto bg-white shadow rounded-xl">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4">
                 {loadingMessages
                     ? Array.from({ length: 5 }).map((_, idx) => (
                         <div
@@ -100,11 +100,11 @@ export default function Room() {
                                 }`}
                         >
                             <div
-                                className={`px-4 py-2 rounded-lg shadow text-sm break-words ${msg.sender_id === user?.id
+                                className={`px-4 py-2 rounded-lg shadow text-sm break-words whitespace-pre-wrap overflow-hidden ${msg.sender_id === user?.id
                                     ? "bg-indigo-600 text-white rounded-br-none"
                                     : "bg-gray-100 text-gray-800 rounded-bl-none"
                                     }`}
-                                style={{ maxWidth: "80%" }}
+                                style={{ maxWidth: "80%", wordBreak: "break-word" }}
                             >
                                 {msg.content}
                             </div>
@@ -117,6 +117,7 @@ export default function Room() {
                 <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
                     <textarea
                         rows={3}
+                        maxLength={1024}
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={handleKeyDown}

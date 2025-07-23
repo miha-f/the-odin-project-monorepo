@@ -53,8 +53,6 @@ export default function Register() {
             api.post("/auth/register", form)
         );
 
-        console.log(error, data);
-
         if (error || !data.token) {
             alert("Registration failed. Please try again.");
             return;

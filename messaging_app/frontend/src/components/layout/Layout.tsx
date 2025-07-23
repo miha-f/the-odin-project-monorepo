@@ -118,8 +118,10 @@ function Layout() {
                 </header>
 
                 {/* Main */}
-                <main className="flex-1 overflow-y-auto p-2 flex justify-center">
-                    <Outlet />
+                <main className="flex-1 w-full overflow-y-auto p-4 flex justify-center">
+                    <div className="w-full overflow-y-auto mx-auto p-4 bg-white rounded-lg shadow">
+                        <Outlet />
+                    </div>
                 </main>
             </div>
         </div>

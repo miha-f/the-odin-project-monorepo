@@ -53,7 +53,7 @@ export function useChatWebSocket({
             setIsConnected(true);
             onOpen?.();
             clearReconnectTimeout();
-            console.log("✅ WebSocket connected");
+            console.log("WebSocket connected");
         };
 
         wsRef.current.onmessage = (event) => {
@@ -75,7 +75,7 @@ export function useChatWebSocket({
                     retryInitialDelayMs * 2 ** retryCountRef.current,
                     retryMaxDelayMs
                 );
-                console.log(`⏳ Reconnecting in ${delay}ms...`);
+                console.log(`Reconnecting in ${delay}ms...`);
                 reconnectTimeoutRef.current = setTimeout(() => {
                     retryCountRef.current++;
                     connect();

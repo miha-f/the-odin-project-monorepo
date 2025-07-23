@@ -9,24 +9,20 @@ import Protected from "@/app/pages/Protected";
 import RoomList from "@/app/pages/protected/RoomList";
 import Room from "@/app/pages/protected/Room";
 import FriendList from "./pages/protected/FriendList";
+import Search from "./pages/protected/Search";
+import Settings from "./pages/protected/Settings";
 
 const RequireAuth: React.FC = () => {
     const auth = useAuth();
     const location = useLocation();
 
-    console.log("require auth A: ", auth.user);
-
     if (auth.loading) {
         return <div>Loading...</div>;
     }
 
-    console.log("require auth: B", auth.user);
-
     if (!auth.user) {
-        console.log("not authed");
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
-    console.log("authed");
 
     return <><Outlet /></>;
 };
@@ -34,14 +30,13 @@ const RequireAuth: React.FC = () => {
 const RequireAnon: React.FC = () => {
     const auth = useAuth();
     const location = useLocation();
-    console.log("require anon A: ", auth.user);
 
     if (auth.loading) {
         return <div>Loading...</div>;
     }
 
     if (auth.user) {
-        return <Navigate to="/protected" state={{ from: location }} replace />;
+        return <Navigate to="/rooms" state={{ from: location }} replace />;
     }
 
     return <><Outlet /></>;
@@ -59,9 +54,9 @@ export const router = createBrowserRouter([
             {
                 element: <RequireAuth />,
                 children: [
-                    { path: "/protected", element: <Protected /> },
+                    // { path: "/protected", element: <Protected /> },
 
-                    { path: "/search", element: <Protected /> },
+                    { path: "/search", element: <Search /> },
 
                     { path: "/rooms", element: <RoomList /> },
                     { path: "/rooms/:roomId", element: <Room /> },
@@ -70,7 +65,7 @@ export const router = createBrowserRouter([
 
                     { path: "/friends/:friendId", element: <Protected /> },
 
-                    { path: "/settings", element: <Protected /> },
+                    { path: "/settings", element: <Settings /> },
                 ],
             },
         ],

@@ -35,7 +35,6 @@ export default function ChatMessages() {
 
     const handleWsMessage = (data: any) => {
         // Assuming data has shape { text: string, sender?: string }
-        console.log(data);
         if (!data.content) return;
 
 
