@@ -82,17 +82,23 @@ func main() {
 	// 	// TODO(miha): Configure to specific domain once we deploy to k8s.
 	// 	// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
 	// 	// AllowedOrigins: []string{"https://*", "http://*"},
-	// 	AllowOriginFunc: func(r *http.Request, origin string) bool { return true },
-	// 	// AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-	// 	// AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-	// 	// ExposedHeaders:   []string{"Link"},
-	// 	// AllowCredentials: false,
-	// 	// MaxAge:           300, // Maximum value not ignored by any of major browsers
+	// 	AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+	// 	AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+	// 	AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+	// 	ExposedHeaders:   []string{"Link"},
+	// 	AllowCredentials: false,
+	// 	MaxAge:           300, // Maximum value not ignored by any of major browsers
 	// }))
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{
 			"http://localhost:30081",
+			"http://localhost:5173",
+			"http://localhost",
+			"http://localhost:31682",
+			"http://localhost:80",
+			"http://127.0.0.1:5173",
+			"http://10.42.0.1",
 			"http://msg-chat-frontend:8080",
 			"http://msg-chat-frontend:8081",
 			"http://msg-chat-frontend:80",
