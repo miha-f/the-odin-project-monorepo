@@ -12,7 +12,7 @@ spec:
       labels:
         app: msg-chat-frontend
       annotations:
-        redeploy-timestamp: "22.7.2025 07:42"
+        redeploy-timestamp: "23.7.2025 12:33"
     spec:
       containers:
         - name: msg-chat-frontend
