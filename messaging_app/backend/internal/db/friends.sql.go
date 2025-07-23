@@ -7,6 +7,8 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const acceptFriendRequest = `-- name: AcceptFriendRequest :exec
@@ -125,20 +127,35 @@ func (q *Queries) HasPendingFriendRequest(ctx context.Context, arg HasPendingFri
 }
 
 const listIncomingFriendRequests = `-- name: ListIncomingFriendRequests :many
-SELECT id, sender_id, receiver_id, status, created_at, responded_at FROM friend_requests
-WHERE receiver_id = $1 AND status = 'pending'
-ORDER BY created_at DESC
+SELECT fr.id, fr.sender_id, fr.receiver_id, fr.status, fr.created_at, fr.responded_at, u.username AS sender_username
+FROM friend_requests fr
+JOIN users u ON fr.sender_id = u.id
+WHERE fr.receiver_id = $1 AND fr.status = 'pending'
+ORDER BY fr.created_at DESC
 `
 
-func (q *Queries) ListIncomingFriendRequests(ctx context.Context, receiverID int32) ([]FriendRequest, error) {
+type ListIncomingFriendRequestsRow struct {
+	ID             int32            `json:"id"`
+	SenderID       int32            `json:"sender_id"`
+	ReceiverID     int32            `json:"receiver_id"`
+	Status         string           `json:"status"`
+	CreatedAt      pgtype.Timestamp `json:"created_at"`
+	RespondedAt    pgtype.Timestamp `json:"responded_at"`
+	SenderUsername string           `json:"sender_username"`
+}
+
+// SELECT * FROM friend_requests
+// WHERE receiver_id = $1 AND status = 'pending'
+// ORDER BY created_at DESC;
+func (q *Queries) ListIncomingFriendRequests(ctx context.Context, receiverID int32) ([]ListIncomingFriendRequestsRow, error) {
 	rows, err := q.db.Query(ctx, listIncomingFriendRequests, receiverID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []FriendRequest{}
+	items := []ListIncomingFriendRequestsRow{}
 	for rows.Next() {
-		var i FriendRequest
+		var i ListIncomingFriendRequestsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.SenderID,
@@ -146,6 +163,7 @@ func (q *Queries) ListIncomingFriendRequests(ctx context.Context, receiverID int
 			&i.Status,
 			&i.CreatedAt,
 			&i.RespondedAt,
+			&i.SenderUsername,
 		); err != nil {
 			return nil, err
 		}
@@ -158,20 +176,35 @@ func (q *Queries) ListIncomingFriendRequests(ctx context.Context, receiverID int
 }
 
 const listOutgoingFriendRequests = `-- name: ListOutgoingFriendRequests :many
-SELECT id, sender_id, receiver_id, status, created_at, responded_at FROM friend_requests
-WHERE sender_id = $1 AND status = 'pending'
-ORDER BY created_at DESC
+SELECT fr.id, fr.sender_id, fr.receiver_id, fr.status, fr.created_at, fr.responded_at, u.username AS receiver_username
+FROM friend_requests fr
+JOIN users u ON fr.receiver_id = u.id
+WHERE fr.sender_id = $1 AND fr.status = 'pending'
+ORDER BY fr.created_at DESC
 `
 
-func (q *Queries) ListOutgoingFriendRequests(ctx context.Context, senderID int32) ([]FriendRequest, error) {
+type ListOutgoingFriendRequestsRow struct {
+	ID               int32            `json:"id"`
+	SenderID         int32            `json:"sender_id"`
+	ReceiverID       int32            `json:"receiver_id"`
+	Status           string           `json:"status"`
+	CreatedAt        pgtype.Timestamp `json:"created_at"`
+	RespondedAt      pgtype.Timestamp `json:"responded_at"`
+	ReceiverUsername string           `json:"receiver_username"`
+}
+
+// SELECT * FROM friend_requests
+// WHERE sender_id = $1 AND status = 'pending'
+// ORDER BY created_at DESC;
+func (q *Queries) ListOutgoingFriendRequests(ctx context.Context, senderID int32) ([]ListOutgoingFriendRequestsRow, error) {
 	rows, err := q.db.Query(ctx, listOutgoingFriendRequests, senderID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []FriendRequest{}
+	items := []ListOutgoingFriendRequestsRow{}
 	for rows.Next() {
-		var i FriendRequest
+		var i ListOutgoingFriendRequestsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.SenderID,
@@ -179,6 +212,7 @@ func (q *Queries) ListOutgoingFriendRequests(ctx context.Context, senderID int32
 			&i.Status,
 			&i.CreatedAt,
 			&i.RespondedAt,
+			&i.ReceiverUsername,
 		); err != nil {
 			return nil, err
 		}

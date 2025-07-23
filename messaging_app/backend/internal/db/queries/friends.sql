@@ -25,14 +25,25 @@ SET status = 'rejected', responded_at = now()
 WHERE sender_id = $1 AND receiver_id = $2 AND status = 'pending';
 
 -- name: ListIncomingFriendRequests :many
-SELECT * FROM friend_requests
-WHERE receiver_id = $1 AND status = 'pending'
-ORDER BY created_at DESC;
+-- SELECT * FROM friend_requests
+-- WHERE receiver_id = $1 AND status = 'pending'
+-- ORDER BY created_at DESC;
+SELECT fr.*, u.username AS sender_username
+FROM friend_requests fr
+JOIN users u ON fr.sender_id = u.id
+WHERE fr.receiver_id = $1 AND fr.status = 'pending'
+ORDER BY fr.created_at DESC;
+
 
 -- name: ListOutgoingFriendRequests :many
-SELECT * FROM friend_requests
-WHERE sender_id = $1 AND status = 'pending'
-ORDER BY created_at DESC;
+-- SELECT * FROM friend_requests
+-- WHERE sender_id = $1 AND status = 'pending'
+-- ORDER BY created_at DESC;
+SELECT fr.*, u.username AS receiver_username
+FROM friend_requests fr
+JOIN users u ON fr.receiver_id = u.id
+WHERE fr.sender_id = $1 AND fr.status = 'pending'
+ORDER BY fr.created_at DESC;
 
 -- name: HasPendingFriendRequest :one
 SELECT EXISTS (

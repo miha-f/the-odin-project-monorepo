@@ -121,7 +121,7 @@ func (svc UserService) GetFriends(userID int32) ([]model.User, error) {
 	return result, nil
 }
 
-func (svc UserService) GetIncomingFriends(userID int32) ([]model.FriendRequest, error) {
+func (svc UserService) GetIncomingFriends(userID int32) ([]model.IncomingFriendRequest, error) {
 	incomingFriends, err := svc.db.ListIncomingFriendRequests(context.TODO(), userID)
 	if err != nil {
 		// TODO(miha): Handle this error better
@@ -132,22 +132,23 @@ func (svc UserService) GetIncomingFriends(userID int32) ([]model.FriendRequest, 
 		return nil, apperr.NewInternalServerError()
 	}
 
-	result := []model.FriendRequest{}
+	result := []model.IncomingFriendRequest{}
 	for _, f := range incomingFriends {
-		result = append(result, model.FriendRequest{
-			ID:          f.ID,
-			SenderID:    f.SenderID,
-			ReceiverID:  f.ReceiverID,
-			Status:      f.Status,
-			CreatedAt:   f.CreatedAt.Time,
-			RespondedAt: f.RespondedAt.Time,
+		result = append(result, model.IncomingFriendRequest{
+			ID:             f.ID,
+			SenderID:       f.SenderID,
+			SenderUsername: f.SenderUsername,
+			ReceiverID:     f.ReceiverID,
+			Status:         f.Status,
+			CreatedAt:      f.CreatedAt.Time,
+			RespondedAt:    f.RespondedAt.Time,
 		})
 	}
 
 	return result, nil
 }
 
-func (svc UserService) GetOutgoingFriends(userID int32) ([]model.FriendRequest, error) {
+func (svc UserService) GetOutgoingFriends(userID int32) ([]model.OutgoingFriendRequest, error) {
 	outgoingFriends, err := svc.db.ListOutgoingFriendRequests(context.TODO(), userID)
 	if err != nil {
 		// TODO(miha): Handle this error better
@@ -158,15 +159,16 @@ func (svc UserService) GetOutgoingFriends(userID int32) ([]model.FriendRequest, 
 		return nil, apperr.NewInternalServerError()
 	}
 
-	result := []model.FriendRequest{}
+	result := []model.OutgoingFriendRequest{}
 	for _, f := range outgoingFriends {
-		result = append(result, model.FriendRequest{
-			ID:          f.ID,
-			SenderID:    f.SenderID,
-			ReceiverID:  f.ReceiverID,
-			Status:      f.Status,
-			CreatedAt:   f.CreatedAt.Time,
-			RespondedAt: f.RespondedAt.Time,
+		result = append(result, model.OutgoingFriendRequest{
+			ID:               f.ID,
+			SenderID:         f.SenderID,
+			ReceiverUsername: f.ReceiverUsername,
+			ReceiverID:       f.ReceiverID,
+			Status:           f.Status,
+			CreatedAt:        f.CreatedAt.Time,
+			RespondedAt:      f.RespondedAt.Time,
 		})
 	}
 
@@ -193,7 +195,7 @@ func (svc UserService) SendFriendRequest(senderID, receiverID int32) error {
 
 	if areFriends {
 		tx.Rollback(ctx)
-        return apperr.NewDuplicateResourceError()
+		return apperr.NewDuplicateResourceError()
 	}
 
 	isPending, err := dbtx.HasPendingFriendRequest(ctx, db.HasPendingFriendRequestParams{
@@ -206,7 +208,7 @@ func (svc UserService) SendFriendRequest(senderID, receiverID int32) error {
 	}
 	if isPending {
 		tx.Rollback(ctx)
-        return apperr.NewDuplicateResourceError()
+		return apperr.NewDuplicateResourceError()
 	}
 
 	err = dbtx.SendFriendRequest(ctx, db.SendFriendRequestParams{
